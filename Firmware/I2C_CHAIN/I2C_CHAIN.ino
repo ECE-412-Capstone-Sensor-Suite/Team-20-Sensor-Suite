@@ -23,7 +23,7 @@ void setup() {
 
 void loop() {
   //********HUMID & TEMP SENSOR********//
-  slaveSample(true, humidityAddr, 4, false, humidityT); //** SAMPLE RAW BYTES FROM SENSOR
+  slaveSample(true, humidityAddr, 4, humidityT); //** SAMPLE RAW BYTES FROM SENSOR
   
   //** parse bytes from sensor into two 16-bit words, then convert words into accurate data.
   int humidityWord = (reading[0] << 8) | reading[1];    // shift byte0 up 8 bits and add byte1 to it   
@@ -35,7 +35,7 @@ void loop() {
   Serial.print("temp(C) "); Serial.println(temp);                          // print the reading
   
   //********ARDUINO UNO SPOOF SENSOR********//
-  slaveSample(false, unoAddr, 6, true, unoT);         //** SAMPLE RAW BYTES FROM SENSOR
+  slaveSample(false, unoAddr, 6, unoT);         //** SAMPLE RAW BYTES FROM SENSOR
 
   //** parse bytes from UNO
    for(int i=0; i<= 6;i++ ){
@@ -47,14 +47,13 @@ void loop() {
 
 
 //************************** SLAVE CALLING FUNCTION *****************************//
-void slaveSample(bool command, int slavAddr, int byteNum, bool isStream, int timing[]) {
+void slaveSample(bool command, int slavAddr, int byteNum, int timing[]) {
   
   if (command) {  //*** CHECK IF SLAVE NEEDS MEASURE REQUEST BEFORE READING
     slaveCommand(slavAddr, byte(0x00)); // step 1: instruct sensor to measure
     delay(timing[0]);                   // step 2: wait for readings to happen
     slaveCommand(slavAddr, byte(0x01)); // step 3: instruct sensor to return a particular echo reading
   }
-
   Wire.requestFrom(slavAddr, byteNum);  // step 4: request reading from sensor
 
   for(int i=0; i<= byteNum;i++ ){  // repeat iteration for the number of expected bytes
