@@ -1,0 +1,25 @@
+dnm_service.pbi: \
+  C:\Users\Yesoooof\Documents\GitHub\Team-20-Sensor-Suite\Firmware\On-chip\ App\onchipsdk-master\src\modules\ip_applib\dnm_service.c \
+  C:\Users\Yesoooof\Documents\GitHub\Team-20-Sensor-Suite\Firmware\On-chip\ App\onchipsdk-master\projects\iar\00-hello\..\all_projects.iarinc \
+  C:\Users\Yesoooof\Documents\GitHub\Team-20-Sensor-Suite\Firmware\On-chip\ App\onchipsdk-master\src\modules\ip_applib/dnm_service.h \
+  C:\Users\Yesoooof\Documents\GitHub\Team-20-Sensor-Suite\Firmware\On-chip\ App\onchipsdk-master\projects\iar\00-hello\..\..\..\src\inc\dn_typedef.h \
+  C:\Users\Yesoooof\Documents\GitHub\Team-20-Sensor-Suite\Firmware\On-chip\ App\onchipsdk-master\projects\iar\00-hello\..\..\..\src\inc/os_cpu.h \
+  C:\Users\Yesoooof\Documents\GitHub\Team-20-Sensor-Suite\Firmware\On-chip\ App\onchipsdk-master\projects\iar\00-hello\..\..\..\src\inc\dn_errno.h \
+  C:\Users\Yesoooof\Documents\GitHub\Team-20-Sensor-Suite\Firmware\On-chip\ App\onchipsdk-master\projects\iar\00-hello\..\..\..\src\inc\dn_channel.h \
+  C:\Users\Yesoooof\Documents\GitHub\Team-20-Sensor-Suite\Firmware\On-chip\ App\onchipsdk-master\projects\iar\00-hello\..\..\..\src\inc/dn_errno.h \
+  C:\Users\Yesoooof\Documents\GitHub\Team-20-Sensor-Suite\Firmware\On-chip\ App\onchipsdk-master\projects\iar\00-hello\..\..\..\src\inc/ucos_ii.h \
+  C:\Users\Yesoooof\Documents\GitHub\Team-20-Sensor-Suite\Firmware\On-chip\ App\onchipsdk-master\projects\iar\00-hello\..\..\..\src\app\common\app_cfg.h \
+  C:\Users\Yesoooof\Documents\GitHub\Team-20-Sensor-Suite\Firmware\On-chip\ App\onchipsdk-master\projects\iar\00-hello\..\..\..\src\inc\os_cfg.h \
+  C:\Users\Yesoooof\Documents\GitHub\Team-20-Sensor-Suite\Firmware\On-chip\ App\onchipsdk-master\projects\iar\00-hello\..\..\..\src\inc\os_cpu.h \
+  C:\Users\Yesoooof\Documents\GitHub\Team-20-Sensor-Suite\Firmware\On-chip\ App\onchipsdk-master\projects\iar\00-hello\..\..\..\src\inc/dn_pack.h \
+  C:\Users\Yesoooof\Documents\GitHub\Team-20-Sensor-Suite\Firmware\On-chip\ App\onchipsdk-master\projects\iar\00-hello\..\..\..\src\modules\clilib\dnm_ucli.h \
+  C:\Users\Yesoooof\Documents\GitHub\Team-20-Sensor-Suite\Firmware\On-chip\ App\onchipsdk-master\projects\iar\00-hello\..\..\..\src\inc\dn_cli.h \
+  C:\Users\Yesoooof\Documents\GitHub\Team-20-Sensor-Suite\Firmware\On-chip\ App\onchipsdk-master\projects\iar\00-hello\..\..\..\src\inc/dn_typedef.h \
+  C:\Users\Yesoooof\Documents\GitHub\Team-20-Sensor-Suite\Firmware\On-chip\ App\onchipsdk-master\projects\iar\00-hello\..\..\..\src\inc/dn_channel.h \
+  C:\Program\ Files\ (x86)\IAR\ Systems\Embedded\ Workbench\ 8.3\arm\inc\c\stdarg.h \
+  C:\Users\Yesoooof\Documents\GitHub\Team-20-Sensor-Suite\Firmware\On-chip\ App\onchipsdk-master\src\modules\ip_applib/dnm_local.h \
+  C:\Users\Yesoooof\Documents\GitHub\Team-20-Sensor-Suite\Firmware\On-chip\ App\onchipsdk-master\projects\iar\00-hello\..\..\..\src\inc\dn_api_local.h \
+  C:\Users\Yesoooof\Documents\GitHub\Team-20-Sensor-Suite\Firmware\On-chip\ App\onchipsdk-master\projects\iar\00-hello\..\..\..\src\inc/dn_api_common.h \
+  C:\Users\Yesoooof\Documents\GitHub\Team-20-Sensor-Suite\Firmware\On-chip\ App\onchipsdk-master\projects\iar\00-hello\..\..\..\src\inc/dn_mesh.h \
+  C:\Users\Yesoooof\Documents\GitHub\Team-20-Sensor-Suite\Firmware\On-chip\ App\onchipsdk-master\projects\iar\00-hello\..\..\..\src\inc\dn_api_common.h \
+  C:\Users\Yesoooof\Documents\GitHub\Team-20-Sensor-Suite\Firmware\On-chip\ App\onchipsdk-master\projects\iar\00-hello\..\..\..\src\inc\dn_mesh.h

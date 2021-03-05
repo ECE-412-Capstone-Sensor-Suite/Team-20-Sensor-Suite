@@ -1,0 +1,380 @@
+###############################################################################
+#                                                                             #
+# IAR ANSI C/C++ Compiler V6.50.3.4676/W32 for ARM      04/Mar/2021  21:41:49 #
+# Copyright 1999-2013 IAR Systems AB.                                         #
+#                                                                             #
+#    Cpu mode     =  thumb                                                    #
+#    Endian       =  little                                                   #
+#    Source file  =  C:\Users\Yesoooof\Documents\GitHub\Team-20-Sensor-Suite\ #
+#                    Firmware\On-chip App\onchipsdk-REL-1.1.0.7\src\modules\i #
+#                    p_applib\dnm_service.c                                   #
+#    Command line =  "C:\Users\Yesoooof\Documents\GitHub\Team-20-Sensor-Suite #
+#                    \Firmware\On-chip App\onchipsdk-REL-1.1.0.7\src\modules\ #
+#                    ip_applib\dnm_service.c" -lcN                            #
+#                    "C:\Users\Yesoooof\Documents\GitHub\Team-20-Sensor-Suite #
+#                    \Firmware\On-chip App\onchipsdk-REL-1.1.0.7\projects\iar #
+#                    \00-hello\Debug\List\" --diag_suppress                   #
+#                    Pa039,Pa050,Pe767,Go005,Pa082,Pa089,Pe167,Pe550,Pe188,   #
+#                    Pe177 -o "C:\Users\Yesoooof\Documents\GitHub\Team-20-Sen #
+#                    sor-Suite\Firmware\On-chip App\onchipsdk-REL-1.1.0.7\pro #
+#                    jects\iar\00-hello\Debug\Obj\" --debug --endian=little   #
+#                    --cpu=Cortex-M3 --no_path_in_file_macros --enum_is_int   #
+#                    -e --fpu=None --dlib_config "C:\Program Files (x86)\IAR  #
+#                    Systems\Embedded Workbench 6.5\arm\INC\c\DLib_Config_Nor #
+#                    mal.h" --preinclude "C:\Users\Yesoooof\Documents\GitHub\ #
+#                    Team-20-Sensor-Suite\Firmware\On-chip                    #
+#                    App\onchipsdk-REL-1.1.0.7\projects\iar\00-hello\..\all_p #
+#                    rojects.iarinc" -I "C:\Users\Yesoooof\Documents\GitHub\T #
+#                    eam-20-Sensor-Suite\Firmware\On-chip                     #
+#                    App\onchipsdk-REL-1.1.0.7\projects\iar\00-hello\..\..\.. #
+#                    \src\app\00-hello\" -I "C:\Users\Yesoooof\Documents\GitH #
+#                    ub\Team-20-Sensor-Suite\Firmware\On-chip                 #
+#                    App\onchipsdk-REL-1.1.0.7\projects\iar\00-hello\..\..\.. #
+#                    \src\app\common\" -I "C:\Users\Yesoooof\Documents\GitHub #
+#                    \Team-20-Sensor-Suite\Firmware\On-chip                   #
+#                    App\onchipsdk-REL-1.1.0.7\projects\iar\00-hello\..\..\.. #
+#                    \src\inc\" -I "C:\Users\Yesoooof\Documents\GitHub\Team-2 #
+#                    0-Sensor-Suite\Firmware\On-chip                          #
+#                    App\onchipsdk-REL-1.1.0.7\projects\iar\00-hello\..\..\.. #
+#                    \src\modules\clilib\" -I "C:\Users\Yesoooof\Documents\Gi #
+#                    tHub\Team-20-Sensor-Suite\Firmware\On-chip               #
+#                    App\onchipsdk-REL-1.1.0.7\projects\iar\00-hello\..\..\.. #
+#                    \src\modules\ip_applib\" -Oh                             #
+#    List file    =  C:\Users\Yesoooof\Documents\GitHub\Team-20-Sensor-Suite\ #
+#                    Firmware\On-chip App\onchipsdk-REL-1.1.0.7\projects\iar\ #
+#                    00-hello\Debug\List\dnm_service.lst                      #
+#    Object file  =  C:\Users\Yesoooof\Documents\GitHub\Team-20-Sensor-Suite\ #
+#                    Firmware\On-chip App\onchipsdk-REL-1.1.0.7\projects\iar\ #
+#                    00-hello\Debug\Obj\dnm_service.o                         #
+#                                                                             #
+#                                                                             #
+###############################################################################
+
+C:\Users\Yesoooof\Documents\GitHub\Team-20-Sensor-Suite\Firmware\On-chip App\onchipsdk-REL-1.1.0.7\src\modules\ip_applib\dnm_service.c
+      1          /*
+      2          Copyright (c) 2010, Dust Networks.  All rights reserved.
+      3          */
+      4          
+      5          /********************************************************************
+      6             Includes
+      7           ********************************************************************/
+      8          #include "dnm_service.h"
+      9          #include "dnm_local.h"
+     10          #include "dn_api_common.h"
+     11          #include "dnm_ucli.h"
+     12          
+     13          /********************************************************************
+     14             Constants and Enumerations
+     15           ********************************************************************/
+     16          
+     17          #define BUF_UNUSED 0
+     18          #define BUF_USED   0xFF
+     19          
+     20          /* network controller address */
+     21          #define NW_CONTROLLER_ID              0xFFFE
+     22          
+     23          #define SM_TIMER_ENABLED             (INT8U)0x01
+     24          #define SM_TIMER_DISABLED            (INT8U)0x00
+     25          
+     26          /********************************************************************
+     27             Data Structures
+     28           ********************************************************************/
+     29          /** @{name svcReq_t */
+     30          typedef struct {
+     31             INT32U reqValue;                        /**< Holds the bandwidth request on per channel basis */
+     32             INT8U fUsed;                          /**< Holds the availability information of the service module */
+     33          } svcReq_t;
+     34          /** @}end svcReq_t */
+     35          
+     36          /** @{name sm_var_t */
+     37          typedef struct {
+     38             svcReq_t svcRequest[MAX_SVC_REQ_BUF]; /**< Holds the service requests on a per channel basis */
+     39             INT32U reqBandwidth;                     /**< Holds the requesting bandwidth */
+     40             INT32U  allocSvcParam;                   /**< Holds the allocated bandwidth */
+     41             INT8U timerStateFlag;                 /**< TBD - work around used instead of OSTmrStateGet() */
+     42             INT8U svcRequestCounter;              /**< Service Request Counter */
+     43             INT8U traceEnabled;
+     44          } sm_var_t;
+     45          /** @}end sm_var_t */
+     46          
+     47          /********************************************************************
+     48                  Variable Definitions
+     49          *********************************************************************/
+     50          static sm_var_t  sm_v;
+     51          
+     52          /********************************************************************
+     53             Function Prototypes
+     54           ********************************************************************/
+     55          /* None */
+     56          /*******************************************************************
+     57            Private Functions
+     58           ********************************************************************/
+     59          /* None */
+     60          
+     61          /********************************************************************
+     62             Public Functions
+     63           ********************************************************************/
+     64          /**
+     65           * Initilizes the service module.
+     66           *
+     67           * @return - none
+     68           */
+     69          void dnm_sm_init(void)
+     70          {
+     71             INT8U i;
+     72             for(i=0; i < MAX_SVC_REQ_BUF; i++) {
+     73                sm_v.svcRequest[i].fUsed = BUF_UNUSED;
+     74                sm_v.svcRequest[i].reqValue = 0;
+     75             }
+     76             sm_v.reqBandwidth = 0;
+     77             sm_v.allocSvcParam = 0;
+     78             sm_v.timerStateFlag = SM_TIMER_DISABLED;
+     79          }
+     80          
+     81          /**
+     82           * Registers a channel for an entry in SM module.
+     83           *
+     84           * @param regId - OUT pointer to hold register Id
+     85           * @return SM_NO_BUF_FREE - Failure, SM_ERR_OK - Success
+     86           */
+     87          sm_error_t dnm_sm_registerChannel(INT8U *regId)
+     88          {
+     89             sm_error_t status = SM_NO_BUF_FREE;
+     90             INT8U i;
+     91             for(i = 0; i < MAX_SVC_REQ_BUF; i++) {
+     92                if(sm_v.svcRequest[i].fUsed == BUF_UNUSED){
+     93                   sm_v.svcRequest[i].reqValue = 0;
+     94                   sm_v.svcRequest[i].fUsed = BUF_USED;
+     95                   *regId = i;
+     96                   status = SM_ERR_OK;
+     97                   break;
+     98                }
+     99             }
+    100             return status;
+    101          }
+    102          
+    103          // private fct to this file
+    104          static sm_error_t call_dnm_loc_requestServiceCmd() {
+    105             INT8U       status   = 0;
+    106             dn_error_t  dn_error = DN_ERR_NONE;
+    107             sm_error_t  ret      = SM_ERR_OK;
+    108          
+    109             dnm_ucli_trace(sm_v.traceEnabled, "sm Tx srv req type=%d, bw = %d\r\n",
+    110                           DN_API_SERVICE_TYPE_BW, sm_v.reqBandwidth);
+    111          
+    112             dn_error = dnm_loc_requestServiceCmd(NW_CONTROLLER_ID, DN_API_SERVICE_TYPE_BW,sm_v.reqBandwidth, &status);
+    113             if((dn_error != DN_ERR_NONE)||(status != DN_API_RC_OK)) {
+    114                ret = SM_RC_ERROR;
+    115             }
+    116             return(ret);
+    117          }
+    118          
+    119          /**
+    120           * Updates and requests for service param.
+    121           * 
+    122           * @param regId - SM register Id
+    123           * @param bandwidth - latest service request param - bw in mS
+    124           * @return SM_INVALID_BUF_ID - Failure, SM_ERR_OK - Success
+    125           */
+    126          sm_error_t dnm_sm_updateAndRequestSvcParam(INT8U regId, INT32U bandwidth)
+    127          {
+    128             sm_error_t  ret      = SM_ERR_OK;
+    129          
+    130             ret = dnm_sm_updateSvcParam(regId, bandwidth);
+    131             if (ret == SM_ERR_OK) {
+    132                ret = call_dnm_loc_requestServiceCmd();      
+    133             }
+    134          
+    135             return(ret);
+    136          }
+    137          
+    138          /**
+    139           * Requests for aggregate service param.
+    140           * 
+    141           * @return SM_INVALID_BUF_ID - Failure, SM_ERR_OK - Success
+    142           */
+    143          sm_error_t dnm_sm_requestSvcParam(void)
+    144          {
+    145             sm_error_t  ret      = SM_ERR_OK;
+    146             ret = call_dnm_loc_requestServiceCmd(); 
+    147             return(ret);   
+    148          }
+    149          
+    150          /**
+    151           * Updates service param.
+    152           * 
+    153           * @param regId - SM register Id
+    154           * @param bandwidth - latest service param - bw in mS
+    155           * @return SM_INVALID_BUF_ID - Failure, SM_ERR_OK - Success
+    156           */
+    157          sm_error_t dnm_sm_updateSvcParam(INT8U regId, INT32U bandwidth)
+    158          {
+    159             sm_error_t  ret               = SM_SVC_PARAM_NOT_UPDATED;
+    160             // packets per multiplier sec to avoid using floats !
+    161             INT32U   multiplier        = 1000000000;
+    162             INT32U   bandwith_pps      = 0;
+    163             INT32U   reg_id_pps        = 0;
+    164             INT32U   total_pps         = 0;
+    165             INT32U   tmp_pps           = 0;   
+    166          
+    167             if(regId >= MAX_SVC_REQ_BUF){
+    168                return SM_INVALID_BUF_ID;
+    169             }
+    170          
+    171             if(bandwidth) {
+    172                bandwith_pps   = multiplier/bandwidth;
+    173             }
+    174          
+    175             if(sm_v.svcRequest[regId].reqValue) {
+    176                reg_id_pps   = multiplier/sm_v.svcRequest[regId].reqValue;
+    177             }
+    178          
+    179             if(sm_v.reqBandwidth) {
+    180                total_pps   = multiplier/sm_v.reqBandwidth;
+    181             }   
+    182             //dnm_ucli_printf("dnm_sm_updateSvcParam] bandwith_pps<%d> reg_id_pps<%d> total_pps<%d>\r\n",bandwith_pps,reg_id_pps,total_pps);
+    183          
+    184             if(sm_v.svcRequest[regId].reqValue != bandwidth){
+    185                tmp_pps = total_pps+bandwith_pps-reg_id_pps;
+    186                //dnm_ucli_printf("dnm_sm_updateSvcParam] tmp_pps<%d>\r\n",tmp_pps);
+    187                if(tmp_pps == 0) {
+    188                   sm_v.reqBandwidth = 0;
+    189                }
+    190                else {
+    191                   sm_v.reqBandwidth = multiplier/tmp_pps;
+    192                }
+    193                sm_v.svcRequest[regId].reqValue = bandwidth;      
+    194                ret = SM_ERR_OK;
+    195             }
+    196             
+    197             return(ret);
+    198          }
+    199          
+    200          /**
+    201           * Service change notification received.
+    202           *
+    203           * @param - none
+    204           * @return - none
+    205           */
+    206          void dnm_sm_svcChanged(void)
+    207          {
+    208             dn_error_t                    dn_error = DN_ERR_NONE;
+    209             dn_api_loc_rsp_get_service_t  svcResp;
+    210             dn_moteid_t                   destAddr = NW_CONTROLLER_ID;
+    211             
+    212             dnm_ucli_trace(sm_v.traceEnabled, "sm rx srv change\r\n");
+    213             dn_error = dnm_loc_getAssignedServiceCmd(destAddr, DN_API_SERVICE_TYPE_BW, &svcResp);
+    214             if (dn_error == DN_ERR_NONE) {
+    215                /* allocated bw is adequate - Please note : the allocated bw is adequate 
+    216                   only if it is less than or equal to the requested value */
+    217                sm_v.allocSvcParam = svcResp.value;
+    218                dnm_ucli_trace(sm_v.traceEnabled, "sm read srv type=%d, bw=%u\r\n",
+    219                              svcResp.type, svcResp.value);
+    220                if(svcResp.type == DN_API_SERVICE_TYPE_BW){
+    221                   if(sm_v.reqBandwidth != 0) {
+    222                      if(sm_v.reqBandwidth <  svcResp.value) {
+    223                         call_dnm_loc_requestServiceCmd();             
+    224                      }            
+    225                   }
+    226                }
+    227             }
+    228          }
+    229          
+    230          /**
+    231           * Gets the allocated bandwidth.
+    232           * Note : This is the bandwidth allocated by the manager upon a request
+    233           * @return - allocated bandwidth
+    234           */
+    235          INT32U dnm_sm_getAllocBandWidth(void)
+    236          {
+    237             return sm_v.allocSvcParam;
+    238          }
+    239          
+    240          /**
+    241           * Gets the aggregated bandwidth.
+    242           * Note : This is the aggregate bandwidth need of the mote
+    243           * @return - allocated bandwidth
+    244           */
+    245          INT32U dnm_sm_getAggrBandWidth(void)
+    246          {
+    247             return sm_v.reqBandwidth;
+    248          }
+    249          
+    250          /**
+    251          \brief Enable/disable trace.
+    252           
+    253          \param[in] traceFlag  Trace flag.
+    254          */
+    255          void dnm_sm_traceControl (INT8U traceFlag)
+    256          {
+    257             sm_v.traceEnabled = traceFlag;
+    258          }
+    259          
+    260          /**
+    261          \brief Check if trace is enabled.
+    262           
+    263          \return TRUE if trace is enabled, FALSE otherwise.
+    264          */
+    265          BOOLEAN dnm_sm_isTraceEnabled (void)
+    266          {
+    267             return (sm_v.traceEnabled != 0);
+    268          }
+    269          
+
+   Maximum stack usage in bytes:
+
+   .cstack Function
+   ------- --------
+      16   call_dnm_loc_requestServiceCmd
+        16   -> dnm_loc_requestServiceCmd
+        16   -> dnm_ucli_trace
+       0   dnm_sm_getAggrBandWidth
+       0   dnm_sm_getAllocBandWidth
+       0   dnm_sm_init
+       0   dnm_sm_isTraceEnabled
+       8   dnm_sm_registerChannel
+      16   dnm_sm_requestSvcParam
+        16   -> dnm_loc_requestServiceCmd
+        16   -> dnm_ucli_trace
+      24   dnm_sm_svcChanged
+        24   -> call_dnm_loc_requestServiceCmd
+        24   -> dnm_loc_getAssignedServiceCmd
+        24   -> dnm_ucli_trace
+       0   dnm_sm_traceControl
+       8   dnm_sm_updateAndRequestSvcParam
+         8   -> call_dnm_loc_requestServiceCmd
+         8   -> dnm_sm_updateSvcParam
+      16   dnm_sm_updateSvcParam
+
+
+   Section sizes:
+
+   Bytes  Function/Label
+   -----  --------------
+      36  ?<Constant "sm Tx srv req type=%d...">
+      32  ?<Constant "sm read srv type=%d, ...">
+      20  ?<Constant "sm rx srv change\r\n">
+       4  ??DataTable12
+       4  ??DataTable12_1
+      62  call_dnm_loc_requestServiceCmd
+       8  dnm_sm_getAggrBandWidth
+       8  dnm_sm_getAllocBandWidth
+      42  dnm_sm_init
+      16  dnm_sm_isTraceEnabled
+      82  dnm_sm_registerChannel
+      62  dnm_sm_requestSvcParam
+      86  dnm_sm_svcChanged
+       8  dnm_sm_traceControl
+      20  dnm_sm_updateAndRequestSvcParam
+      88  dnm_sm_updateSvcParam
+     172  sm_v
+
+ 
+ 172 bytes in section .bss
+ 578 bytes in section .text
+ 
+ 578 bytes of CODE memory
+ 172 bytes of DATA memory
+
+Errors: none
+Warnings: none

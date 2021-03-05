@@ -1,0 +1,277 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+
+<project>
+  <fileVersion>2</fileVersion>
+  <fileChecksum>3373038004</fileChecksum>
+  <configuration>
+    <name>Debug</name>
+    <outputs>
+      <file>$PROJ_DIR$\..\..\..\src\app\common\loc_task.c</file>
+      <file>$PROJ_DIR$\..\..\..\src\app\00-hello\app_task_cfg.h</file>
+      <file>$PROJ_DIR$\..\..\..\src\inc\dn_api_param.h</file>
+      <file>$PROJ_DIR$\..\..\..\src\app\00-hello\hello_app.c</file>
+      <file>$PROJ_DIR$\..\..\..\src\inc\dn_flash_info.h</file>
+      <file>$PROJ_DIR$\..\..\..\src\app\common\app_cfg.h</file>
+      <file>$PROJ_DIR$\..\..\..\src\app\common\build.h</file>
+      <file>$PROJ_DIR$\..\..\..\src\app\common\cli_task.h</file>
+      <file>$PROJ_DIR$\..\..\..\src\app\common\loc_task.h</file>
+      <file>$PROJ_DIR$\..\..\..\src\inc\dn_api_common.h</file>
+      <file>$PROJ_DIR$\..\..\..\src\inc\dn_channel.h</file>
+      <file>$PROJ_DIR$\..\..\..\src\inc\dn_cli.h</file>
+      <file>$PROJ_DIR$\..\..\..\src\inc\dn_api_local.h</file>
+      <file>$PROJ_DIR$\..\..\..\src\inc\dn_gpio.h</file>
+      <file>$PROJ_DIR$\..\..\..\src\inc\dn_errno.h</file>
+      <file>$PROJ_DIR$\..\..\..\src\app\common\cli_task.c</file>
+      <file>$PROJ_DIR$\..\..\..\src\inc\dn_common.h</file>
+      <file>$PROJ_DIR$\..\..\..\src\app\common\Ver.h</file>
+      <file>$PROJ_DIR$\..\..\..\src\modules\ip_applib\dnm_service.h</file>
+      <file>$PROJ_DIR$\..\..\..\src\modules\ip_applib\dnm_rate_ctrl.c</file>
+      <file>$PROJ_DIR$\..\..\..\src\modules\ip_applib\dnm_local.c</file>
+      <file>$PROJ_DIR$\..\..\..\src\modules\ip_applib\dnm_local.h</file>
+      <file>$PROJ_DIR$\..\..\..\src\inc\dn_system.h</file>
+      <file>$PROJ_DIR$\..\..\..\src\inc\dn_typedef.h</file>
+      <file>$PROJ_DIR$\..\..\..\src\inc\dn_pack.h</file>
+      <file>$PROJ_DIR$\..\..\..\src\inc\os_cfg.h</file>
+      <file>$PROJ_DIR$\..\..\..\src\inc\os_cpu.h</file>
+      <file>$PROJ_DIR$\..\..\..\src\lib\libip_stack.a</file>
+      <file>$PROJ_DIR$\..\..\..\src\lib\libucos_full.a</file>
+      <file>$PROJ_DIR$\..\..\..\src\modules\clilib\dnm_ucli.c</file>
+      <file>$PROJ_DIR$\..\..\..\src\modules\clilib\dnm_ucli.h</file>
+      <file>$PROJ_DIR$\..\..\..\src\modules\ip_applib\dnm_rate_ctrl.h</file>
+      <file>$PROJ_DIR$\..\..\..\src\modules\ip_applib\dnm_service.c</file>
+      <file>$PROJ_DIR$\..\..\..\src\inc\dn_mesh.h</file>
+      <file>$PROJ_DIR$\..\..\..\src\inc\ucos_ii.h</file>
+      <file>$PROJ_DIR$\Debug\List\cli_task.lst</file>
+      <file>$PROJ_DIR$\Debug\List\dnm_local.lst</file>
+      <file>$PROJ_DIR$\Debug\List\dnm_rate_ctrl.lst</file>
+      <file>$PROJ_DIR$\..\all_projects.iarinc</file>
+      <file>$PROJ_DIR$\Debug\Obj\dnm_ucli.o</file>
+      <file>$PROJ_DIR$\Debug\Obj\dnm_local.o</file>
+      <file>$PROJ_DIR$\Debug\Obj\cli_task.o</file>
+      <file>$PROJ_DIR$\Debug\Obj\loc_task.o</file>
+      <file>$PROJ_DIR$\Debug\Obj\hello_app.o</file>
+      <file>$PROJ_DIR$\Debug\Obj\loc_task.pbi</file>
+      <file>$PROJ_DIR$\Debug\Obj\dnm_ucli.pbi</file>
+      <file>$PROJ_DIR$\Debug\Obj\dnm_local.pbi</file>
+      <file>$PROJ_DIR$\Debug\Obj\dnm_rate_ctrl.pbi</file>
+      <file>$PROJ_DIR$\Debug\Obj\hello_app.pbi</file>
+      <file>$PROJ_DIR$\Debug\Obj\dnm_service.o</file>
+      <file>$PROJ_DIR$\Debug\Obj\dnm_rate_ctrl.o</file>
+      <file>$PROJ_DIR$\Debug\Obj\cli_task.pbi</file>
+      <file>$TOOLKIT_DIR$\inc\c\stddef.h</file>
+      <file>$TOOLKIT_DIR$\inc\c\DLib_Defaults.h</file>
+      <file>$TOOLKIT_DIR$\inc\c\DLib_Threads.h</file>
+      <file>$TOOLKIT_DIR$\inc\c\stdarg.h</file>
+      <file>$TOOLKIT_DIR$\inc\c\ycheck.h</file>
+      <file>$TOOLKIT_DIR$\inc\c\DLib_Config_Normal.h</file>
+      <file>$TOOLKIT_DIR$\inc\c\yvals.h</file>
+      <file>$TOOLKIT_DIR$\inc\c\DLib_Product.h</file>
+      <file>$TOOLKIT_DIR$\inc\c\xencoding_limits.h</file>
+      <file>$PROJ_DIR$\Debug\Obj\00-hello.pbd</file>
+      <file>$PROJ_DIR$\Debug\Exe\ocfdk_00_hello.out</file>
+      <file>$TOOLKIT_DIR$\inc\c\ysizet.h</file>
+      <file>$PROJ_DIR$\..\..\..\src\inc\dn_exe_hdr.h</file>
+      <file>$PROJ_DIR$\Debug\Obj\dnm_service.pbi</file>
+      <file>$TOOLKIT_DIR$\inc\c\ystdio.h</file>
+      <file>$TOOLKIT_DIR$\inc\c\stdio.h</file>
+      <file>$TOOLKIT_DIR$\inc\c\DLib_Product_string.h</file>
+      <file>$TOOLKIT_DIR$\inc\c\string.h</file>
+      <file>$TOOLKIT_DIR$\lib\dl7M_tln.a</file>
+      <file>$PROJ_DIR$\..\..\..\tools\linker_configuration\Eterna.icf</file>
+      <file>$PROJ_DIR$\Debug\List\loc_task.lst</file>
+      <file>$PROJ_DIR$\Debug\List\dnm_ucli.lst</file>
+      <file>$TOOLKIT_DIR$\lib\rt7M_tl.a</file>
+      <file>$TOOLKIT_DIR$\lib\m7M_tl.a</file>
+      <file>$PROJ_DIR$\Debug\List\ocfdk_00_hello.map</file>
+      <file>$PROJ_DIR$\Debug\List\dnm_service.lst</file>
+      <file>$PROJ_DIR$\Debug\List\hello_app.lst</file>
+    </outputs>
+    <file>
+      <name>[ROOT_NODE]</name>
+      <outputs>
+        <tool>
+          <name>ILINK</name>
+          <file> 62 76</file>
+        </tool>
+      </outputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\..\..\src\app\common\loc_task.c</name>
+      <outputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 72 42</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 44</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 38 16 52 56 58 53 57 59 60 54 63 23 26 34 5 25 8 30 14 11 24 10 55 21 12 9 33 2</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 16 52 56 58 53 57 59 60 54 63 23 26 34 5 25 8 30 14 11 24 10 55 21 12 9 33 2</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\..\..\src\app\00-hello\hello_app.c</name>
+      <outputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 78 43</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 48</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 38 16 52 56 58 53 57 59 60 54 63 23 26 34 5 25 64 24 30 14 11 10 55 21 12 9 33 1 17 6</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 16 52 56 58 53 57 59 60 54 63 23 26 34 5 25 64 24 30 14 11 10 55 21 12 9 33 1 17 6</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\..\..\src\app\common\cli_task.c</name>
+      <outputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 35 41</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 51</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 38 69 56 58 53 57 59 60 54 63 68 16 52 23 26 34 5 25 22 30 14 11 24 10 55 7 17 6</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 69 56 58 53 57 59 60 54 63 68 16 52 23 26 34 5 25 22 30 14 11 24 10 55 7 17 6</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\..\..\src\modules\ip_applib\dnm_rate_ctrl.c</name>
+      <outputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 37 50</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 47</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 38 31 23 26 14 10 34 5 25 24 30 11 55 56 58 53 57 59 60 54 21 12 9 33</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 31 23 26 14 10 34 5 25 24 30 11 55 56 58 53 57 59 60 54 21 12 9 33</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\..\..\src\modules\ip_applib\dnm_local.c</name>
+      <outputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 36 40</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 46</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 38 69 56 58 53 57 59 60 54 63 68 10 14 26 34 5 23 25 24 21 12 9 33 30 11 55 16 52</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 69 56 58 53 57 59 60 54 63 68 10 14 26 34 5 23 25 24 21 12 9 33 30 11 55 16 52</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\..\..\src\modules\clilib\dnm_ucli.c</name>
+      <outputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 73 39</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 45</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 38 67 56 58 53 57 59 60 54 63 66 69 68 16 52 23 26 34 5 25 30 14 11 24 10 55 22 13 4</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 67 56 58 53 57 59 60 54 63 66 69 68 16 52 23 26 34 5 25 30 14 11 24 10 55 22 13 4</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\..\..\src\modules\ip_applib\dnm_service.c</name>
+      <outputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 77 49</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 65</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 38 18 23 26 14 10 34 5 25 24 30 11 55 56 58 53 57 59 60 54 21 12 9 33</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 18 23 26 14 10 34 5 25 24 30 11 55 56 58 53 57 59 60 54 21 12 9 33</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\Debug\Exe\ocfdk_00_hello.out</name>
+      <outputs>
+        <tool>
+          <name>ILINK</name>
+          <file> 76</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>ILINK</name>
+          <file> 71 41 40 50 49 39 43 27 28 42 74 75 70</file>
+        </tool>
+      </inputs>
+    </file>
+  </configuration>
+</project>
+
+

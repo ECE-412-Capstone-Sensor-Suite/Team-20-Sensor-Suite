@@ -1,0 +1,215 @@
+###############################################################################
+#                                                                             #
+# IAR ANSI C/C++ Compiler V6.50.3.4676/W32 for ARM      04/Mar/2021  21:56:33 #
+# Copyright 1999-2013 IAR Systems AB.                                         #
+#                                                                             #
+#    Cpu mode     =  thumb                                                    #
+#    Endian       =  little                                                   #
+#    Source file  =  C:\Users\Yesoooof\Documents\GitHub\Team-20-Sensor-Suite\ #
+#                    Firmware\On-chip App\onchipsdk-REL-1.1.0.7\src\app\02-te #
+#                    mperature\temperature_app.c                              #
+#    Command line =  "C:\Users\Yesoooof\Documents\GitHub\Team-20-Sensor-Suite #
+#                    \Firmware\On-chip App\onchipsdk-REL-1.1.0.7\src\app\02-t #
+#                    emperature\temperature_app.c" -lcN                       #
+#                    "C:\Users\Yesoooof\Documents\GitHub\Team-20-Sensor-Suite #
+#                    \Firmware\On-chip App\onchipsdk-REL-1.1.0.7\projects\iar #
+#                    \02-temperature\Debug\List\" --diag_suppress             #
+#                    Pa039,Pa050,Pe767,Go005,Pa082,Pa089,Pe167,Pe550,Pe188,   #
+#                    Pe177 -o "C:\Users\Yesoooof\Documents\GitHub\Team-20-Sen #
+#                    sor-Suite\Firmware\On-chip App\onchipsdk-REL-1.1.0.7\pro #
+#                    jects\iar\02-temperature\Debug\Obj\" --debug             #
+#                    --endian=little --cpu=Cortex-M3                          #
+#                    --no_path_in_file_macros --enum_is_int -e --fpu=None     #
+#                    --dlib_config "C:\Program Files (x86)\IAR                #
+#                    Systems\Embedded Workbench 6.5\arm\INC\c\DLib_Config_Nor #
+#                    mal.h" --preinclude "C:\Users\Yesoooof\Documents\GitHub\ #
+#                    Team-20-Sensor-Suite\Firmware\On-chip                    #
+#                    App\onchipsdk-REL-1.1.0.7\projects\iar\02-temperature\.. #
+#                    \all_projects.iarinc" -I "C:\Users\Yesoooof\Documents\Gi #
+#                    tHub\Team-20-Sensor-Suite\Firmware\On-chip               #
+#                    App\onchipsdk-REL-1.1.0.7\projects\iar\02-temperature\.. #
+#                    \..\..\src\app\02-temperature\" -I                       #
+#                    "C:\Users\Yesoooof\Documents\GitHub\Team-20-Sensor-Suite #
+#                    \Firmware\On-chip App\onchipsdk-REL-1.1.0.7\projects\iar #
+#                    \02-temperature\..\..\..\src\app\common\" -I             #
+#                    "C:\Users\Yesoooof\Documents\GitHub\Team-20-Sensor-Suite #
+#                    \Firmware\On-chip App\onchipsdk-REL-1.1.0.7\projects\iar #
+#                    \02-temperature\..\..\..\src\inc\" -I                    #
+#                    "C:\Users\Yesoooof\Documents\GitHub\Team-20-Sensor-Suite #
+#                    \Firmware\On-chip App\onchipsdk-REL-1.1.0.7\projects\iar #
+#                    \02-temperature\..\..\..\src\modules\clilib\" -I         #
+#                    "C:\Users\Yesoooof\Documents\GitHub\Team-20-Sensor-Suite #
+#                    \Firmware\On-chip App\onchipsdk-REL-1.1.0.7\projects\iar #
+#                    \02-temperature\..\..\..\src\modules\ip_applib\" -Oh     #
+#    List file    =  C:\Users\Yesoooof\Documents\GitHub\Team-20-Sensor-Suite\ #
+#                    Firmware\On-chip App\onchipsdk-REL-1.1.0.7\projects\iar\ #
+#                    02-temperature\Debug\List\temperature_app.lst            #
+#    Object file  =  C:\Users\Yesoooof\Documents\GitHub\Team-20-Sensor-Suite\ #
+#                    Firmware\On-chip App\onchipsdk-REL-1.1.0.7\projects\iar\ #
+#                    02-temperature\Debug\Obj\temperature_app.o               #
+#                                                                             #
+#                                                                             #
+###############################################################################
+
+C:\Users\Yesoooof\Documents\GitHub\Team-20-Sensor-Suite\Firmware\On-chip App\onchipsdk-REL-1.1.0.7\src\app\02-temperature\temperature_app.c
+      1          /*
+      2          Copyright (c) 2013, Dust Networks.  All rights reserved.
+      3          */
+      4          
+      5          #include "dn_common.h"
+      6          #include "cli_task.h"
+      7          #include "loc_task.h"
+      8          #include "dn_system.h"
+      9          #include "dn_adc.h"
+     10          #include "dn_exe_hdr.h"
+     11          #include "app_task_cfg.h"
+     12          #include "Ver.h"
+     13          
+     14          //=========================== variables =======================================
+     15          
+     16          /// variables local to this application
+     17          typedef struct {
+     18             OS_STK               tempTaskStack[TASK_APP_TEMP_STK_SIZE];
+     19          } temp_app_vars_t;
+     20          
+     21          temp_app_vars_t  temp_app_v;
+     22          
+     23          //=========================== prototypes ======================================
+     24          
+     25          static void tempTask(void* unused);
+     26          
+     27          //=========================== initialization ==================================
+     28          
+     29          /**
+     30          \brief This is the entry point in the application code.
+     31          */
+     32          int p2_init(void) {
+     33             INT8U        osErr;
+     34             
+     35             //==== initialize helper tasks
+     36             
+     37             cli_task_init(
+     38                "temperature",                        // appName
+     39                NULL                                  // cliCmds
+     40             );
+     41             loc_task_init(
+     42                JOIN_NO,                              // fJoin
+     43                NETID_NONE,                           // netId
+     44                UDPPORT_NONE,                         // udpPort
+     45                NULL,                                 // joinedSem
+     46                BANDWIDTH_NONE,                       // bandwidth
+     47                NULL                                  // serviceSem
+     48             );
+     49             
+     50             // create the temperature task
+     51             osErr  = OSTaskCreateExt(
+     52                tempTask,
+     53                (void *)0,
+     54                (OS_STK*)(&temp_app_v.tempTaskStack[TASK_APP_TEMP_STK_SIZE-1]),
+     55                TASK_APP_TEMP_PRIORITY,
+     56                TASK_APP_TEMP_PRIORITY,
+     57                (OS_STK*)temp_app_v.tempTaskStack,
+     58                TASK_APP_TEMP_STK_SIZE,
+     59                (void *)0,
+     60                OS_TASK_OPT_STK_CHK | OS_TASK_OPT_STK_CLR
+     61             );
+     62             ASSERT(osErr == OS_ERR_NONE);
+     63             OSTaskNameSet(TASK_APP_TEMP_PRIORITY, (INT8U*)TASK_APP_TEMP_NAME, &osErr);
+     64             ASSERT(osErr == OS_ERR_NONE);
+     65             
+     66             return 0;
+     67          }
+     68          
+     69          //=========================== temperature task ================================
+     70          
+     71          static void tempTask(void* unused) {
+     72             dn_error_t              dnErr;
+     73             int                     numBytesRead;
+     74             INT16S                  temperature;
+     75             
+     76             // open temperature sensor
+     77             dnErr = dn_open(
+     78                DN_TEMP_DEV_ID,             // device
+     79                NULL,                       // args
+     80                0                           // argLen 
+     81             );
+     82             ASSERT(dnErr==DN_ERR_NONE);
+     83             
+     84             // infinite loop
+     85             while(1) {
+     86                
+     87                // this call blocks the task until the specified timeout expires (in ms)
+     88                OSTimeDly(1000);
+     89                
+     90                // read temperature value
+     91                numBytesRead = dn_read(
+     92                   DN_TEMP_DEV_ID ,         // device
+     93                   &temperature,            // buf
+     94                   sizeof(temperature)      // bufSize 
+     95                );
+     96                ASSERT(numBytesRead== sizeof(temperature));
+     97                
+     98                // print
+     99                dnm_ucli_printf("temperature=%d\r\n",temperature);
+    100             }
+    101          }
+    102          
+    103          //=============================================================================
+    104          //=========================== install a kernel header =========================
+    105          //=============================================================================
+    106          
+    107          /**
+    108          A kernel header is a set of bytes prepended to the actual binary image of this
+    109          application. Thus header is needed for your application to start running.
+    110          */
+    111          
+    112          DN_CREATE_EXE_HDR(DN_VENDOR_ID_NOT_SET,
+    113                            DN_APP_ID_NOT_SET,
+    114                            VER_MAJOR,
+    115                            VER_MINOR,
+    116                            VER_PATCH,
+    117                            VER_BUILD);
+
+   Maximum stack usage in bytes:
+
+   .cstack Function
+   ------- --------
+      32   p2_init
+        32   -> OSTaskCreateExt
+        32   -> OSTaskNameSet
+        32   -> assert_handler
+        32   -> cli_task_init
+        32   -> loc_task_init
+       8   tempTask
+         8   -> OSTimeDly
+         8   -> assert_handler
+         8   -> dn_open
+         8   -> dn_read
+         8   -> dnm_ucli_printf
+
+
+   Section sizes:
+
+   Bytes  Function/Label
+   -----  --------------
+       8  ?<Constant "temp">
+      12  ?<Constant "temperature">
+      20  ?<Constant "temperature=%d\r\n">
+      20  ?<Constant "temperature_app.c">
+       4  ??DataTable4
+      32  kernelExeHdr
+     118  p2_init
+      70  tempTask
+    1024  temp_app_v
+
+ 
+ 1 024 bytes in section .bss
+    32 bytes in section .kernel_exe_hdr
+   252 bytes in section .text
+ 
+   252 bytes of CODE  memory
+    32 bytes of CONST memory
+ 1 024 bytes of DATA  memory
+
+Errors: none
+Warnings: none

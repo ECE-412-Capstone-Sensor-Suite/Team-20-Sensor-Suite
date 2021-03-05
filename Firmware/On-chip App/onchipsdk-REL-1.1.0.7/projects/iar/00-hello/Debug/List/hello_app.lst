@@ -1,0 +1,206 @@
+###############################################################################
+#                                                                             #
+# IAR ANSI C/C++ Compiler V6.50.3.4676/W32 for ARM      04/Mar/2021  21:41:49 #
+# Copyright 1999-2013 IAR Systems AB.                                         #
+#                                                                             #
+#    Cpu mode     =  thumb                                                    #
+#    Endian       =  little                                                   #
+#    Source file  =  C:\Users\Yesoooof\Documents\GitHub\Team-20-Sensor-Suite\ #
+#                    Firmware\On-chip App\onchipsdk-REL-1.1.0.7\src\app\00-he #
+#                    llo\hello_app.c                                          #
+#    Command line =  "C:\Users\Yesoooof\Documents\GitHub\Team-20-Sensor-Suite #
+#                    \Firmware\On-chip App\onchipsdk-REL-1.1.0.7\src\app\00-h #
+#                    ello\hello_app.c" -lcN "C:\Users\Yesoooof\Documents\GitH #
+#                    ub\Team-20-Sensor-Suite\Firmware\On-chip                 #
+#                    App\onchipsdk-REL-1.1.0.7\projects\iar\00-hello\Debug\Li #
+#                    st\" --diag_suppress Pa039,Pa050,Pe767,Go005,Pa082,Pa089 #
+#                    ,Pe167,Pe550,Pe188,Pe177 -o                              #
+#                    "C:\Users\Yesoooof\Documents\GitHub\Team-20-Sensor-Suite #
+#                    \Firmware\On-chip App\onchipsdk-REL-1.1.0.7\projects\iar #
+#                    \00-hello\Debug\Obj\" --debug --endian=little            #
+#                    --cpu=Cortex-M3 --no_path_in_file_macros --enum_is_int   #
+#                    -e --fpu=None --dlib_config "C:\Program Files (x86)\IAR  #
+#                    Systems\Embedded Workbench 6.5\arm\INC\c\DLib_Config_Nor #
+#                    mal.h" --preinclude "C:\Users\Yesoooof\Documents\GitHub\ #
+#                    Team-20-Sensor-Suite\Firmware\On-chip                    #
+#                    App\onchipsdk-REL-1.1.0.7\projects\iar\00-hello\..\all_p #
+#                    rojects.iarinc" -I "C:\Users\Yesoooof\Documents\GitHub\T #
+#                    eam-20-Sensor-Suite\Firmware\On-chip                     #
+#                    App\onchipsdk-REL-1.1.0.7\projects\iar\00-hello\..\..\.. #
+#                    \src\app\00-hello\" -I "C:\Users\Yesoooof\Documents\GitH #
+#                    ub\Team-20-Sensor-Suite\Firmware\On-chip                 #
+#                    App\onchipsdk-REL-1.1.0.7\projects\iar\00-hello\..\..\.. #
+#                    \src\app\common\" -I "C:\Users\Yesoooof\Documents\GitHub #
+#                    \Team-20-Sensor-Suite\Firmware\On-chip                   #
+#                    App\onchipsdk-REL-1.1.0.7\projects\iar\00-hello\..\..\.. #
+#                    \src\inc\" -I "C:\Users\Yesoooof\Documents\GitHub\Team-2 #
+#                    0-Sensor-Suite\Firmware\On-chip                          #
+#                    App\onchipsdk-REL-1.1.0.7\projects\iar\00-hello\..\..\.. #
+#                    \src\modules\clilib\" -I "C:\Users\Yesoooof\Documents\Gi #
+#                    tHub\Team-20-Sensor-Suite\Firmware\On-chip               #
+#                    App\onchipsdk-REL-1.1.0.7\projects\iar\00-hello\..\..\.. #
+#                    \src\modules\ip_applib\" -Oh                             #
+#    List file    =  C:\Users\Yesoooof\Documents\GitHub\Team-20-Sensor-Suite\ #
+#                    Firmware\On-chip App\onchipsdk-REL-1.1.0.7\projects\iar\ #
+#                    00-hello\Debug\List\hello_app.lst                        #
+#    Object file  =  C:\Users\Yesoooof\Documents\GitHub\Team-20-Sensor-Suite\ #
+#                    Firmware\On-chip App\onchipsdk-REL-1.1.0.7\projects\iar\ #
+#                    00-hello\Debug\Obj\hello_app.o                           #
+#                                                                             #
+#                                                                             #
+###############################################################################
+
+C:\Users\Yesoooof\Documents\GitHub\Team-20-Sensor-Suite\Firmware\On-chip App\onchipsdk-REL-1.1.0.7\src\app\00-hello\hello_app.c
+      1          /*
+      2          Copyright (c) 2013, Dust Networks.  All rights reserved.
+      3          */
+      4          
+      5          #include "dn_common.h"
+      6          #include "dn_exe_hdr.h"
+      7          #include "dnm_ucli.h"
+      8          #include "dnm_local.h"
+      9          #include "app_task_cfg.h"
+     10          #include "Ver.h"
+     11          
+     12          //=========================== defines =========================================
+     13          
+     14          //=========================== variables =======================================
+     15          
+     16          // Variables local to this application.
+     17          typedef struct {
+     18             INT8U           locNotifChannelBuf[DN_API_LOC_MAXMSG_SIZE];
+     19             CH_DESC         locNotifChannel;
+     20             OS_STK          locNotifTaskStack[TASK_APP_LOCNOTIF_STK_SIZE];
+     21          } hello_app_vars_t;
+     22          
+     23          hello_app_vars_t hello_app_vars;
+     24          
+     25          //=========================== prototypes ======================================
+     26          
+     27          //===== locNotifTask
+     28          static void        locNotifTask(void* unused);
+     29          
+     30          //=========================== initialization ==================================
+     31          
+     32          /**
+     33          \brief This is the entry point for the application code.
+     34          */
+     35          int p2_init(void) {
+     36             INT8U           osErr;
+     37             
+     38             //===== initialize locNotifTask
+     39             
+     40             osErr = OSTaskCreateExt(
+     41                locNotifTask,
+     42                (void *) 0,
+     43                (OS_STK*) (&hello_app_vars.locNotifTaskStack[TASK_APP_LOCNOTIF_STK_SIZE - 1]),
+     44                TASK_APP_LOCNOTIF_PRIORITY,
+     45                TASK_APP_LOCNOTIF_PRIORITY,
+     46                (OS_STK*) hello_app_vars.locNotifTaskStack,
+     47                TASK_APP_LOCNOTIF_STK_SIZE,
+     48                (void *) 0,
+     49                OS_TASK_OPT_STK_CHK | OS_TASK_OPT_STK_CLR
+     50             );
+     51             ASSERT(osErr == OS_ERR_NONE);
+     52             OSTaskNameSet(TASK_APP_LOCNOTIF_PRIORITY, (INT8U*)TASK_APP_LOCNOTIF_NAME, &osErr);
+     53             ASSERT(osErr == OS_ERR_NONE);
+     54             
+     55             return 0;
+     56          }
+     57          
+     58          static void locNotifTask(void* unused) {
+     59             dn_error_t      dnErr;
+     60             
+     61             //===== initialize dnm_ucli module
+     62             
+     63             // open CLI port
+     64             dnErr = dnm_ucli_openPort(DN_CLI_PORT_C0, DEFAULT_BAUDRATE);
+     65             ASSERT(dnErr==DN_ERR_NONE);
+     66             
+     67             //===== initialize dnm_local module
+     68             
+     69             // create a synchronous channel for the dnm_local module to receive notifications from the stack
+     70             dnErr = dn_createSyncChannel(&hello_app_vars.locNotifChannel);
+     71             ASSERT(dnErr==DN_ERR_NONE);
+     72             
+     73             // register that channel to DN_MSG_TYPE_NET_NOTIF notifications
+     74             dnErr = dn_registerChannel(hello_app_vars.locNotifChannel, DN_MSG_TYPE_NET_NOTIF);
+     75             ASSERT(dnErr==DN_ERR_NONE);
+     76             
+     77             // initialize the local interface
+     78             dnErr = dnm_loc_init(
+     79                PASSTHROUGH_OFF,                           // mode
+     80                hello_app_vars.locNotifChannelBuf,         // pBuffer
+     81                sizeof(hello_app_vars.locNotifChannelBuf)  // buffLen
+     82             );
+     83             ASSERT(dnErr==DN_ERR_NONE);
+     84            
+     85             //===== print over CLI
+     86             
+     87             dnm_ucli_printf("Hello, World!\r\n");
+     88             
+     89             while (1) { // this is a task, it executes forever
+     90                
+     91                // have the dnm_local module process notifications
+     92                dnm_loc_processNotifications();
+     93             }
+     94          }
+     95          
+     96          //=============================================================================
+     97          //=========================== install a kernel header =========================
+     98          //=============================================================================
+     99          
+    100          /**
+    101          A kernel header is a set of bytes prepended to the actual binary image of this
+    102          application. This header is needed for your application to start running.
+    103          */
+    104          
+    105          DN_CREATE_EXE_HDR(DN_VENDOR_ID_NOT_SET,
+    106                            DN_APP_ID_NOT_SET,
+    107                            VER_MAJOR,
+    108                            VER_MINOR,
+    109                            VER_PATCH,
+    110                            VER_BUILD);
+
+   Maximum stack usage in bytes:
+
+   .cstack Function
+   ------- --------
+       8   locNotifTask
+         8   -> assert_handler
+         8   -> dn_createSyncChannel
+         8   -> dn_registerChannel
+         8   -> dnm_loc_init
+         8   -> dnm_loc_processNotifications
+         8   -> dnm_ucli_openPort
+         8   -> dnm_ucli_printf
+      32   p2_init
+        32   -> OSTaskCreateExt
+        32   -> OSTaskNameSet
+        32   -> assert_handler
+
+
+   Section sizes:
+
+   Bytes  Function/Label
+   -----  --------------
+      16  ?<Constant "Hello, World!\r\n">
+      12  ?<Constant "hello_app.c">
+      12  ?<Constant "locNotif">
+       4  ??DataTable4
+    1152  hello_app_vars
+      32  kernelExeHdr
+     104  locNotifTask
+      96  p2_init
+
+ 
+ 1 152 bytes in section .bss
+    32 bytes in section .kernel_exe_hdr
+   244 bytes in section .text
+ 
+   244 bytes of CODE  memory
+    32 bytes of CONST memory
+ 1 152 bytes of DATA  memory
+
+Errors: none
+Warnings: none

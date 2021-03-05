@@ -1,0 +1,579 @@
+###############################################################################
+#                                                                             #
+# IAR ANSI C/C++ Compiler V6.50.3.4676/W32 for ARM      04/Mar/2021  21:41:49 #
+# Copyright 1999-2013 IAR Systems AB.                                         #
+#                                                                             #
+#    Cpu mode     =  thumb                                                    #
+#    Endian       =  little                                                   #
+#    Source file  =  C:\Users\Yesoooof\Documents\GitHub\Team-20-Sensor-Suite\ #
+#                    Firmware\On-chip App\onchipsdk-REL-1.1.0.7\src\modules\c #
+#                    lilib\dnm_ucli.c                                         #
+#    Command line =  "C:\Users\Yesoooof\Documents\GitHub\Team-20-Sensor-Suite #
+#                    \Firmware\On-chip App\onchipsdk-REL-1.1.0.7\src\modules\ #
+#                    clilib\dnm_ucli.c" -lcN "C:\Users\Yesoooof\Documents\Git #
+#                    Hub\Team-20-Sensor-Suite\Firmware\On-chip                #
+#                    App\onchipsdk-REL-1.1.0.7\projects\iar\00-hello\Debug\Li #
+#                    st\" --diag_suppress Pa039,Pa050,Pe767,Go005,Pa082,Pa089 #
+#                    ,Pe167,Pe550,Pe188,Pe177 -o                              #
+#                    "C:\Users\Yesoooof\Documents\GitHub\Team-20-Sensor-Suite #
+#                    \Firmware\On-chip App\onchipsdk-REL-1.1.0.7\projects\iar #
+#                    \00-hello\Debug\Obj\" --debug --endian=little            #
+#                    --cpu=Cortex-M3 --no_path_in_file_macros --enum_is_int   #
+#                    -e --fpu=None --dlib_config "C:\Program Files (x86)\IAR  #
+#                    Systems\Embedded Workbench 6.5\arm\INC\c\DLib_Config_Nor #
+#                    mal.h" --preinclude "C:\Users\Yesoooof\Documents\GitHub\ #
+#                    Team-20-Sensor-Suite\Firmware\On-chip                    #
+#                    App\onchipsdk-REL-1.1.0.7\projects\iar\00-hello\..\all_p #
+#                    rojects.iarinc" -I "C:\Users\Yesoooof\Documents\GitHub\T #
+#                    eam-20-Sensor-Suite\Firmware\On-chip                     #
+#                    App\onchipsdk-REL-1.1.0.7\projects\iar\00-hello\..\..\.. #
+#                    \src\app\00-hello\" -I "C:\Users\Yesoooof\Documents\GitH #
+#                    ub\Team-20-Sensor-Suite\Firmware\On-chip                 #
+#                    App\onchipsdk-REL-1.1.0.7\projects\iar\00-hello\..\..\.. #
+#                    \src\app\common\" -I "C:\Users\Yesoooof\Documents\GitHub #
+#                    \Team-20-Sensor-Suite\Firmware\On-chip                   #
+#                    App\onchipsdk-REL-1.1.0.7\projects\iar\00-hello\..\..\.. #
+#                    \src\inc\" -I "C:\Users\Yesoooof\Documents\GitHub\Team-2 #
+#                    0-Sensor-Suite\Firmware\On-chip                          #
+#                    App\onchipsdk-REL-1.1.0.7\projects\iar\00-hello\..\..\.. #
+#                    \src\modules\clilib\" -I "C:\Users\Yesoooof\Documents\Gi #
+#                    tHub\Team-20-Sensor-Suite\Firmware\On-chip               #
+#                    App\onchipsdk-REL-1.1.0.7\projects\iar\00-hello\..\..\.. #
+#                    \src\modules\ip_applib\" -Oh                             #
+#    List file    =  C:\Users\Yesoooof\Documents\GitHub\Team-20-Sensor-Suite\ #
+#                    Firmware\On-chip App\onchipsdk-REL-1.1.0.7\projects\iar\ #
+#                    00-hello\Debug\List\dnm_ucli.lst                         #
+#    Object file  =  C:\Users\Yesoooof\Documents\GitHub\Team-20-Sensor-Suite\ #
+#                    Firmware\On-chip App\onchipsdk-REL-1.1.0.7\projects\iar\ #
+#                    00-hello\Debug\Obj\dnm_ucli.o                            #
+#                                                                             #
+#                                                                             #
+###############################################################################
+
+C:\Users\Yesoooof\Documents\GitHub\Team-20-Sensor-Suite\Firmware\On-chip App\onchipsdk-REL-1.1.0.7\src\modules\clilib\dnm_ucli.c
+      1          /*
+      2          Copyright (c) 2011, Dust Networks.  All rights reserved.
+      3          */
+      4          
+      5          #include <stdio.h>
+      6          #include <string.h>
+      7          #include "dn_common.h"
+      8          #include "dnm_ucli.h"
+      9          #include "dn_channel.h"
+     10          #include "dn_system.h"
+     11          #include "dn_gpio.h"
+     12          #include "dn_flash_info.h"
+     13          #ifdef WIN32
+     14             #include <time.h>
+     15             #include <sys/timeb.h>
+     16          #endif
+     17          
+     18          struct {
+     19             INT8U   port;
+     20             INT32U  baudRate;
+     21             OS_EVENT*   blockingTraceMutex;   
+     22             procNotifCb_t notifCb;
+     23          #ifdef WIN32
+     24             FILE * pCliLogFile;
+     25          #endif
+     26          
+     27          } dnm_ucli_v = {
+     28                         DN_CLI_PORT_C0,   // port
+     29                         DEFAULT_BAUDRATE, // baud rate
+     30                         NULL,             // mutex
+     31                         NULL,             // callback
+     32          #ifdef WIN32
+     33                         NULL              // pCliLogFile
+     34          #endif
+     35          };
+     36          
+     37          #define ERR_INDICATOR "..."
+     38          
+     39          //=========================== prototypes ======================================
+     40          
+     41          //=========================== public ==========================================
+     42          
+     43          /** 
+     44          \brief Initialize the module.
+     45           * 
+     46          \param[in] callback Function to process CLI notification
+     47           */
+     48          void dnm_ucli_init (procNotifCb_t callback)
+     49          {
+     50             dnm_ucli_v.notifCb = callback;
+     51          }
+     52          
+     53          /**
+     54          \brief Wrapper to open the CLI serial port.
+     55          
+     56          \pre You need to call this function exactly once before you can use the CLI.
+     57          \pre This function is invoked by #dnm_ucli_open() if you choose 
+     58              to use it.
+     59          
+     60          \param[in] port The CLI port to open. Acceptable values are listed in
+     61             #dn_cli_port_t.
+     62          \param[in] baudRate The CLI's baudrate. Use #DEFAULT_BAUDRATE.
+     63          
+     64          \return The same error are the ones returns by the #dn_open() function for
+     65             the \ref device_cli.
+     66          */
+     67          dn_error_t dnm_ucli_openPort (INT8U port, INT32U baudRate)
+     68          {
+     69             dn_cli_open_args_t conf;
+     70          
+     71             conf.port = port;
+     72             conf.baudRate = baudRate;
+     73             dnm_ucli_v.port = port;
+     74             dnm_ucli_v.baudRate = baudRate;
+     75             return dn_open(DN_CLI_DEV_ID, &conf, sizeof(conf));
+     76          }
+     77          
+     78          /**
+     79          \brief Open the CLI serial port using information stored in flash memory.
+     80          
+     81          \pre This function calls #dnm_ucli_openPort
+     82          
+     83          This function reads the CLI port info from the \ref device_flashinfo.
+     84          Baudrate is only read from \ref device_flashinfo if the <tt>baudRate</tt> parameter is set to
+     85          <tt>0</tt>)
+     86          
+     87          \param[in] baudRate The CLI's baudrate. Use #DEFAULT_BAUDRATE or set to
+     88             <tt>0</tt> to use the one from \ref device_flashinfo
+     89          
+     90          \return #DN_ERR_ERROR if the CLI port information could not be read from the 
+     91             \ref device_flashinfo.
+     92          \return #DN_ERR_INVALID if the information retrieved from the
+     93             \ref device_flashinfo indicates CLI is not enabled.
+     94          \return The same error are the ones returns by the 
+     95                 #dnm_ucli_openPort().
+     96          */
+     97          dn_error_t dnm_ucli_open (INT32U baudRate) {
+     98             dn_bsp_param_read_t param;
+     99             int                 len;
+    100             INT8U               port;
+    101          
+    102             // Read CLI mode
+    103             param.input.tag = DN_BSP_PARAM_PORT_OPTIONS;
+    104             len = dn_read(DN_FLASHINFO_DEV_ID, (char *)&param.output.portOpt, sizeof(param.output.portOpt));
+    105             if (len < sizeof(param.output.portOpt)) 
+    106               return DN_ERR_ERROR;
+    107             if ((param.output.portOpt & DN_PORT_OPT_CLI_ENABLED) != DN_PORT_OPT_CLI_ENABLED)
+    108                return DN_ERR_INVALID;
+    109          
+    110             if ((param.output.portOpt & DN_PORT_OPT_CLI_UARTC1) == DN_PORT_OPT_CLI_UARTC1)
+    111                port = DN_CLI_PORT_C1;
+    112             else
+    113                port = DN_CLI_PORT_C0;
+    114          
+    115             if (baudRate == 0) {
+    116                // Read CLI baud rate
+    117                param.input.tag = DN_BSP_PARAM_CLI_PORT_RATE;
+    118                len = dn_read(DN_FLASHINFO_DEV_ID, (char *)&param.output.cliPortRate, sizeof(param.output.cliPortRate));
+    119                if (len >= sizeof(param.output.cliPortRate))  {
+    120                   switch(param.output.cliPortRate) {
+    121                   case DN_BSP_PARAM_BAUD_9600:   baudRate = 9600;   break;
+    122                   case DN_BSP_PARAM_BAUD_19200:  baudRate = 19200;  break;
+    123                   case DN_BSP_PARAM_BAUD_38400:  baudRate = 38400;  break;
+    124                   case DN_BSP_PARAM_BAUD_57600:  baudRate = 57600;  break;
+    125                   case DN_BSP_PARAM_BAUD_115200: baudRate = 115200; break;
+    126                   case DN_BSP_PARAM_BAUD_230400: baudRate = 230400; break;
+    127                   case DN_BSP_PARAM_BAUD_460800: baudRate = 460800; break;
+    128                   case DN_BSP_PARAM_BAUD_921600: baudRate = 921600; break;
+    129                   default: baudRate = DEFAULT_BAUDRATE; break;
+    130                   }
+    131                } else {
+    132                   baudRate = DEFAULT_BAUDRATE;
+    133                }
+    134          
+    135             }
+    136          
+    137             return dnm_ucli_openPort (port, baudRate);
+    138          }
+    139          
+    140          /**
+    141          \brief Print a formatted string.
+    142          
+    143          Call this function to print a string with printf-like formatting. For example,
+    144          call
+    145          
+    146          <tt>dnm_cli_printf("v=%d", v);</tt>
+    147          
+    148          to print the value of variable <tt>v</tt> as a decimal number.
+    149          
+    150          \param[in] format Sprintf-style format string.
+    151          \param[in] '...'  Optional format arguments.
+    152          */
+    153          void dnm_ucli_printf (const char* format, ...)
+    154          {
+    155              va_list args;
+    156              va_start(args, format);
+    157              dnm_ucli_printf_v(format, args);
+    158              va_end(args);
+    159          }
+    160          
+    161          // internal function
+    162          void dnm_ucli_printf_v (const char *format, va_list arg)
+    163          {
+    164             static  BOOLEAN  wasError = FALSE;
+    165          
+    166             INT32S  len, hdrLen;
+    167             INT32S  res;
+    168             char    buf[DN_CLI_CTRL_SIZE];
+    169             BOOLEAN prevVal;
+    170             CS_LOCAL_VAR;
+    171          
+    172          //   ((dn_cli_ctrlMsg_t *)buf)->cmdId   = DN_CLI_CMD_TYPE_TRACE;
+    173          #ifdef WIN32
+    174             if (dnm_ucli_v.pCliLogFile != NULL) vfprintf(dnm_ucli_v.pCliLogFile, format, arg);
+    175          #endif
+    176             
+    177          //   hdrLen = sizeof(dn_cli_ctrlMsg_t);
+    178             hdrLen = 0;
+    179          
+    180             if (wasError) {   // Add "..."
+    181                SNPRINTF(buf + hdrLen, sizeof(buf) - hdrLen, ERR_INDICATOR);
+    182                hdrLen += strlen(ERR_INDICATOR);
+    183             }
+    184          
+    185             len = VSPRINTF(buf + hdrLen, sizeof(buf) - hdrLen, format, arg);
+    186             if(len < 0)   // error - print '***********'
+    187                len = SNPRINTF(buf + hdrLen, sizeof(buf) - hdrLen, "*** CLI_LEN_ERROR ***\r\n");
+    188             buf[sizeof(buf)-1] = 0;
+    189             len += hdrLen;
+    190             if (len>sizeof(buf)) 
+    191                len = sizeof(buf);  
+    192             
+    193             prevVal = wasError;
+    194             res = dn_write(DN_CLI_DEV_ID, buf, len);
+    195          
+    196             OS_ENTER_CRITICAL();
+    197             if (res == DN_ERR_NO_RESOURCES || (!prevVal && wasError))
+    198                wasError = TRUE;
+    199             else
+    200                wasError = FALSE;
+    201             OS_EXIT_CRITICAL();
+    202          }
+    203          
+    204          /**
+    205          \brief Wait for CLI input and process it.
+    206          
+    207          This function blocks waiting for CLI input. When it receives input, it invokes
+    208          function to process CLI notification
+    209          \param[in] chDesc Channel descriptor of CLI input.
+    210          
+    211          \return #DN_ERR_NONE if CLI input was received and handled correctly.
+    212          \return An error if the CLI channel could not be read (see 
+    213          *       #dn_readAsyncMsg()) or processing function returned
+    214          *       error.
+    215          */
+    216          dn_error_t dnm_ucli_input (CH_DESC chDesc)
+    217          {
+    218             INT32S              rxLen, msgType;
+    219             INT8U               buf[DN_CLI_NOTIF_SIZE];
+    220             INT8U               paramsLen;
+    221             dn_error_t          res;
+    222             dn_cli_notifMsg_t * pCliNotif = (dn_cli_notifMsg_t *)buf;
+    223          
+    224             if (dnm_ucli_v.notifCb==NULL) {
+    225                return DN_ERR_NO_RESOURCES;
+    226             }
+    227          
+    228             memset(buf, 0, sizeof(buf));
+    229             res = dn_readAsyncMsg(chDesc, buf, &rxLen, &msgType, sizeof(buf), 0);
+    230             if (res != DN_ERR_NONE)
+    231                return res;
+    232          
+    233             paramsLen = (INT8U)rxLen - (INT8U)((((dn_cli_notifMsg_t*)(0))->data) - ((INT8U *)(dn_cli_notifMsg_t*)0)) - pCliNotif->offset;
+    234             return dnm_ucli_v.notifCb(pCliNotif->type, pCliNotif->cmdId, pCliNotif->data+pCliNotif->offset, paramsLen);
+    235          }
+    236          
+    237          /**
+    238          \brief Retrieve the CLI port.
+    239          
+    240          \return The CLI serial port, one of the elements in #dn_cli_port_t.
+    241          */
+    242          INT8U dnm_ucli_getPort (void)
+    243          {
+    244             return dnm_ucli_v.port;
+    245          }
+    246          
+    247          /**
+    248          \brief Retrieve the CLI baudrate.
+    249          
+    250          \return The CLI serial baudrate.
+    251          */
+    252          INT32U dnm_ucli_getBaudRate (void)
+    253          {
+    254             return dnm_ucli_v.baudRate;
+    255          }
+    256          
+    257          /**
+    258          \brief Set the current user access level.
+    259          
+    260          Sets new current user access level. Each command is associated with a minimum
+    261          access level. See \ref device_cli for description of how to 
+    262          register commands. Raising the user access level gives the user 
+    263          access to more commands. 
+    264          
+    265          It's your application's responsibility to raise/lower the user access level
+    266          appropriately. For example, you could implement a 'login' and 'logout'
+    267          CLI command to raise/lower the access level (a parameter for the 'login' CLI
+    268          command could be a password).
+    269          
+    270          \post After this function returns, the user may have access to more/less CLI
+    271             commands, depending on the user access level set.
+    272          
+    273          \param[in] newAccessLevel New user access level. Acceptable values are listed
+    274             in dn_cli_access_t.
+    275          
+    276          \return The error received from calling #dn_ioctl() in the \ref device_cli.
+    277          */
+    278          dn_error_t dnm_ucli_changeAccessLevel(dn_cli_access_t newAccessLevel)
+    279          {
+    280             dn_error_t             rsp;
+    281             INT8U                  buf[sizeof(dn_cli_chAccessCmd_t)];
+    282             dn_cli_chAccessCmd_t * rCmd;
+    283          
+    284             rCmd = (dn_cli_chAccessCmd_t *)buf;
+    285             rCmd->access = (INT8U)newAccessLevel;
+    286             rsp = dn_ioctl(DN_CLI_DEV_ID, DN_IOCTL_CLI_CHANGE_ACCESS, (void *)rCmd, sizeof(dn_cli_chAccessCmd_t));
+    287             return rsp;
+    288          }
+    289          
+    290          //===== Print formatting
+    291          
+    292          // internal function
+    293          void dnm_ucli_printfTimestamp_v(const char *format, va_list arg)
+    294          {
+    295          #ifdef WIN32
+    296             // Print Windows time
+    297             struct _timeb t;
+    298             struct tm     locTime;
+    299             _ftime_s(&t);
+    300             localtime_s(&locTime, &(t.time));
+    301             dnm_ucli_printf("(%02d:%02d:%02d.%03d) ", locTime.tm_hour, locTime.tm_min, locTime.tm_sec, t.millitm);
+    302          #endif
+    303             dnm_ucli_printf("%6d : ", OSTimeGet());   // TODO change to print sec.msec
+    304             dnm_ucli_printf_v(format, arg);
+    305          }
+    306          
+    307          /**
+    308          \brief Print a timestamp, followed by a formatted string.
+    309          
+    310          \param[in] format Sprintf-style format string.
+    311          \param[in] ...    Optional format arguments.
+    312           */
+    313          void dnm_ucli_printfTimestamp(const char* format, ...)
+    314          {
+    315              va_list args;
+    316              va_start(args, format);
+    317              dnm_ucli_printfTimestamp_v(format, args);
+    318              va_end(args);
+    319          }
+    320          
+    321          
+    322          // internal function
+    323          void dnm_ucli_dump_v(const INT8U *data, INT32S len, const char * format, va_list arg)
+    324          {
+    325             int     i;
+    326             dnm_ucli_printfTimestamp_v(format, arg);
+    327             for (i = 0; i < len; i++) {
+    328                if (i % 20 == 0)
+    329                   dnm_ucli_printf("\r\n   %03d : ", i);
+    330                dnm_ucli_printf("%02x ", *data++);
+    331             }
+    332             dnm_ucli_printf("\r\n");
+    333          }
+    334          
+    335          /**
+    336          \brief Print some binary data.
+    337          
+    338          \param[in] data   Pointer to the start of the data to be printed.
+    339          \param[in] len    Number of bytes to print.
+    340          \param[in] format Sprintf-style format string.
+    341          \param[in] ...    Optional format arguments.
+    342          */
+    343          void dnm_ucli_dump(const INT8U *data, INT32S len, const char * format, ...)
+    344          {
+    345             va_list marker;
+    346             va_start(marker, format);
+    347             dnm_ucli_dump_v(data, len, format, marker);
+    348             va_end(marker);
+    349          }
+    350          
+    351          
+    352          //===== Tracing
+    353          
+    354          /**
+    355          \brief Print a formatted trace string if the corresponding trace flag is
+    356             enabled.
+    357          
+    358          \param[in] isTraceEnabled Flag if the trace in the calling 
+    359               module is enabled.
+    360          \param[in] format    Sprintf-style format string.
+    361          \param[in] ...       Optional format arguments.
+    362          */
+    363          void dnm_ucli_trace(BOOLEAN isTraceEnabled, const char* format, ...)
+    364          {
+    365             if (isTraceEnabled) {
+    366                va_list args;
+    367                va_start(args, format);
+    368                dnm_ucli_printfTimestamp_v(format, args);
+    369                va_end(args);
+    370             }
+    371          }
+    372          
+    373          /**
+    374          \brief Print binary data if the corresponding trace flag is enabled.
+    375          
+    376          \param[in] isTraceEnabled Flag if the trace in the calling 
+    377               module is enabled.
+    378          \param[in] data      Pointer to the start of the data to be printed.
+    379          \param[in] len       Number of bytes to print.
+    380          \param[in] format    Sprintf-style format string.
+    381          \param[in] ...       Optional format arguments.
+    382          */
+    383          void    dnm_ucli_traceDump(BOOLEAN isTraceEnabled, 
+    384                                   const INT8U* data, INT32S len, const char* format, ...)
+    385          {
+    386             va_list marker;
+    387             
+    388             if (isTraceEnabled) {
+    389                va_start(marker, format);
+    390                dnm_ucli_dump_v(data, len, format, marker);
+    391                va_end(marker);
+    392             }
+    393          }
+    394          
+    395          /**
+    396          \brief Same as dnm_cli_traceDump with a Mutex to prevent overlapping prints
+    397          */
+    398          void dnm_ucli_traceDumpBlocking(BOOLEAN isTraceEnabled, 
+    399                                         const INT8U* data, INT32S len, const char* format, ...)
+    400          {
+    401             va_list  marker;
+    402             INT8U    err = OS_ERR_NONE;
+    403          
+    404             // create mutex if not created
+    405             if (dnm_ucli_v.blockingTraceMutex == NULL) {
+    406                dnm_ucli_v.blockingTraceMutex = OSSemCreate(1);
+    407             }
+    408          
+    409             // wait for mutex
+    410             OSSemPend(dnm_ucli_v.blockingTraceMutex, 0, &err);
+    411             ASSERT (err == OS_ERR_NONE);
+    412             
+    413             
+    414             if (isTraceEnabled) {
+    415                va_start(marker, format);
+    416                dnm_ucli_dump_v(data, len, format, marker);
+    417                va_end(marker);
+    418             }
+    419          
+    420             // release mutex
+    421             err = OSSemPost(dnm_ucli_v.blockingTraceMutex);
+    422             ASSERT (err == OS_ERR_NONE);
+    423          }
+    424          
+
+   Maximum stack usage in bytes:
+
+   .cstack Function
+   ------- --------
+       8   dnm_ucli_changeAccessLevel
+         8   -> dn_ioctl
+       8   dnm_ucli_dump
+         8   -> dnm_ucli_dump_v
+      24   dnm_ucli_dump_v
+        24   -> OSTimeGet
+         0   -> dnm_ucli_printf
+        24   -> dnm_ucli_printf
+        24   -> dnm_ucli_printf_v
+       0   dnm_ucli_getBaudRate
+       0   dnm_ucli_getPort
+       0   dnm_ucli_init
+     112   dnm_ucli_input
+       112   -- Indirect call
+       112   -> __aeabi_memclr4
+       112   -> dn_readAsyncMsg
+      24   dnm_ucli_open
+        24   -> dn_open
+        24   -> dn_read
+      16   dnm_ucli_openPort
+        16   -> dn_open
+      16   dnm_ucli_printf
+        16   -> dnm_ucli_printf_v
+      24   dnm_ucli_printfTimestamp
+        24   -> OSTimeGet
+        24   -> dnm_ucli_printf
+        24   -> dnm_ucli_printf_v
+      16   dnm_ucli_printfTimestamp_v
+        16   -> OSTimeGet
+        16   -> dnm_ucli_printf
+         0   -> dnm_ucli_printf_v
+     112   dnm_ucli_printf_v
+       112   -> OS_CPU_SR_Restore
+       112   -> OS_CPU_SR_Save
+       112   -> dn_write
+       112   -> snprintf
+       112   -> vsnprintf
+      24   dnm_ucli_trace
+        24   -> OSTimeGet
+        24   -> dnm_ucli_printf
+        24   -> dnm_ucli_printf_v
+       8   dnm_ucli_traceDump
+         8   -> dnm_ucli_dump_v
+      32   dnm_ucli_traceDumpBlocking
+        32   -> OSSemCreate
+        32   -> OSSemPend
+        32   -> OSSemPost
+        32   -> assert_handler
+        32   -> dnm_ucli_dump_v
+
+
+   Section sizes:
+
+   Bytes  Function/Label
+   -----  --------------
+       8  ?<Constant "%02x ">
+       8  ?<Constant "%6d : ">
+      24  ?<Constant "*** CLI_LEN_ERROR ***\r\n">
+       4  ?<Constant "...">
+      16  ?<Constant "\r\n   %03d : ">
+       4  ?<Constant "\r\n">
+      12  ?<Constant "dnm_ucli.c">
+       4  ??DataTable15
+       4  ??DataTable15_1
+       4  ??DataTable15_2
+       4  ??DataTable15_3
+      20  dnm_ucli_changeAccessLevel
+      14  dnm_ucli_dump
+      96  dnm_ucli_dump_v
+       6  dnm_ucli_getBaudRate
+       6  dnm_ucli_getPort
+       6  dnm_ucli_init
+      84  dnm_ucli_input
+     172  dnm_ucli_open
+      30  dnm_ucli_openPort
+      14  dnm_ucli_printf
+      36  dnm_ucli_printfTimestamp
+      30  dnm_ucli_printfTimestamp_v
+     130  dnm_ucli_printf_v
+      38  dnm_ucli_trace
+      20  dnm_ucli_traceDump
+     104  dnm_ucli_traceDumpBlocking
+      16  dnm_ucli_v
+       1  wasError
+
+ 
+   1 byte  in section .bss
+  16 bytes in section .data
+   8 bytes in section .rodata
+ 890 bytes in section .text
+ 
+ 890 bytes of CODE  memory
+   8 bytes of CONST memory
+  17 bytes of DATA  memory
+
+Errors: none
+Warnings: none

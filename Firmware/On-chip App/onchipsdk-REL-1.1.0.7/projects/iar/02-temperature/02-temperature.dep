@@ -1,0 +1,222 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+
+<project>
+  <fileVersion>2</fileVersion>
+  <fileChecksum>1049019803</fileChecksum>
+  <configuration>
+    <name>Debug</name>
+    <outputs>
+      <file>$PROJ_DIR$\..\..\..\src\app\02-temperature\app_task_cfg.h</file>
+      <file>$PROJ_DIR$\..\..\..\src\app\common\loc_task.h</file>
+      <file>$PROJ_DIR$\..\..\..\src\app\common\Ver.h</file>
+      <file>$PROJ_DIR$\..\..\..\src\app\02-temperature\temperature_app.c</file>
+      <file>$PROJ_DIR$\..\..\..\src\app\common\build.h</file>
+      <file>$PROJ_DIR$\..\..\..\src\inc\dn_api_common.h</file>
+      <file>$PROJ_DIR$\..\..\..\src\inc\dn_api_local.h</file>
+      <file>$PROJ_DIR$\..\..\..\src\app\common\app_cfg.h</file>
+      <file>$PROJ_DIR$\..\..\..\src\inc\dn_api_param.h</file>
+      <file>$PROJ_DIR$\..\..\..\src\app\common\cli_task.h</file>
+      <file>$PROJ_DIR$\..\..\..\src\app\common\cli_task.c</file>
+      <file>$PROJ_DIR$\..\..\..\src\app\common\loc_task.c</file>
+      <file>$PROJ_DIR$\..\..\..\src\inc\dn_adc.h</file>
+      <file>$PROJ_DIR$\..\..\..\src\inc\dn_pack.h</file>
+      <file>$PROJ_DIR$\..\..\..\src\inc\dn_system.h</file>
+      <file>$PROJ_DIR$\..\..\..\src\inc\dn_typedef.h</file>
+      <file>$PROJ_DIR$\..\..\..\src\inc\dn_cli.h</file>
+      <file>$PROJ_DIR$\..\..\..\src\inc\dn_mesh.h</file>
+      <file>$PROJ_DIR$\..\..\..\src\inc\os_cfg.h</file>
+      <file>$PROJ_DIR$\..\..\..\src\inc\ucos_ii.h</file>
+      <file>$PROJ_DIR$\..\..\..\src\lib\libip_stack.a</file>
+      <file>$PROJ_DIR$\..\..\..\src\lib\libucos_full.a</file>
+      <file>$PROJ_DIR$\..\..\..\src\modules\clilib\dnm_ucli.c</file>
+      <file>$PROJ_DIR$\..\..\..\src\inc\dn_common.h</file>
+      <file>$PROJ_DIR$\..\..\..\src\inc\dn_channel.h</file>
+      <file>$PROJ_DIR$\..\..\..\src\inc\dn_flash_info.h</file>
+      <file>$PROJ_DIR$\..\..\..\src\modules\clilib\dnm_ucli.h</file>
+      <file>$PROJ_DIR$\..\..\..\src\inc\dn_gpio.h</file>
+      <file>$PROJ_DIR$\..\..\..\src\inc\os_cpu.h</file>
+      <file>$PROJ_DIR$\..\..\..\src\inc\dn_errno.h</file>
+      <file>$PROJ_DIR$\..\..\..\src\modules\ip_applib\dnm_local.h</file>
+      <file>$PROJ_DIR$\..\..\..\src\modules\ip_applib\dnm_local.c</file>
+      <file>$TOOLKIT_DIR$\inc\c\stddef.h</file>
+      <file>$TOOLKIT_DIR$\inc\c\DLib_Threads.h</file>
+      <file>$TOOLKIT_DIR$\inc\c\ysizet.h</file>
+      <file>$TOOLKIT_DIR$\inc\c\xencoding_limits.h</file>
+      <file>$TOOLKIT_DIR$\inc\c\ycheck.h</file>
+      <file>$TOOLKIT_DIR$\inc\c\DLib_Config_Normal.h</file>
+      <file>$TOOLKIT_DIR$\inc\c\yvals.h</file>
+      <file>$TOOLKIT_DIR$\inc\c\DLib_Product.h</file>
+      <file>$TOOLKIT_DIR$\inc\c\DLib_Defaults.h</file>
+      <file>$TOOLKIT_DIR$\inc\c\stdarg.h</file>
+      <file>$PROJ_DIR$\..\..\..\src\inc\dn_exe_hdr.h</file>
+      <file>$PROJ_DIR$\Debug\Obj\cli_task.o</file>
+      <file>$PROJ_DIR$\Debug\Obj\02-temperature.pbd</file>
+      <file>$PROJ_DIR$\Debug\Obj\temperature_app.pbi</file>
+      <file>$PROJ_DIR$\Debug\Obj\dnm_ucli.o</file>
+      <file>$PROJ_DIR$\Debug\Obj\loc_task.o</file>
+      <file>$PROJ_DIR$\Debug\Obj\dnm_ucli.pbi</file>
+      <file>$PROJ_DIR$\Debug\Exe\ocfdk_02_temperature.out</file>
+      <file>$PROJ_DIR$\Debug\Obj\cli_task.pbi</file>
+      <file>$PROJ_DIR$\Debug\Obj\temperature_app.o</file>
+      <file>$PROJ_DIR$\Debug\Obj\dnm_local.o</file>
+      <file>$PROJ_DIR$\Debug\Obj\loc_task.pbi</file>
+      <file>$PROJ_DIR$\Debug\Obj\dnm_local.pbi</file>
+      <file>$TOOLKIT_DIR$\inc\c\string.h</file>
+      <file>$TOOLKIT_DIR$\inc\c\stdio.h</file>
+      <file>$TOOLKIT_DIR$\inc\c\DLib_Product_string.h</file>
+      <file>$TOOLKIT_DIR$\inc\c\ystdio.h</file>
+      <file>$TOOLKIT_DIR$\lib\rt7M_tl.a</file>
+      <file>$PROJ_DIR$\Debug\List\temperature_app.lst</file>
+      <file>$PROJ_DIR$\Debug\List\ocfdk_02_temperature.map</file>
+      <file>$PROJ_DIR$\Debug\List\dnm_ucli.lst</file>
+      <file>$PROJ_DIR$\..\..\..\tools\linker_configuration\Eterna.icf</file>
+      <file>$TOOLKIT_DIR$\lib\m7M_tl.a</file>
+      <file>$TOOLKIT_DIR$\lib\dl7M_tln.a</file>
+      <file>$PROJ_DIR$\Debug\List\loc_task.lst</file>
+      <file>$PROJ_DIR$\Debug\List\dnm_local.lst</file>
+      <file>$PROJ_DIR$\..\all_projects.iarinc</file>
+      <file>$PROJ_DIR$\Debug\List\cli_task.lst</file>
+    </outputs>
+    <file>
+      <name>[ROOT_NODE]</name>
+      <outputs>
+        <tool>
+          <name>ILINK</name>
+          <file> 49 61</file>
+        </tool>
+      </outputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\..\..\src\app\02-temperature\temperature_app.c</name>
+      <outputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 60 51</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 45</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 68 23 32 36 38 40 37 39 35 33 34 15 28 19 7 18 9 26 29 16 13 24 41 1 30 6 5 17 14 12 42 0 2 4</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 23 32 36 38 40 37 39 35 33 34 15 28 19 7 18 9 26 29 16 13 24 41 1 30 6 5 17 14 12 42 0 2 4</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\..\..\src\app\common\cli_task.c</name>
+      <outputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 69 43</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 50</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 68 55 36 38 40 37 39 35 33 34 57 23 32 15 28 19 7 18 14 26 29 16 13 24 41 9 2 4</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 55 36 38 40 37 39 35 33 34 57 23 32 15 28 19 7 18 14 26 29 16 13 24 41 9 2 4</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\..\..\src\app\common\loc_task.c</name>
+      <outputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 66 47</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 53</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 68 23 32 36 38 40 37 39 35 33 34 15 28 19 7 18 1 26 29 16 13 24 41 30 6 5 17 8</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 23 32 36 38 40 37 39 35 33 34 15 28 19 7 18 1 26 29 16 13 24 41 30 6 5 17 8</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\..\..\src\modules\clilib\dnm_ucli.c</name>
+      <outputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 62 46</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 48</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 68 56 36 38 40 37 39 35 33 34 58 55 57 23 32 15 28 19 7 18 26 29 16 13 24 41 14 27 25</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 56 36 38 40 37 39 35 33 34 58 55 57 23 32 15 28 19 7 18 26 29 16 13 24 41 14 27 25</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\..\..\src\modules\ip_applib\dnm_local.c</name>
+      <outputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 67 52</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 54</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 68 55 36 38 40 37 39 35 33 34 57 24 29 28 19 7 15 18 13 30 6 5 17 26 16 41 23 32</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 55 36 38 40 37 39 35 33 34 57 24 29 28 19 7 15 18 13 30 6 5 17 26 16 41 23 32</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\Debug\Exe\ocfdk_02_temperature.out</name>
+      <outputs>
+        <tool>
+          <name>ILINK</name>
+          <file> 61</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>ILINK</name>
+          <file> 63 43 52 46 20 21 47 51 59 64 65</file>
+        </tool>
+      </inputs>
+    </file>
+  </configuration>
+</project>
+
+

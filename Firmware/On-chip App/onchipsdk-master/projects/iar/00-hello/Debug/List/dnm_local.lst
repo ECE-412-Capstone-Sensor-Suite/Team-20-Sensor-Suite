@@ -1,0 +1,1307 @@
+###############################################################################
+#
+# IAR ANSI C/C++ Compiler V8.40.1.212/W32 for ARM         04/Mar/2021  22:21:00
+# Copyright 1999-2019 IAR Systems AB.
+#
+#    Cpu mode     =  
+#    Endian       =  little
+#    Source file  =
+#        C:\Users\Yesoooof\Documents\GitHub\Team-20-Sensor-Suite\Firmware\On-chip
+#        App\onchipsdk-master\src\modules\ip_applib\dnm_local.c
+#    Command line =
+#        -f C:\Users\Yesoooof\AppData\Local\Temp\EW1922.tmp
+#        ("C:\Users\Yesoooof\Documents\GitHub\Team-20-Sensor-Suite\Firmware\On-chip
+#        App\onchipsdk-master\src\modules\ip_applib\dnm_local.c" -lcN
+#        "C:\Users\Yesoooof\Documents\GitHub\Team-20-Sensor-Suite\Firmware\On-chip
+#        App\onchipsdk-master\projects\iar\00-hello\Debug\List" -o
+#        "C:\Users\Yesoooof\Documents\GitHub\Team-20-Sensor-Suite\Firmware\On-chip
+#        App\onchipsdk-master\projects\iar\00-hello\Debug\Obj" --debug
+#        --endian=little --cpu=Cortex-M3 --no_path_in_file_macros --enum_is_int
+#        -e --fpu=None --dlib_config "C:\Program Files (x86)\IAR
+#        Systems\Embedded Workbench 8.3\arm\inc\c\DLib_Config_Normal.h"
+#        --preinclude
+#        "C:\Users\Yesoooof\Documents\GitHub\Team-20-Sensor-Suite\Firmware\On-chip
+#        App\onchipsdk-master\projects\iar\00-hello\..\all_projects.iarinc" -I
+#        "C:\Users\Yesoooof\Documents\GitHub\Team-20-Sensor-Suite\Firmware\On-chip
+#        App\onchipsdk-master\projects\iar\00-hello\..\..\..\src\app\00-hello\"
+#        -I
+#        "C:\Users\Yesoooof\Documents\GitHub\Team-20-Sensor-Suite\Firmware\On-chip
+#        App\onchipsdk-master\projects\iar\00-hello\..\..\..\src\app\common\"
+#        -I
+#        "C:\Users\Yesoooof\Documents\GitHub\Team-20-Sensor-Suite\Firmware\On-chip
+#        App\onchipsdk-master\projects\iar\00-hello\..\..\..\src\inc\" -I
+#        "C:\Users\Yesoooof\Documents\GitHub\Team-20-Sensor-Suite\Firmware\On-chip
+#        App\onchipsdk-master\projects\iar\00-hello\..\..\..\src\modules\clilib\"
+#        -I
+#        "C:\Users\Yesoooof\Documents\GitHub\Team-20-Sensor-Suite\Firmware\On-chip
+#        App\onchipsdk-master\projects\iar\00-hello\..\..\..\src\modules\ip_applib\"
+#        -Oh)
+#    Locale       =  C
+#    List file    =
+#        C:\Users\Yesoooof\Documents\GitHub\Team-20-Sensor-Suite\Firmware\On-chip
+#        App\onchipsdk-master\projects\iar\00-hello\Debug\List\dnm_local.lst
+#    Object file  =
+#        C:\Users\Yesoooof\Documents\GitHub\Team-20-Sensor-Suite\Firmware\On-chip
+#        App\onchipsdk-master\projects\iar\00-hello\Debug\Obj\dnm_local.o
+#
+###############################################################################
+
+C:\Users\Yesoooof\Documents\GitHub\Team-20-Sensor-Suite\Firmware\On-chip App\onchipsdk-master\src\modules\ip_applib\dnm_local.c
+      1          /*
+      2          Copyright (c) 2010, Dust Networks.  All rights reserved.
+      3          */
+      4          
+      5          #include <string.h>
+      6          #include "dn_channel.h"
+      7          #include "dnm_local.h"
+      8          #include "dn_common.h"
+      9          #include "dnm_ucli.h"
+     10          
+     11          //=========================== define ==========================================
+     12          #define REQ_BUF_CAST(var,type)      type*             var = (type*)(loc_v.ctrlCmdBuf  + sizeof(dn_api_cmd_hdr_t));
+     13          #define RSP_BUF_CAST(var,type)      type*             var = (type*)(loc_v.ctrlRespBuf + sizeof(dn_api_cmd_hdr_t));
+     14          #define REQ_HEADER_CAST(var)        dn_api_cmd_hdr_t* var = (dn_api_cmd_hdr_t*)(loc_v.ctrlCmdBuf);
+     15          #define RSP_HEADER_CAST(var)        dn_api_cmd_hdr_t* var = (dn_api_cmd_hdr_t*)(loc_v.ctrlRespBuf);
+     16          
+     17          //=========================== variables =======================================
+     18          
+     19          /// Variable local to the \ref module_dnm_local.
+     20          typedef struct {
+     21             CH_DESC    ctrlChDesc;                                ///< Control channel descriptor.
+     22             CH_DESC    notifChDesc;                               ///< Notification channel descriptor.
+     23             INT8U      ctrlCmdBuf[DN_API_LOC_MAX_REQ_SIZE];       ///< Command to be sent over the control channel.
+     24             INT16U     ctrlCmdBufLen;                             ///< Length on the command to be sent over the control channel, in bytes.
+     25             INT8U      ctrlRespBuf[DN_API_LOC_MAX_RESP_SIZE];     ///< Response received over the control channel.
+     26             INT8U      ctrlRespBufLen;                            ///< Length of the response received over the control channel, in bytes.
+     27             INT8U*     notifRxBuf;                                ///< Notification received over the notification channel.
+     28             INT16U     notifRxBufLen;                             ///< Length of the notification received over the notification channel, in bytes.
+     29             INT8U      notifRespBuf[DN_API_LOC_MAX_RESP_SIZE];    ///< Notification response to be sent over the notifification channel.
+     30             INT8U      notifRespBufLen;                           ///< Length of the notification response to be sent over the notifification channel, in bytes.
+     31             eventNotifCb_t            eventNotifCb;               ///< Event notification call back function.
+     32             locNotifCb_t              locNotifCb;                 ///< Notification call back function in pass through mode.
+     33             rxNotifCb_t               rxNotifCb;                  ///< Neceive notification call back function.
+     34             timeNotifCb_t             timeNotifCb;                ///< Time notification call back function.
+     35             advNotifCb_t              advNotifCb;                 ///< advReceived notification call back function.
+     36             txDoneNotifCb_t           txDoneNotifCb;              ///< txDone notification call back function.
+     37             passThroughEventNotifCb_t passThroughEvNotifCb;       ///< Pass-through event notif call back function.
+     38             passThroughNotifCb_t      passThroughNotifCb;         ///< Notification call back in pass-through mode.
+     39             passThrough_mode_t        passThroughMode;            ///< Current pass-through mode.
+     40             INT8U                     traceEnabled;
+     41          } loc_var_t;
+     42          
+     43          static loc_var_t loc_v;
+     44          
+     45          //=========================== prototype =======================================
+     46          
+     47          //=========================== private =========================================
+     48          
+     49          /**
+     50          \brief Process local notifications.
+     51          */
+     52          void dnm_loc_processNotifications(void)
+     53          {
+     54              INT8U                       cb_rsp = DN_API_RC_OK;
+     55              INT32U                      rx_len = 0,msg_type;
+     56              INT8U                       cmd_id;
+     57              dn_api_cmd_hdr_t*           hdr;
+     58              dn_api_loc_notif_events_t*  notif_event;   
+     59              dn_error_t                  dn_error;
+     60              
+     61              // read messages from notif. channel
+     62              dn_error = dn_readSyncMsg(loc_v.notifChDesc, loc_v.notifRxBuf, &rx_len,&msg_type, DN_API_LOC_MAX_NOTIF_SIZE, 0);
+     63              ASSERT(dn_error == DN_ERR_NONE);
+     64          
+     65              loc_v.notifRxBufLen = (INT16U)rx_len;
+     66              hdr                 = (dn_api_cmd_hdr_t *)loc_v.notifRxBuf;
+     67              cmd_id              = hdr->cmdId;
+     68              dnm_ucli_traceDumpBlocking(loc_v.traceEnabled, loc_v.notifRxBuf,loc_v.notifRxBufLen, "locNotif RX:");    
+     69             
+     70              if((hdr->len == 0)||(rx_len == 0)) {
+     71                  // do something else??
+     72                  return;
+     73              }
+     74             
+     75              if(loc_v.passThroughMode == PASSTHROUGH_OFF){
+     76                  switch(cmd_id) {
+     77                      case DN_API_LOC_NOTIF_EVENTS:
+     78                          if(loc_v.eventNotifCb != NULL) {
+     79                              (*loc_v.eventNotifCb)((dn_api_loc_notif_events_t *)&loc_v.notifRxBuf[sizeof(dn_api_cmd_hdr_t)],&cb_rsp);         
+     80                          }
+     81                          break;
+     82                      case DN_API_LOC_NOTIF_RECEIVED:
+     83                          if(loc_v.rxNotifCb != NULL) {
+     84                               dnm_ucli_traceDumpBlocking(loc_v.traceEnabled, loc_v.notifRespBuf,loc_v.notifRespBufLen, "locNotif TX:");
+     85                               (*loc_v.rxNotifCb)((dn_api_loc_notif_received_t *)&loc_v.notifRxBuf[sizeof(dn_api_cmd_hdr_t)],
+     86                                                  (INT8U)(loc_v.notifRxBufLen-sizeof(dn_api_cmd_hdr_t)));
+     87                          }
+     88                          break;
+     89                      case DN_API_LOC_NOTIF_TIME:
+     90                          if(loc_v.timeNotifCb != NULL) {
+     91                              (*loc_v.timeNotifCb)((dn_api_loc_notif_time_t *)&loc_v.notifRxBuf[sizeof(dn_api_cmd_hdr_t)],
+     92                              (INT8U)(loc_v.notifRxBufLen-sizeof(dn_api_cmd_hdr_t)));
+     93                          }
+     94                          break;
+     95                          
+     96                      case DN_API_LOC_NOTIF_ADVRX:
+     97                          if(loc_v.advNotifCb != NULL) {
+     98                               (*loc_v.advNotifCb)((dn_api_loc_notif_adv_t *)&loc_v.notifRxBuf[sizeof(dn_api_cmd_hdr_t)],
+     99                                                  (INT8U)(loc_v.notifRxBufLen-sizeof(dn_api_cmd_hdr_t)));
+    100                          }
+    101                          break;
+    102                      case DN_API_LOC_NOTIF_TXDONE:
+    103                          if (loc_v.txDoneNotifCb != NULL) {
+    104                             (*loc_v.txDoneNotifCb)((dn_api_loc_notif_txdone_t *)&loc_v.notifRxBuf[sizeof(dn_api_cmd_hdr_t)],
+    105                                              (INT8U)(loc_v.notifRxBufLen-sizeof(dn_api_cmd_hdr_t)));
+    106                          }
+    107                          break;
+    108                      default:
+    109                          break;
+    110                  }
+    111              }
+    112              else {
+    113                  if(cmd_id == DN_API_LOC_NOTIF_RECEIVED) {
+    114                      notif_event = (dn_api_loc_notif_events_t *)&loc_v.notifRxBuf[sizeof(dn_api_cmd_hdr_t)];
+    115                      if(loc_v.passThroughEvNotifCb != NULL) {
+    116                          (*loc_v.passThroughEvNotifCb)(ntohl(notif_event->events), ntohl(notif_event->alarms));
+    117                      }            
+    118                  }       
+    119                  if(loc_v.passThroughNotifCb != NULL) {
+    120                      (*loc_v.passThroughNotifCb)(&loc_v.notifRxBuf, loc_v.notifRxBufLen, &cb_rsp);
+    121                  }
+    122              }
+    123          
+    124              // send reply
+    125              dnm_loc_prepareNotifResponse(cmd_id, cb_rsp);
+    126              loc_v.notifRespBufLen = sizeof(dn_api_empty_rsp_t);
+    127              dn_sendReply(loc_v.notifChDesc,loc_v.notifRespBuf, loc_v.notifRespBufLen);       
+    128              dnm_ucli_traceDumpBlocking(loc_v.traceEnabled, loc_v.notifRespBuf,loc_v.notifRespBufLen, "locNotif TX:");
+    129          }
+    130          
+    131          /**
+    132          \brief Processes simple commands; commands without any payload.
+    133          
+    134          \param[in]  Cmd The command to be invoked, e.g. #DN_API_LOC_CMD_JOIN.
+    135          
+    136          \return #DN_ERR_NONE if the function completes successfully.
+    137          \return #DN_ERR_ERROR if the function can not be completed successfully.
+    138          */
+    139          static dn_error_t dnm_loc_processCmd(INT8U cmd, INT16U length)
+    140          {
+    141              dn_error_t       rc;
+    142              INT32U           rx_len = 0;
+    143              REQ_HEADER_CAST(header_req)
+    144          
+    145              if(cmd != DN_API_LOC_CMD_SEND_RAW) {
+    146                  header_req->cmdId    = cmd;
+    147                  header_req->len      = (INT8U)length;   
+    148              }
+    149              loc_v.ctrlCmdBufLen  = sizeof(dn_api_cmd_hdr_t) + length;
+    150              dnm_ucli_traceDumpBlocking(loc_v.traceEnabled, loc_v.ctrlCmdBuf, loc_v.ctrlCmdBufLen, "loc TX:");
+    151          
+    152              rc = dn_sendSyncMsg(loc_v.ctrlChDesc,
+    153              loc_v.ctrlCmdBuf, loc_v.ctrlCmdBufLen, 
+    154              DN_MSG_TYPE_NET_CTRL, loc_v.ctrlRespBuf, 
+    155              DN_API_LOC_MAX_RESP_SIZE, &rx_len);
+    156              loc_v.ctrlRespBufLen = (INT8U)rx_len;
+    157              if (rc != DN_ERR_NONE)
+    158                 dnm_ucli_trace(loc_v.traceEnabled, "loc ERR: TX failed \r\n");
+    159              else
+    160                 dnm_ucli_traceDumpBlocking(loc_v.traceEnabled, loc_v.ctrlRespBuf, loc_v.ctrlRespBufLen, "loc RX:");
+    161          
+    162              return rc;
+    163          
+    164          
+    165          }
+    166          
+    167          //=========================== public ==========================================
+    168          
+    169          /**
+    170          \brief Initialize this module.
+    171          
+    172          This function verifies whether the control and notification channels have been
+    173          activated.
+    174          
+    175          \param[in] mode       Mode of operation.
+    176          \param[in] pBuffer    Pointer to the buffers required for the local interface.
+    177          \param[in] buffLen    Length of the buffer passed.
+    178          
+    179          \return #DN_ERR_NONE if the function completes successfully.
+    180          \return #DN_ERR_INVALID if either the control or the notification channel
+    181             hasn't been initialized.
+    182          */
+    183          dn_error_t dnm_loc_init(passThrough_mode_t mode, INT8U *pBuffer, INT16U buffLen) 
+    184          {
+    185              dn_error_t rc;
+    186          
+    187              loc_v.passThroughMode   = mode;
+    188          
+    189              ASSERT(pBuffer != NULL && buffLen >= DN_API_LOC_MAX_NOTIF_SIZE);
+    190              loc_v.notifRxBuf = pBuffer;
+    191          
+    192              rc = dn_getChannelDesc(DN_MSG_TYPE_NET_CTRL, &loc_v.ctrlChDesc);
+    193              if (rc != DN_ERR_NONE){
+    194                  return rc;
+    195              }
+    196          
+    197             rc = dn_getChannelDesc(DN_MSG_TYPE_NET_NOTIF, &loc_v.notifChDesc);
+    198             if (rc != DN_ERR_NONE){
+    199                return rc;
+    200             }
+    201             
+    202             loc_v.passThroughMode = mode;
+    203             return DN_ERR_NONE;
+    204          }
+    205          
+    206          /**
+    207          \brief Set some configuration parameter.
+    208          
+    209          \param[in]  paramId Identifier of the parameter to be set.
+    210          \param[in]  payload Pointer to the value to set the parameter to.
+    211          \param[in]  length  Length of the payload.
+    212          \param[out] rc      Location to write the return code to (details below).
+    213          
+    214          This function calls the #DN_API_LOC_CMD_SETPARAM command of the local
+    215          interface.
+    216          There are in two elements which can be considered "return codes" when
+    217          calling this function:
+    218          - The value returned by this function merely indicates whether the command
+    219            could be issued to the local interface.
+    220          - The outcome of that call is written at the location pointed to by the
+    221            <tt>rc</tt> parameter. Consult the <tt>setParameter</tt> section relative to
+    222            <tt>paramId</tt> you are setting in the "SmartMesh IP Mote Serial API Guide"
+    223            (http://www.linear.com/docs/41886); it lists the possible return codes
+    224            and their meaning.
+    225          
+    226          \return #DN_ERR_NONE if the function completes successfully.
+    227          \return #DN_ERR_ERROR if the function can not be completed successfully.
+    228          */
+    229          dn_error_t dnm_loc_setParameterCmd(INT8U paramId, INT8U *payload, 
+    230          INT8U length, INT8U *rc)
+    231          {
+    232              dn_error_t  ret;
+    233              REQ_BUF_CAST(p_setparam,dn_api_loc_setparam_t)
+    234              RSP_BUF_CAST(p_rsp,dn_api_rc_rsp_t)
+    235              
+    236              p_setparam->paramId = paramId;
+    237              memcpy((void*)(&p_setparam->payload),(void*)(payload),length); 
+    238          
+    239              ret = dnm_loc_processCmd(DN_API_LOC_CMD_SETPARAM,sizeof(dn_api_loc_setparam_t) + length);
+    240          
+    241              if(p_setparam->paramId != paramId){
+    242                  dnm_ucli_trace(loc_v.traceEnabled, "paramId mismatch\r\n");
+    243                  ret = DN_ERR_ERROR;
+    244              }
+    245          
+    246              *rc = p_rsp->rc;
+    247              return(ret);
+    248          }
+    249           
+    250          /**
+    251          \brief Get some configuration parameter.
+    252          
+    253          \param[in] paramId       Identifier of the parameter to be retrieved.
+    254          \param[in,out] payload   Points to both the structure to pass with the
+    255             <tt>GET</tt> command, and contains the result after the function returns.
+    256          \param[in] txPayloadLen  Number of bytes in the structure passed with the
+    257             <tt>GET</tt> commmand.
+    258          \param[out] rxPayloadLen Length of the result, i.e. number of bytes written
+    259             back into the payload buffer.
+    260          \param[out] rc           Location to write the return code to (details below).
+    261          
+    262          This function calls the #DN_API_LOC_CMD_GETPARAM command of the local
+    263          interface.
+    264          There are in two elements which can be considered "return codes" when
+    265          calling this function:
+    266          - The value returned by this function merely indicates whether the command
+    267            could be issued to the local interface.
+    268          - The outcome of that call is written at the location pointed to by the
+    269            <tt>rc</tt> parameter. Consult the <tt>getParameter</tt> section relative to
+    270            <tt>paramId</tt> you are getting in the "SmartMesh IP Mote Serial API Guide"
+    271            (http://www.linear.com/docs/41886); it lists the possible return codes
+    272            and their meaning.
+    273          
+    274          \post After the function returns successfully, the location of <tt>payload</tt>
+    275          contains the following information:
+    276          - byte 0: the value of the return code.
+    277          - byte 1: the <tt>paramId</tt>.
+    278          - byte 2 and more: the value of the requested parameter.
+    279          You should therefore allocate two extra bytes to the payload buffer for the 
+    280          return code and paramId. Similarly, the value of <tt>rxPayloadLen</tt>
+    281          should include those two bytes.
+    282          
+    283          \note The <tt>payload</tt> parameter points to a buffer you have previously
+    284          allocated. You should allocate a buffer large enough to fit either the
+    285          structure sent to the function (<tt>txPayloadLen</tt> bytes), or the data 
+    286          written by this function (<tt>rxPayloadLen</tt> bytes). That is, when
+    287          allocating this buffer, it should be of size
+    288          <tt>max(txPayloadLen,rxPayloadLen)</tt> bytes.
+    289          
+    290          \return #DN_ERR_NONE if the function completes successfully.
+    291          \return #DN_ERR_ERROR if the function can not be completed successfully.
+    292          */
+    293          dn_error_t dnm_loc_getParameterCmd(INT8U paramId, INT8U *payload, INT8U txPayloadLen,  INT8U *rxPayloadLen, INT8U *rc)
+    294          {
+    295              dn_error_t          ret;
+    296              RSP_HEADER_CAST(header_rsp)
+    297              REQ_BUF_CAST(p_getparam,dn_api_loc_getparam_t)
+    298              RSP_BUF_CAST(p_getparam_rsp,dn_api_loc_rsp_getparam_t)
+    299              
+    300              p_getparam->paramId      = paramId;
+    301             
+    302              ret = dnm_loc_processCmd(DN_API_LOC_CMD_GETPARAM,sizeof(dn_api_loc_getparam_t));
+    303          
+    304              *rc              = p_getparam_rsp->rc;
+    305              *rxPayloadLen    = header_rsp->len;      
+    306              if(*rxPayloadLen > 0){
+    307                  memcpy(payload, p_getparam_rsp, *rxPayloadLen);
+    308              }
+    309             
+    310              if(p_getparam_rsp->paramId != paramId){
+    311                  dnm_ucli_trace(loc_v.traceEnabled, "paramId mismatch\r\n");
+    312                  ret = DN_ERR_ERROR;
+    313              }
+    314          
+    315              return(ret);
+    316          }
+    317          
+    318          /**
+    319          \brief Have the mote join a network.
+    320          
+    321          \param[out] rc Location to write the return code to (details below).
+    322          
+    323          This function calls the #DN_API_LOC_CMD_JOIN command of the local
+    324          interface.
+    325          There are in two elements which can be considered "return codes" when
+    326          calling this function:
+    327          - The value returned by this function merely indicates whether the command
+    328            could be issued to the local interface.
+    329          - The outcome of that call is written at the location pointed to by the
+    330            <tt>rc</tt> parameter. Consult the <tt>join</tt> section in the "SmartMesh
+    331            IP Mote Serial API Guide" (http://www.linear.com/docs/41886); it lists
+    332            the possible return codes and their meaning.
+    333          
+    334          \return #DN_ERR_NONE if the function completes successfully.
+    335          \return #DN_ERR_ERROR if the function can not be completed successfully.
+    336          */
+    337          dn_error_t dnm_loc_joinCmd(INT8U *rc)
+    338          {
+    339              dn_error_t ret; 
+    340              RSP_BUF_CAST(p_rsp,dn_api_rc_rsp_t)
+    341              ret = dnm_loc_processCmd(DN_API_LOC_CMD_JOIN,0);
+    342              *rc = p_rsp->rc;
+    343              return(ret);
+    344          }
+    345          
+    346          /**
+    347          \brief Have the mote disconnect from the network it is connected to.
+    348          
+    349          \param[out] rc Location to write the return code to (details below).
+    350          
+    351          This function calls the #DN_API_LOC_CMD_DISCONNECT command of the local
+    352          interface.
+    353          There are in two elements which can be considered "return codes" when
+    354          calling this function:
+    355          - The value returned by this function merely indicates whether the command
+    356            could be issued to the local interface.
+    357          - The outcome of that call is written at the location pointed to by the
+    358            <tt>rc</tt> parameter. Consult the <tt>disconnect</tt> section in the
+    359            "SmartMesh IP Mote Serial API Guide" (http://www.linear.com/docs/41886); it
+    360            lists the possible return codes and their meaning.
+    361          
+    362          \return #DN_ERR_NONE if the function completes successfully.
+    363          \return #DN_ERR_ERROR if the function can not be completed successfully.
+    364          */
+    365          dn_error_t dnm_loc_disconnectCmd(INT8U *rc)
+    366          {
+    367              dn_error_t ret; 
+    368              RSP_BUF_CAST(p_rsp,dn_api_rc_rsp_t)
+    369              ret = dnm_loc_processCmd(DN_API_LOC_CMD_DISCONNECT,0);
+    370              *rc = p_rsp->rc;
+    371              return(ret);   
+    372          }
+    373          
+    374          /**
+    375          \brief Reset the mote.
+    376          
+    377          \param[out] rc Location to write the return code to (details below).
+    378          
+    379          This function calls the #DN_API_LOC_CMD_RESET command of the local
+    380          interface.
+    381          There are in two elements which can be considered "return codes" when
+    382          calling this function:
+    383          - The value returned by this function merely indicates whether the command
+    384            could be issued to the local interface.
+    385          - The outcome of that call is written at the location pointed to by the
+    386            <tt>rc</tt> parameter. Consult the <tt>reset</tt> section in the
+    387            "SmartMesh IP Mote Serial API Guide" (http://www.linear.com/docs/41886); it
+    388            lists the possible return codes and their meaning.
+    389          
+    390          \return #DN_ERR_NONE if the function completes successfully.
+    391          \return #DN_ERR_ERROR if the function cannot be completed successfully.
+    392          */
+    393          dn_error_t dnm_loc_resetCmd(INT8U *rc)
+    394          {
+    395              dn_error_t ret;   
+    396              RSP_BUF_CAST(p_rsp,dn_api_rc_rsp_t)
+    397              ret = dnm_loc_processCmd(DN_API_LOC_CMD_RESET,0);
+    398              *rc = p_rsp->rc;
+    399              return(ret);   
+    400          }
+    401          
+    402          /**
+    403          \brief Start searching for network.
+    404          
+    405          \param[out] rc Location to write the return code to (details below).
+    406          
+    407          This function calls the #DN_API_LOC_CMD_SEARCH command of the local
+    408          interface.
+    409          There are in two elements which can be considered "return codes" when
+    410          calling this function:
+    411          - The value returned by this function merely indicates whether the command
+    412            could be issued to the local interface.
+    413          - The outcome of that call is written at the location pointed to by the
+    414            <tt>rc</tt> parameter. Consult the <tt>search</tt> section in the
+    415            "SmartMesh IP Mote Serial API Guide" (http://www.linear.com/docs/41886); it
+    416            lists the possible return codes and their meaning.
+    417          
+    418          \return #DN_ERR_NONE if the function completes successfully.
+    419          \return #DN_ERR_ERROR if the function cannot be completed successfully.
+    420          */
+    421          dn_error_t dnm_loc_searchCmd(INT8U *rc)
+    422          {
+    423              dn_error_t ret;   
+    424              RSP_BUF_CAST(p_rsp,dn_api_rc_rsp_t)
+    425              ret = dnm_loc_processCmd(DN_API_LOC_CMD_SEARCH,0);
+    426              *rc = p_rsp->rc;
+    427              return(ret);   
+    428          }
+    429          
+    430          /**
+    431          \brief Have the mote enter low-power sleep mode.
+    432          
+    433          \param[out] rc Location to write the return code to (details below).
+    434          
+    435          This function calls the #DN_API_LOC_CMD_LOWPWRSLEEP command of the local
+    436          interface.
+    437          There are in two elements which can be considered "return codes" when
+    438          calling this function:
+    439          - The value returned by this function merely indicates whether the command
+    440            could be issued to the local interface.
+    441          - The outcome of that call is written at the location pointed to by the
+    442            <tt>rc</tt> parameter. Consult the <tt>lowPowerSleep</tt> section in the
+    443            "SmartMesh IP Mote Serial API Guide" (http://www.linear.com/docs/41886); it
+    444            lists the possible return codes and their meaning.
+    445          
+    446          \return #DN_ERR_NONE if the function completes successfully.
+    447          \return #DN_ERR_ERROR if the function can not be completed successfully.
+    448          */
+    449          dn_error_t dnm_loc_lowPowerSleepCmd(INT8U *rc)
+    450          {
+    451              dn_error_t ret;   
+    452              RSP_BUF_CAST(p_rsp,dn_api_rc_rsp_t)
+    453              ret = dnm_loc_processCmd(DN_API_LOC_CMD_LOWPWRSLEEP,0);
+    454              *rc = p_rsp->rc;
+    455              return(ret);   
+    456          }
+    457          
+    458          /**
+    459          \brief Clear the mote's non-volatile (NV) memory.
+    460          
+    461          \param[out] rc Location to write the return code to (details below).
+    462          
+    463          This function calls the #DN_API_LOC_CMD_CLEARNV command of the local
+    464          interface.
+    465          There are in two elements which can be considered "return codes" when
+    466          calling this function:
+    467          - The value returned by this function merely indicates whether the command
+    468            could be issued to the local interface.
+    469          - The outcome of that call is written at the location pointed to by the
+    470            <tt>rc</tt> parameter. Consult the <tt>clearNV</tt> section in the
+    471            "SmartMesh IP Mote Serial API Guide" (http://www.linear.com/docs/41886); it
+    472            lists the possible return codes and their meaning.
+    473          
+    474          \return #DN_ERR_NONE if the function completes successfully.
+    475          \return #DN_ERR_ERROR if the function can not be completed successfully.
+    476          */
+    477          dn_error_t dnm_loc_clearNVCmd(INT8U *rc)
+    478          {
+    479              dn_error_t ret;   
+    480              RSP_BUF_CAST(p_rsp,dn_api_rc_rsp_t)
+    481              ret = dnm_loc_processCmd(DN_API_LOC_CMD_CLEARNV,0);
+    482              *rc = p_rsp->rc;
+    483              return(ret);   
+    484          }
+    485          
+    486          /**
+    487          \brief Send a packet into the network.
+    488          
+    489          \param[in]  sendto  Pointer to the structure containing the packet and its
+    490             metadata.
+    491          \param[in]  length  Length of the payload, in bytes.
+    492          \param[out] rc      Location to write the return code to (details below).
+    493          
+    494          This function calls the #DN_API_LOC_CMD_SENDTO command of the local
+    495          interface.
+    496          There are in two elements which can be considered "return codes" when
+    497          calling this function:
+    498          - The value returned by this function merely indicates whether the command
+    499            could be issued to the local interface.
+    500          - The outcome of that call is written at the location pointed to by the
+    501            <tt>rc</tt> parameter. Consult the <tt>sendTo</tt> section in the
+    502            "SmartMesh IP Mote Serial API Guide" (http://www.linear.com/docs/41886); it
+    503            lists the possible return codes and their meaning.
+    504          
+    505          \return #DN_ERR_NONE if the function completes successfully.
+    506          \return #DN_ERR_ERROR if the function can not be completed successfully.
+    507          */
+    508          dn_error_t dnm_loc_sendtoCmd(loc_sendtoNW_t *sendto, INT8U length, INT8U *rc)
+    509          {
+    510              dn_error_t                   ret;
+    511              REQ_BUF_CAST(p_sendto,dn_api_loc_sendto_t)
+    512              RSP_BUF_CAST(p_rsp,dn_api_rc_rsp_t)
+    513                  
+    514              memcpy((void*)(p_sendto),(void*)(&sendto->locSendTo),sizeof(dn_api_loc_sendto_t)+length); 
+    515              p_sendto->destPort = htons(p_sendto->destPort);
+    516              p_sendto->packetId = htons(p_sendto->packetId);
+    517              ret = dnm_loc_processCmd(DN_API_LOC_CMD_SENDTO,sizeof(dn_api_loc_sendto_t) + length);
+    518          
+    519              *rc = p_rsp->rc;
+    520              return(ret);
+    521          }
+    522          
+    523          /**
+    524          \brief Open a socket.
+    525          
+    526          \param[in]  protocol Type of transport protocol for that socket.
+    527          \param[out] sockId   Location where to write the socket id to.
+    528          \param[out] rc       Location to write the return code to (details below).
+    529          
+    530          This function calls the #DN_API_LOC_CMD_OPEN_SOCKET command of the local
+    531          interface.
+    532          There are in two elements which can be considered "return codes" when
+    533          calling this function:
+    534          - The value returned by this function merely indicates whether the command
+    535            could be issued to the local interface.
+    536          - The outcome of that call is written at the location pointed to by the
+    537            <tt>rc</tt> parameter. Consult the <tt>openSocket</tt> section in the
+    538            "SmartMesh IP Mote Serial API Guide" (http://www.linear.com/docs/41886); it
+    539            lists the possible return codes and their meaning.
+    540          
+    541          \return #DN_ERR_NONE if the function completes successfully.
+    542          \return #DN_ERR_ERROR if the function can not be completed successfully.
+    543          */
+    544          dn_error_t dnm_loc_openSocketCmd(INT8U protocol, INT8U *sockId, INT8U *rc)
+    545          {
+    546              dn_error_t ret;
+    547              REQ_BUF_CAST(p_open_socket,dn_api_loc_open_socket_t)
+    548              RSP_BUF_CAST(p_open_socket_rsp,dn_api_loc_rsp_open_socket_t)
+    549          
+    550              p_open_socket->protocol  = protocol;
+    551          
+    552              ret = dnm_loc_processCmd(DN_API_LOC_CMD_OPEN_SOCKET,sizeof(dn_api_loc_open_socket_t));
+    553          
+    554              *rc      = p_open_socket_rsp->rc;
+    555              *sockId  = p_open_socket_rsp->socketId;
+    556              return(ret);      
+    557          }
+    558          
+    559          /**
+    560          \brief Close a previously opened socket.
+    561          
+    562          \param[in]  sockId Identifier of the socket to close.
+    563          \param[out] rc     Location to write the return code to (details below).
+    564          
+    565          This function calls the #DN_API_LOC_CMD_CLOSE_SOCKET command of the local
+    566          interface.
+    567          There are in two elements which can be considered "return codes" when
+    568          calling this function:
+    569          - The value returned by this function merely indicates whether the command
+    570            could be issued to the local interface.
+    571          - The outcome of that call is written at the location pointed to by the
+    572            <tt>rc</tt> parameter. Consult the <tt>closeSocket</tt> section in the
+    573            "SmartMesh IP Mote Serial API Guide" (http://www.linear.com/docs/41886); it
+    574            lists the possible return codes and their meaning.
+    575          
+    576          \return #DN_ERR_NONE if the function completes successfully.
+    577          \return #DN_ERR_ERROR if the function can not be completed successfully.
+    578          */
+    579          dn_error_t dnm_loc_closeSocketCmd(INT8U sockId, INT8U *rc)
+    580          {
+    581              dn_error_t ret;
+    582              REQ_BUF_CAST(p_close_socket,dn_api_loc_close_socket_t)
+    583              RSP_BUF_CAST(p_rsp,dn_api_rc_rsp_t)
+    584          
+    585              p_close_socket->socketId  = sockId;
+    586          
+    587              ret = dnm_loc_processCmd(DN_API_LOC_CMD_CLOSE_SOCKET,sizeof(dn_api_loc_close_socket_t));
+    588             
+    589              *rc = p_rsp->rc;
+    590              return(ret); 
+    591          }
+    592          
+    593          /**
+    594          \brief Bind a socket to some port.
+    595          
+    596          \param[in]  sockId The identifier of the socket.
+    597          \param[in]  port   The port to bind to.
+    598          \param[out] rc     Location to write the return code to (details below).
+    599          
+    600          This function calls the #DN_API_LOC_CMD_BIND_SOCKET command of the local
+    601          interface.
+    602          There are in two elements which can be considered "return codes" when
+    603          calling this function:
+    604          - The value returned by this function merely indicates whether the command
+    605            could be issued to the local interface.
+    606          - The outcome of that call is written at the location pointed to by the
+    607            <tt>rc</tt> parameter. Consult the <tt>bindSocket</tt> section in the
+    608            "SmartMesh IP Mote Serial API Guide" (http://www.linear.com/docs/41886); it
+    609            lists the possible return codes and their meaning.
+    610          
+    611          \return #DN_ERR_NONE if the function completes successfully.
+    612          \return #DN_ERR_ERROR if the function can not be completed successfully.
+    613          */
+    614          dn_error_t dnm_loc_bindSocketCmd(INT8U sockId, INT16U port, INT8U *rc)
+    615          {  
+    616              dn_error_t ret;
+    617              REQ_BUF_CAST(p_bind_socket,dn_api_loc_bind_socket_t)
+    618              RSP_BUF_CAST(p_rsp,dn_api_rc_rsp_t)
+    619          
+    620              p_bind_socket->socketId  = sockId;
+    621              p_bind_socket->port      = htons(port);
+    622          
+    623              ret = dnm_loc_processCmd(DN_API_LOC_CMD_BIND_SOCKET,sizeof(dn_api_loc_bind_socket_t));
+    624             
+    625              *rc = p_rsp->rc;
+    626              return(ret); 
+    627          }
+    628          
+    629          /**
+    630           \brief Get the state of a socket.
+    631           
+    632           \param[in]  index  Index of the requested socket (i.e. 0=first, 1=second, etc).
+    633           \param[in]  payload Pointer to the payload to send.
+    634           \param[out] rc     Location to write the return code to (details below).
+    635           
+    636           This function calls the #DN_API_LOC_CMD_SOCKET_INFO command of the local
+    637           interface.
+    638           There are in two elements which can be considered "return codes" when
+    639           calling this function:
+    640           - The value returned by this function merely indicates whether the command
+    641           could be issued to the local interface.
+    642           - The outcome of that call is written at the location pointed to by the
+    643           <tt>rc</tt> parameter. Consult the <tt>socketInfo</tt> section in the
+    644           "SmartMesh IP Mote Serial API Guide" (http://www.linear.com/docs/41886); it
+    645           lists the possible return codes and their meaning.
+    646           
+    647           \return #DN_ERR_NONE if the function completes successfully.
+    648           \return #DN_ERR_ERROR if the function can not be completed successfully.
+    649           */
+    650          dn_error_t dnm_loc_socketInfoCmd(INT8U index, INT8U *payload, INT8U *rc)
+    651          {
+    652             dn_error_t ret;
+    653             REQ_BUF_CAST(p_socket_info, dn_api_loc_socket_info_t)
+    654             RSP_BUF_CAST(p_socket_info_rsp, dn_api_loc_rsp_socket_info_t)
+    655             
+    656             p_socket_info->index  = index;
+    657             
+    658             ret = dnm_loc_processCmd(DN_API_LOC_CMD_SOCKET_INFO,sizeof(dn_api_loc_socket_info_t));
+    659             
+    660             *rc = p_socket_info_rsp->rc;
+    661             memcpy(payload, p_socket_info_rsp, sizeof(dn_api_loc_rsp_socket_info_t));
+    662             return(ret);
+    663          }
+    664          
+    665          /**
+    666          \brief Request a service.
+    667          
+    668          \param[in]  destAddr The address of the device to establish the service to.
+    669          \param[in]  svcType  The type of service to establish.
+    670          \param[in]  svcInfo  "value" of the service to request. The meaning of this 
+    671             parameter depends on the type of service.
+    672          \param[out] rc       Location to write the return code to (details below).
+    673          
+    674          This function calls the #DN_API_LOC_CMD_SERVICE_REQUEST command of the local
+    675          interface.
+    676          There are in two elements which can be considered "return codes" when
+    677          calling this function:
+    678          - The value returned by this function merely indicates whether the command
+    679            could be issued to the local interface.
+    680          - The outcome of that call is written at the location pointed to by the
+    681            <tt>rc</tt> parameter. Consult the <tt>requestService</tt> section in the
+    682            "SmartMesh IP Mote Serial API Guide" (http://www.linear.com/docs/41886); it
+    683            lists the possible return codes and their meaning.
+    684          
+    685          \return #DN_ERR_NONE if the function completes successfully.
+    686          \return #DN_ERR_ERROR if the function can not be completed successfully.
+    687          */
+    688          dn_error_t dnm_loc_requestServiceCmd(dn_moteid_t destAddr,INT8U svcType, INT32U svcInfo,INT8U *rc)
+    689          {
+    690              dn_error_t ret;
+    691              REQ_BUF_CAST(p_service_request,dn_api_loc_svcrequest_t)
+    692              RSP_BUF_CAST(p_rsp,dn_api_rc_rsp_t)
+    693              
+    694              p_service_request->dest      = htons(destAddr);
+    695              p_service_request->type      = svcType;
+    696              p_service_request->value     = htonl(svcInfo);
+    697             
+    698              ret = dnm_loc_processCmd(DN_API_LOC_CMD_SERVICE_REQUEST,sizeof(dn_api_loc_svcrequest_t));
+    699             
+    700              *rc = p_rsp->rc;
+    701              return(ret); 
+    702          }
+    703          
+    704          /**
+    705          \brief Get information about a particular service.
+    706          
+    707          \param[in]  destAddr Address of the device the service of interest is
+    708             established to.
+    709          \param[in]  svcType  Type of the service of interest.
+    710          \param[out] svcRsp   Location to write the response structure to.
+    711          
+    712          \return #DN_ERR_NONE if the function completes successfully.
+    713          \return #DN_ERR_ERROR if the function can not be completed successfully.
+    714          */
+    715          dn_error_t dnm_loc_getAssignedServiceCmd(dn_moteid_t destAddr, INT8U svcType,dn_api_loc_rsp_get_service_t *svcRsp)
+    716          {
+    717              dn_error_t ret;
+    718              REQ_BUF_CAST(p_get_service,dn_api_loc_get_service_t)
+    719              RSP_BUF_CAST(p_get_service_rsp,dn_api_loc_rsp_get_service_t)
+    720          
+    721              p_get_service->dest          = htons(destAddr);
+    722              p_get_service->type          = svcType;
+    723             
+    724              ret = dnm_loc_processCmd(DN_API_LOC_CMD_GET_SVC_INFO,sizeof(dn_api_loc_get_service_t));
+    725          
+    726              memcpy((void*)svcRsp,(void*)p_get_service_rsp,loc_v.ctrlRespBufLen);
+    727              svcRsp->dest  = ntohs(svcRsp->dest);
+    728              svcRsp->value = ntohl(svcRsp->value);
+    729          
+    730              return(ret); 
+    731          }
+    732          
+    733          /**
+    734          \brief Have the mote perform a radio transmit test.
+    735          
+    736          \param[in] type        Transmition type. Acceptable values are:
+    737             - #DN_API_RADIOTX_TYPE_CW for a continuous (unmodulated) wave.
+    738             - #DN_API_RADIOTX_TYPE_CM for a continuous modulated signal.
+    739             - #DN_API_RADIOTX_TYPE_PKT to send some number of packets.
+    740             - #DN_API_RADIOTX_TYPE_PKCCA to send some number of packets with CCA enabled.
+    741          \param[in] mask        Mask of channels (0-15) enabled for the test. Channel
+    742             0 (resp. 15) corresponds to 2.405GHz (resp. 2.480GHz), i.e. channel 15
+    743             (resp. 26) according to the IEEE802.15.4 numbering scheme. Bit 0 corresponds
+    744             to channel 0. For continuous wave and continuous modulation tests, enable
+    745             exactly one channel.
+    746          \param[in] power       Transmit power, in dB. Valid values are 0 and 8.
+    747          \param[in] stationId   Device stationId
+    748          \param[in] numRepeats  Number of times to repeat the packet sequence
+    749             (0=repeat forever). Applies only to packet transmission tests.
+    750          \param[in] numSubtests Number of packets in each sequence. This parameter is
+    751             only used for a packet test. Maximum allowed value is 10.
+    752          \param[in] subTests    Pointer to an array of numSubtests sequence 
+    753             definitions (up to 10). This parameter is only used for packet test. Each
+    754             entry contains:
+    755             - the length of the packet (must be between 2 and 125 bytes).
+    756             - the delay between this packet at the next one, in microseconds.
+    757          \param[out] rc         Location to write the return code to (details below).
+    758          
+    759          This function calls the #DN_API_LOC_CMD_TESTRADIOTX command of the local
+    760          interface.
+    761          There are in two elements which can be considered "return codes" when
+    762          calling this function:
+    763          - The value returned by this function merely indicates whether the command
+    764            could be issued to the local interface.
+    765          - The outcome of that call is written at the location pointed to by the
+    766            <tt>rc</tt> parameter. Consult the <tt>testRadioTxExt</tt> section in the
+    767            "SmartMesh IP Mote Serial API Guide" (http://www.linear.com/docs/41886); it
+    768            lists the possible return codes and their meaning.
+    769          
+    770          \return #DN_ERR_NONE if the function completes successfully.
+    771          \return #DN_ERR_ERROR if the function can not be completed successfully.
+    772          */
+    773          dn_error_t dnm_loc_testRadioTxCmd(INT8U type, INT16U mask, INT8S power, INT8U stationId,
+    774                                            INT16U numRepeats, INT8U numSubtests, 
+    775                                            dn_api_loc_testrftx_subtestparam_t * subTests,
+    776                                            INT8U *rc)
+    777          {
+    778              dn_error_t ret;
+    779              INT8U i;
+    780              INT8U pktLen = 0;
+    781              dn_api_loc_testrftx_part2_t *pReq2;
+    782              REQ_BUF_CAST(p_radio_tx,dn_api_loc_testrftx_part1_t)
+    783              RSP_BUF_CAST(p_rsp,dn_api_rc_rsp_t)
+    784          
+    785              p_radio_tx->type        = type;
+    786              p_radio_tx->mask        = ntohs(mask);
+    787              p_radio_tx->numRepeats  = ntohs(numRepeats);
+    788              p_radio_tx->txPower     = power;
+    789              p_radio_tx->numSubtests = numSubtests;
+    790              memcpy((void*)&p_radio_tx->subtestParam,(void*)subTests,numSubtests * sizeof(dn_api_loc_testrftx_subtestparam_t));
+    791              for(i=0; i<numSubtests; i++) {
+    792                p_radio_tx->subtestParam[i].gap   = htons(p_radio_tx->subtestParam[i].gap);
+    793              }
+    794              pktLen = sizeof(dn_api_loc_testrftx_part1_t) + (numSubtests * sizeof(dn_api_loc_testrftx_subtestparam_t));
+    795              pReq2 = (dn_api_loc_testrftx_part2_t*)(((INT8U*)p_radio_tx) + pktLen);
+    796              pReq2->stationId = stationId;
+    797              pktLen += sizeof(dn_api_loc_testrftx_part2_t);
+    798              ret = dnm_loc_processCmd(DN_API_LOC_CMD_TESTRADIOTX, pktLen);
+    799             
+    800              *rc = p_rsp->rc;
+    801              return(ret); 
+    802          }
+    803          
+    804          /**
+    805          \brief Have the mote perform a radio receive test.
+    806          
+    807          \param[in]  mask           Mask of channels (0-15) enabled for the test.
+    808             Channel 0 (resp. 15) corresponds to 2.405GHz (resp. 2.480GHz), i.e.
+    809             channel 15 (resp. 26) according to the IEEE802.15.4 numbering scheme. Bit 0
+    810             corresponds to channel 0. For continuous wave and continuous modulation
+    811             tests, only one channel should be enabled.
+    812          \param[in]  durationRxTest Duration of the Rx test, in seconds.
+    813          \param[in] stationId       Device stationId
+    814          \param[out] rc             Location to write the return code to (details
+    815             below).
+    816          
+    817          This function calls the #DN_API_LOC_CMD_TESTRADIORX command of the local
+    818          interface.
+    819          There are in two elements which can be considered "return codes" when
+    820          calling this function:
+    821          - The value returned by this function merely indicates whether the command
+    822            could be issued to the local interface.
+    823          - The outcome of that call is written at the location pointed to by the
+    824            <tt>rc</tt> parameter. Consult the <tt>testRadioRx</tt> section in the
+    825            "SmartMesh IP Mote Serial API Guide" (http://www.linear.com/docs/41886); it
+    826            lists the possible return codes and their meaning.
+    827          
+    828          \return #DN_ERR_NONE if the function completes successfully.
+    829          \return #DN_ERR_ERROR if the function can not be completed successfully.
+    830          */
+    831          dn_error_t dnm_loc_testRadioRxCmd(INT16U mask, INT16U durationRxTest, INT8U stationId, INT8U *rc)
+    832          {
+    833              dn_error_t ret;
+    834              dn_api_loc_testrfrx_part2_t *pCmd;
+    835              REQ_BUF_CAST(p_radio_rx,dn_api_loc_testrfrx_part1_t)
+    836              RSP_BUF_CAST(p_rsp,dn_api_rc_rsp_t)
+    837          
+    838              pCmd = (dn_api_loc_testrfrx_part2_t*)(((INT8U*)p_radio_rx) + sizeof(dn_api_loc_testrfrx_part1_t));
+    839              p_radio_rx->mask             = htons(mask);
+    840              p_radio_rx->timeSeconds      = htons(durationRxTest);
+    841              pCmd->stationId              = stationId;
+    842             
+    843              ret = dnm_loc_processCmd(DN_API_LOC_CMD_TESTRADIORX,(sizeof(dn_api_loc_testrfrx_part1_t) + sizeof(dn_api_loc_testrfrx_part2_t)));
+    844             
+    845              *rc = p_rsp->rc;
+    846              return(ret); 
+    847          }
+    848          
+    849          /**
+    850          \brief Register a callback function for notification events.
+    851          
+    852          \param[in] cb A pointer to the function to call.
+    853          
+    854          \return #DN_ERR_NONE if the function completes successfully.
+    855          \return #DN_ERR_ERROR if the function can not be completed successfully.
+    856          */
+    857          dn_error_t dnm_loc_registerEventNotifCallback(eventNotifCb_t cb)
+    858          {
+    859              if(cb != NULL) {
+    860                  loc_v.eventNotifCb = cb; 
+    861                  return DN_ERR_NONE;
+    862              }
+    863              else {
+    864                  return DN_ERR_ERROR;
+    865              }
+    866          }
+    867          
+    868          /**
+    869          \brief Register a callback function for events and alarms, in pass-through
+    870             mode.
+    871          
+    872          \param[in] cb A pointer to the function to call.
+    873          
+    874          \return #DN_ERR_NONE if the function completes successfully.
+    875          \return #DN_ERR_ERROR if the function can not be completed successfully.
+    876          */
+    877          dn_error_t dnm_loc_registerPassThroughEvNotifCallback(passThroughEventNotifCb_t cb)
+    878          {
+    879             if(cb != NULL) {
+    880                loc_v.passThroughEvNotifCb = cb;
+    881                return DN_ERR_NONE;
+    882             }
+    883             else {
+    884                return DN_ERR_ERROR;
+    885             }
+    886          }
+    887          
+    888          /**
+    889          \brief Register a callback function for received frames, in passthrough mode.
+    890          
+    891          \param[in] cb A pointer to the function to call.
+    892          
+    893          \return #DN_ERR_NONE if the function completes successfully.
+    894          \return #DN_ERR_ERROR if the function can not be completed successfully.
+    895          */
+    896          dn_error_t dnm_loc_registerPassThroughNotifCallback(passThroughNotifCb_t cb)
+    897          {
+    898             if(cb != NULL) {
+    899                loc_v.passThroughNotifCb = cb;
+    900                return DN_ERR_NONE;
+    901             }
+    902             else {
+    903                return DN_ERR_ERROR;
+    904             }
+    905          }
+    906          
+    907          
+    908          /**
+    909          \brief Register a callback function for received frames.
+    910          
+    911          \param[in] cb A pointer to the function to call.
+    912          
+    913          \return #DN_ERR_NONE if the function completes successfully.
+    914          \return #DN_ERR_ERROR if the function can not be completed successfully.
+    915          */
+    916          dn_error_t dnm_loc_registerRxNotifCallback(rxNotifCb_t cb)
+    917          {
+    918              if(cb != NULL) {
+    919                  loc_v.rxNotifCb = cb; 
+    920                  return DN_ERR_NONE;
+    921              }
+    922              else {
+    923                  return DN_ERR_ERROR;
+    924              }
+    925          }
+    926          
+    927          /**
+    928          \brief Register a callback function for time notifications.
+    929          
+    930          \param[in] cb A pointer to the function to call.
+    931          
+    932          \return #DN_ERR_NONE if the function completes successfully.
+    933          \return #DN_ERR_ERROR if the function can not be completed successfully.
+    934          */
+    935          dn_error_t dnm_loc_registerTimeNotifCallback(timeNotifCb_t cb)
+    936          {
+    937              if(cb != NULL) {
+    938                  loc_v.timeNotifCb = cb; 
+    939                  return DN_ERR_NONE;
+    940              }
+    941              else {
+    942                  return DN_ERR_ERROR;
+    943              }
+    944          }
+    945          
+    946          /**
+    947          \brief Register a callback function for advReceived notifications.
+    948          
+    949          \param[in] cb A pointer to the function to call.
+    950          
+    951          \return #DN_ERR_NONE if the function completes successfully.
+    952          \return #DN_ERR_ERROR if the function can not be completed successfully.
+    953          */
+    954          dn_error_t dnm_loc_registerAdvNotifCallback(advNotifCb_t cb)
+    955          {
+    956              if(cb != NULL) {
+    957                  loc_v.advNotifCb = cb; 
+    958                  return DN_ERR_NONE;
+    959              }
+    960              else {
+    961                  return DN_ERR_ERROR;
+    962              }
+    963          }
+    964          
+    965          /**
+    966          \brief Register a callback function for txDone notifications.
+    967          
+    968          \param[in] cb A pointer to the function to call.
+    969          
+    970          \return #DN_ERR_NONE if the function completes successfully.
+    971          \return #DN_ERR_ERROR if the function can not be completed successfully.
+    972          */
+    973          dn_error_t dnm_loc_registerTxDoneNotifCallback(txDoneNotifCb_t cb)
+    974          {
+    975              if(cb != NULL) {
+    976                  loc_v.txDoneNotifCb = cb; 
+    977                  return DN_ERR_NONE;
+    978              }
+    979              else {
+    980                  return DN_ERR_ERROR;
+    981              }
+    982          }
+    983          
+    984          /**
+    985          \brief Send raw bytes into the network.
+    986          
+    987          \param[in]     payload Pointer to the payload to send.
+    988          \param[in]     length  Number of bytes in the payload.
+    989          \param[out]    rsp     Location where the response will be written.
+    990          \param[in,out] rspLen  A pointer to the size of the response buffer. This
+    991             function will modify this value; after this function returns, it contains
+    992             the size of the received response, i.e. the number of byte written to the
+    993             buf.
+    994          
+    995          \return #DN_ERR_NONE if the function completes successfully.
+    996          \return #DN_ERR_ERROR if the function can not be completed successfully.
+    997          */
+    998          dn_error_t dnm_loc_sendRaw(INT8U* payload, INT16U length, INT8U* rsp, INT8U *rspLen)
+    999          {
+   1000              dn_error_t ret;
+   1001              REQ_HEADER_CAST(header_req)
+   1002              RSP_HEADER_CAST(header_rsp)
+   1003          
+   1004              memcpy((void*)(header_req),(void*)(payload),length); 
+   1005          
+   1006              ret = dnm_loc_processCmd(DN_API_LOC_CMD_SEND_RAW,length - sizeof(dn_api_cmd_hdr_t));
+   1007          
+   1008              memcpy((void*)rsp, (void*)header_rsp, loc_v.ctrlRespBufLen);
+   1009              *rspLen      = loc_v.ctrlRespBufLen;     
+   1010              return(ret); 
+   1011          }
+   1012          
+   1013          /**
+   1014          \brief Prepare the response sent to a notification.
+   1015           
+   1016          \param[in] notifId  Identifier of the notification.
+   1017          \param[in] response Response code to answer.
+   1018          */
+   1019          void dnm_loc_prepareNotifResponse(INT8U notifId, INT8U response)
+   1020          {
+   1021             dn_api_empty_rsp_t *rsp;
+   1022             rsp = (dn_api_empty_rsp_t*)loc_v.notifRespBuf;
+   1023             rsp->hdr.cmdId = notifId;
+   1024             rsp->hdr.len = sizeof(rsp->rc);
+   1025             rsp->rc = response;
+   1026          }
+   1027          
+   1028          /**
+   1029          \brief Enable/disable trace.
+   1030           
+   1031          \param[in] traceFlag  Trace flag.
+   1032          */
+   1033          void dnm_loc_traceControl (INT8U traceFlag)
+   1034          {
+   1035             loc_v.traceEnabled = traceFlag;
+   1036          }
+   1037          
+   1038          /**
+   1039          \brief Check if trace is enabled.
+   1040           
+   1041          \return TRUE if trace is enabled, FALSE otherwise.
+   1042          */
+   1043          BOOLEAN dnm_loc_isTraceEnabled (void)
+   1044          {
+   1045             return (loc_v.traceEnabled != 0);
+   1046          }
+   1047          
+   1048          /**
+   1049          \brief Send blink payload to the mote.
+   1050          
+   1051          \param[in]  pPayload        Pointer to the payload.
+   1052          \param[in]  length          Length of the payload.
+   1053          \param[in]  fIncludeDsvNbrs Flag set to 1 if mote should include discovered neighbors when payload is sent into the network
+   1054          \param[out] rc              Location to write the return code to.
+   1055          
+   1056          This function calls the #DN_API_LOC_CMD_BLINK_PAYLOAD command of the local
+   1057          interface.
+   1058          
+   1059          \return #DN_ERR_NONE if the function completes successfully.
+   1060          \return #DN_ERR_ERROR if the function can not be completed successfully.
+   1061          */
+   1062          dn_error_t dnm_loc_blinkPayload(INT8U *pPayload, INT8U length, INT8U fIncludeDsvNbrs, INT8U *rc)
+   1063          {
+   1064              dn_error_t ret;
+   1065              REQ_BUF_CAST(p_req, dn_api_loc_blink_payload_t)
+   1066              RSP_BUF_CAST(p_rsp, dn_api_loc_rsp_blink_payload_t)
+   1067          
+   1068              if ((sizeof(dn_api_loc_blink_payload_t) + length) > (DN_API_LOC_MAX_REQ_SIZE - sizeof(dn_api_cmd_hdr_t))) {
+   1069                 return DN_ERR_SIZE;
+   1070              }
+   1071              p_req->fIncludeDscvNbrs = fIncludeDsvNbrs;
+   1072              memcpy((void*)(p_req->payload), (void*)pPayload, length);
+   1073          
+   1074              ret = dnm_loc_processCmd(DN_API_LOC_CMD_BLINK_PAYLOAD, sizeof(dn_api_loc_blink_payload_t) + length);
+   1075          
+   1076              *rc = p_rsp->rc;
+   1077              return(ret);
+   1078          }
+   1079          
+   1080          /**
+   1081          \brief Stop searching for network.
+   1082          
+   1083          \param[out] rc Location to write the return code to (details below).
+   1084          
+   1085          This function calls the #DN_API_LOC_CMD_STOP_SEARCH command of the local
+   1086          interface.
+   1087          There are in two elements which can be considered "return codes" when
+   1088          calling this function:
+   1089          - The value returned by this function merely indicates whether the command
+   1090            could be issued to the local interface.
+   1091          - The outcome of that call is written at the location pointed to by the
+   1092            <tt>rc</tt> parameter. Consult the <tt>search</tt> section in the
+   1093            "SmartMesh IP Mote Serial API Guide" (http://www.linear.com/docs/41886); it
+   1094            lists the possible return codes and their meaning.
+   1095          
+   1096          \return #DN_ERR_NONE if the function completes successfully.
+   1097          \return #DN_ERR_ERROR if the function cannot be completed successfully.
+   1098          */
+   1099          dn_error_t dnm_loc_stopSearchCmd(INT8U *rc)
+   1100          {
+   1101              dn_error_t ret;   
+   1102              RSP_BUF_CAST(p_rsp,dn_api_rc_rsp_t)
+   1103              ret = dnm_loc_processCmd(DN_API_LOC_CMD_STOP_SEARCH,0);
+   1104              *rc = p_rsp->rc;
+   1105              return(ret);   
+   1106          }
+   1107          
+
+   Maximum stack usage in bytes:
+
+   .cstack Function
+   ------- --------
+      16   dnm_loc_bindSocketCmd
+        16   -> dnm_loc_processCmd
+      16   dnm_loc_blinkPayload
+        16   -> __aeabi_memcpy
+        16   -> dnm_loc_processCmd
+       8   dnm_loc_clearNVCmd
+         8   -> dnm_loc_processCmd
+      16   dnm_loc_closeSocketCmd
+        16   -> dnm_loc_processCmd
+      40   dnm_loc_disconnectCmd
+        40   -> dn_sendSyncMsg
+        40   -> dnm_ucli_trace
+        40   -> dnm_ucli_traceDumpBlocking
+      16   dnm_loc_getAssignedServiceCmd
+        16   -> __aeabi_memcpy
+        16   -> dnm_loc_processCmd
+      32   dnm_loc_getParameterCmd
+        32   -> __aeabi_memcpy
+        32   -> dnm_loc_processCmd
+        32   -> dnm_ucli_trace
+      16   dnm_loc_init
+        16   -> assert_handler
+        16   -> dn_getChannelDesc
+       0   dnm_loc_isTraceEnabled
+      40   dnm_loc_joinCmd
+        40   -> dn_sendSyncMsg
+        40   -> dnm_ucli_trace
+        40   -> dnm_ucli_traceDumpBlocking
+      40   dnm_loc_lowPowerSleepCmd
+        40   -> dn_sendSyncMsg
+        40   -> dnm_ucli_trace
+        40   -> dnm_ucli_traceDumpBlocking
+      16   dnm_loc_openSocketCmd
+        16   -> dnm_loc_processCmd
+       0   dnm_loc_prepareNotifResponse
+      32   dnm_loc_processCmd
+        32   -> dn_sendSyncMsg
+        32   -> dnm_ucli_trace
+        32   -> dnm_ucli_traceDumpBlocking
+      48   dnm_loc_processNotifications
+        48   -- Indirect call
+        48   -> assert_handler
+        48   -> dn_readSyncMsg
+        48   -> dn_sendReply
+        48   -> dnm_ucli_traceDumpBlocking
+       0   dnm_loc_registerAdvNotifCallback
+       0   dnm_loc_registerEventNotifCallback
+       0   dnm_loc_registerPassThroughEvNotifCallback
+       0   dnm_loc_registerPassThroughNotifCallback
+       0   dnm_loc_registerRxNotifCallback
+       0   dnm_loc_registerTimeNotifCallback
+       0   dnm_loc_registerTxDoneNotifCallback
+      16   dnm_loc_requestServiceCmd
+        16   -> dnm_loc_processCmd
+      40   dnm_loc_resetCmd
+        40   -> dn_sendSyncMsg
+        40   -> dnm_ucli_trace
+        40   -> dnm_ucli_traceDumpBlocking
+      40   dnm_loc_searchCmd
+        40   -> dn_sendSyncMsg
+        40   -> dnm_ucli_trace
+        40   -> dnm_ucli_traceDumpBlocking
+      24   dnm_loc_sendRaw
+        24   -> __aeabi_memcpy
+        24   -> dnm_loc_processCmd
+      16   dnm_loc_sendtoCmd
+        16   -> __aeabi_memcpy
+        16   -> dnm_loc_processCmd
+      24   dnm_loc_setParameterCmd
+        24   -> __aeabi_memcpy
+        24   -> dnm_loc_processCmd
+        24   -> dnm_ucli_trace
+      24   dnm_loc_socketInfoCmd
+        24   -> __aeabi_memcpy
+        24   -> dnm_loc_processCmd
+       8   dnm_loc_stopSearchCmd
+         8   -> dnm_loc_processCmd
+      16   dnm_loc_testRadioRxCmd
+        16   -> dnm_loc_processCmd
+      24   dnm_loc_testRadioTxCmd
+        24   -> __aeabi_memcpy
+        24   -> dnm_loc_processCmd
+       0   dnm_loc_traceControl
+
+
+   Section sizes:
+
+   Bytes  Function/Label
+   -----  --------------
+       4  ??DataTable38
+       4  ??DataTable38_1
+     108  ?Subroutine0
+      14  ?Subroutine1
+      12  ?Subroutine2
+       6  ?Subroutine3
+      12  ?_0
+      16  ?_1
+      16  ?_2
+       8  ?_3
+      24  ?_4
+       8  ?_5
+      20  ?_6
+      22  dnm_loc_bindSocketCmd
+      50  dnm_loc_blinkPayload
+      10  dnm_loc_clearNVCmd
+      14  dnm_loc_closeSocketCmd
+      18  dnm_loc_disconnectCmd
+      88  dnm_loc_getAssignedServiceCmd
+      82  dnm_loc_getParameterCmd
+      66  dnm_loc_init
+      16  dnm_loc_isTraceEnabled
+      20  dnm_loc_joinCmd
+      18  dnm_loc_lowPowerSleepCmd
+      32  dnm_loc_openSocketCmd
+      12  dnm_loc_prepareNotifResponse
+     118  dnm_loc_processCmd
+     372  dnm_loc_processNotifications
+      16  dnm_loc_registerAdvNotifCallback
+      16  dnm_loc_registerEventNotifCallback
+      14  dnm_loc_registerPassThroughEvNotifCallback
+      16  dnm_loc_registerPassThroughNotifCallback
+      16  dnm_loc_registerRxNotifCallback
+      16  dnm_loc_registerTimeNotifCallback
+      16  dnm_loc_registerTxDoneNotifCallback
+      48  dnm_loc_requestServiceCmd
+      18  dnm_loc_resetCmd
+      18  dnm_loc_searchCmd
+      56  dnm_loc_sendRaw
+      66  dnm_loc_sendtoCmd
+      60  dnm_loc_setParameterCmd
+      42  dnm_loc_socketInfoCmd
+       8  dnm_loc_stopSearchCmd
+      30  dnm_loc_testRadioRxCmd
+     106  dnm_loc_testRadioTxCmd
+       8  dnm_loc_traceControl
+     432  loc_v
+
+ 
+   432 bytes in section .bss
+ 1'760 bytes in section .text
+ 
+ 1'760 bytes of CODE memory
+   432 bytes of DATA memory
+
+Errors: none
+Warnings: none

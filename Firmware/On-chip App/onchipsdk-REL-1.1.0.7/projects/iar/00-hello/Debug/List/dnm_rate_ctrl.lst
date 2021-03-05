@@ -1,0 +1,276 @@
+###############################################################################
+#                                                                             #
+# IAR ANSI C/C++ Compiler V6.50.3.4676/W32 for ARM      04/Mar/2021  21:41:48 #
+# Copyright 1999-2013 IAR Systems AB.                                         #
+#                                                                             #
+#    Cpu mode     =  thumb                                                    #
+#    Endian       =  little                                                   #
+#    Source file  =  C:\Users\Yesoooof\Documents\GitHub\Team-20-Sensor-Suite\ #
+#                    Firmware\On-chip App\onchipsdk-REL-1.1.0.7\src\modules\i #
+#                    p_applib\dnm_rate_ctrl.c                                 #
+#    Command line =  "C:\Users\Yesoooof\Documents\GitHub\Team-20-Sensor-Suite #
+#                    \Firmware\On-chip App\onchipsdk-REL-1.1.0.7\src\modules\ #
+#                    ip_applib\dnm_rate_ctrl.c" -lcN                          #
+#                    "C:\Users\Yesoooof\Documents\GitHub\Team-20-Sensor-Suite #
+#                    \Firmware\On-chip App\onchipsdk-REL-1.1.0.7\projects\iar #
+#                    \00-hello\Debug\List\" --diag_suppress                   #
+#                    Pa039,Pa050,Pe767,Go005,Pa082,Pa089,Pe167,Pe550,Pe188,   #
+#                    Pe177 -o "C:\Users\Yesoooof\Documents\GitHub\Team-20-Sen #
+#                    sor-Suite\Firmware\On-chip App\onchipsdk-REL-1.1.0.7\pro #
+#                    jects\iar\00-hello\Debug\Obj\" --debug --endian=little   #
+#                    --cpu=Cortex-M3 --no_path_in_file_macros --enum_is_int   #
+#                    -e --fpu=None --dlib_config "C:\Program Files (x86)\IAR  #
+#                    Systems\Embedded Workbench 6.5\arm\INC\c\DLib_Config_Nor #
+#                    mal.h" --preinclude "C:\Users\Yesoooof\Documents\GitHub\ #
+#                    Team-20-Sensor-Suite\Firmware\On-chip                    #
+#                    App\onchipsdk-REL-1.1.0.7\projects\iar\00-hello\..\all_p #
+#                    rojects.iarinc" -I "C:\Users\Yesoooof\Documents\GitHub\T #
+#                    eam-20-Sensor-Suite\Firmware\On-chip                     #
+#                    App\onchipsdk-REL-1.1.0.7\projects\iar\00-hello\..\..\.. #
+#                    \src\app\00-hello\" -I "C:\Users\Yesoooof\Documents\GitH #
+#                    ub\Team-20-Sensor-Suite\Firmware\On-chip                 #
+#                    App\onchipsdk-REL-1.1.0.7\projects\iar\00-hello\..\..\.. #
+#                    \src\app\common\" -I "C:\Users\Yesoooof\Documents\GitHub #
+#                    \Team-20-Sensor-Suite\Firmware\On-chip                   #
+#                    App\onchipsdk-REL-1.1.0.7\projects\iar\00-hello\..\..\.. #
+#                    \src\inc\" -I "C:\Users\Yesoooof\Documents\GitHub\Team-2 #
+#                    0-Sensor-Suite\Firmware\On-chip                          #
+#                    App\onchipsdk-REL-1.1.0.7\projects\iar\00-hello\..\..\.. #
+#                    \src\modules\clilib\" -I "C:\Users\Yesoooof\Documents\Gi #
+#                    tHub\Team-20-Sensor-Suite\Firmware\On-chip               #
+#                    App\onchipsdk-REL-1.1.0.7\projects\iar\00-hello\..\..\.. #
+#                    \src\modules\ip_applib\" -Oh                             #
+#    List file    =  C:\Users\Yesoooof\Documents\GitHub\Team-20-Sensor-Suite\ #
+#                    Firmware\On-chip App\onchipsdk-REL-1.1.0.7\projects\iar\ #
+#                    00-hello\Debug\List\dnm_rate_ctrl.lst                    #
+#    Object file  =  C:\Users\Yesoooof\Documents\GitHub\Team-20-Sensor-Suite\ #
+#                    Firmware\On-chip App\onchipsdk-REL-1.1.0.7\projects\iar\ #
+#                    00-hello\Debug\Obj\dnm_rate_ctrl.o                       #
+#                                                                             #
+#                                                                             #
+###############################################################################
+
+C:\Users\Yesoooof\Documents\GitHub\Team-20-Sensor-Suite\Firmware\On-chip App\onchipsdk-REL-1.1.0.7\src\modules\ip_applib\dnm_rate_ctrl.c
+      1          /*
+      2          Copyright (c) 2010, Dust Networks.  All rights reserved.
+      3          */
+      4          
+      5          /********************************************************************
+      6             Includes
+      7           ********************************************************************/
+      8          #include "dnm_rate_ctrl.h"
+      9          #include "dnm_local.h"
+     10          #include "dnm_ucli.h"
+     11          
+     12          /********************************************************************
+     13             Constants and Enumerations
+     14           ********************************************************************/
+     15          #define BUF_UNUSED 0
+     16          #define BUF_USED   0xFF
+     17          
+     18          /********************************************************************
+     19             Data Structures
+     20           ********************************************************************/
+     21          /** @{name rcm_var_t */
+     22          typedef struct {
+     23             INT8U penaltyCount; /**< Holds the penalty counts on a per channel basis */
+     24             INT8U fUsed;        /**< Used to denote the availability of buffer */
+     25             INT8U skipCount;    /**< Holds the skip count on per channel basis */
+     26          } rcm_var_t;
+     27          /** @}end rcm_var_t */
+     28          
+     29          /********************************************************************
+     30                  Variable Definitions
+     31          *********************************************************************/
+     32          static rcm_var_t  rcm_v[MAX_PENALTY_COUNT_BUF];
+     33          INT8U traceEnabled;
+     34          
+     35          /********************************************************************
+     36             Function Prototypes
+     37           ********************************************************************/
+     38          /* None */
+     39          /*******************************************************************
+     40            Private Functions
+     41           ********************************************************************/
+     42          /**
+     43           * Initilizes penalty count buffers as unused.
+     44           * 
+     45           * @return - none
+     46           */
+     47          void dnm_rcm_init(void)
+     48          {
+     49             INT8U i;
+     50             for(i=0; i < MAX_PENALTY_COUNT_BUF; i++){
+     51                rcm_v[i].fUsed = BUF_UNUSED;
+     52             }
+     53          }
+     54          
+     55          /**
+     56           * Registers channel for an entry in RCM module.
+     57           *
+     58           * @param regId - OUT pointer to hold register Id
+     59           * @return - RCM_NO_BUF_FREE - Failure, RCM_ERR_OK - Success
+     60           */
+     61          rcm_error_t dnm_rcm_registerChannel(INT8U *regId)
+     62          {
+     63             rcm_error_t status = RCM_NO_BUF_FREE;
+     64             INT8U i;
+     65             for(i = 0; i < MAX_PENALTY_COUNT_BUF; i++) {
+     66                if(rcm_v[i].fUsed == BUF_UNUSED){
+     67                   rcm_v[i].penaltyCount = 0;
+     68                   rcm_v[i].skipCount = 0;
+     69                   rcm_v[i].fUsed = BUF_USED;
+     70                   *regId = i;
+     71                   status = RCM_ERR_OK;
+     72                   break;
+     73                }
+     74             }
+     75             return status;
+     76          }
+     77          
+     78          /**
+     79           * \brief Request to transmit a frame.
+     80           * 
+     81           * \param regId            [in] RCM register Id
+     82           * \param payload          [in] Pointer to the first byte of the payload
+     83           * \param payloadSize      [in] Number of bytes in the payload
+     84           * \param rateControlState [in] TODO
+     85           *
+     86           * \todo Document rateControlState
+     87           *
+     88           * \return RCM_NO_BUF_FREE Failure
+     89           * \return RCM_ERR_OK      Success
+     90           */
+     91          rcm_error_t dnm_rcm_transmitFrame(INT8U regId, INT8U* payload, INT8U payloadSize,
+     92                                            INT8U rateControlState)
+     93          {
+     94             dn_error_t locErr;
+     95             INT8U status = 0;
+     96             
+     97             if(regId >= MAX_PENALTY_COUNT_BUF){
+     98                return RCM_INVALID_BUF_ID;
+     99             }
+    100             
+    101             if (rateControlState == RATE_CTRL_ON) {
+    102                /* skip the frame? */
+    103                if(rcm_v[regId].skipCount > 0) {
+    104                   rcm_v[regId].skipCount--;
+    105                   return RCM_RC_TX_FAILED;
+    106                }
+    107             }
+    108             /* the destination address and destination port of the notifications is to be
+    109              * retrieved in the from main module */
+    110             locErr = dnm_loc_sendtoCmd((loc_sendtoNW_t*)payload, payloadSize, &status);
+    111             /* Transmission failed */
+    112             if((locErr != DN_ERR_NONE) || (status != DN_API_RC_OK)) {
+    113                if (rateControlState == RATE_CTRL_ON) {
+    114                   /* Increment penalty count and restore skipcount to penalty count */
+    115                   /* Clamp penalty count to MAX_PENALTY_COUNT */
+    116                   if(rcm_v[regId].penaltyCount >= MAX_PENALTY_COUNT){
+    117                      rcm_v[regId].penaltyCount =  MAX_PENALTY_COUNT;  
+    118                   }
+    119                   else {
+    120                      rcm_v[regId].penaltyCount++;
+    121                   }
+    122                   rcm_v[regId].skipCount = rcm_v[regId].penaltyCount;
+    123                   /* Did transmission fail due to negative ack ? */
+    124                   if(status != DN_API_RC_OK) {
+    125                      dnm_ucli_trace(traceEnabled,
+    126                                    "rc Tx req eng = %d, rejected, nack, pen = %d\r\n", regId,
+    127                                    rcm_v[regId].penaltyCount);
+    128                   }
+    129                   else {
+    130                      dnm_ucli_trace(traceEnabled,
+    131                                    "rc Tx req eng = %d, rejected, ack, pen = %d\r\n", regId,
+    132                                    rcm_v[regId].penaltyCount);
+    133                   }
+    134                }
+    135                else {
+    136                   dnm_ucli_trace(traceEnabled,
+    137                                 "rc=OFF, eng = %d, tx=failed\r\n", regId);
+    138                }
+    139                /* return errors;*/
+    140                return RCM_RC_TX_FAILED;
+    141             }
+    142             /* Transmission succeeded */
+    143             else {
+    144                if (rateControlState == RATE_CTRL_ON) {
+    145                   /* Decrement penalty count and restore skipcount to penalty count */
+    146                   if(rcm_v[regId].penaltyCount > 0) {
+    147                      rcm_v[regId].penaltyCount--;
+    148                      rcm_v[regId].skipCount = rcm_v[regId].penaltyCount;
+    149                   }
+    150                   dnm_ucli_trace(traceEnabled,
+    151                                 "rc Tx req eng = %d, accepted, ack, pen = %d\r\n", regId,
+    152                                 rcm_v[regId].penaltyCount);
+    153                }
+    154                else {
+    155                   dnm_ucli_trace(traceEnabled,
+    156                                 "rc=OFF, eng = %d, tx=success\r\n", regId);
+    157                }
+    158                return RCM_ERR_OK;
+    159             }
+    160          }
+    161          
+    162          /**
+    163          \brief Enable/disable trace.
+    164           
+    165          \param[in] traceFlag  Trace flag.
+    166          */
+    167          void dnm_rcm_traceControl (INT8U traceFlag)
+    168          {
+    169             traceEnabled = traceFlag;
+    170          }
+    171          
+    172          /**
+    173          \brief Check if trace is enabled.
+    174           
+    175          \return TRUE if trace is enabled, FALSE otherwise.
+    176          */
+    177          BOOLEAN dnm_rcm_isTraceEnabled (void)
+    178          {
+    179             return (traceEnabled != 0);
+    180          }
+
+   Maximum stack usage in bytes:
+
+   .cstack Function
+   ------- --------
+       0   dnm_rcm_init
+       0   dnm_rcm_isTraceEnabled
+       8   dnm_rcm_registerChannel
+       0   dnm_rcm_traceControl
+      16   dnm_rcm_transmitFrame
+        16   -> dnm_loc_sendtoCmd
+        16   -> dnm_ucli_trace
+
+
+   Section sizes:
+
+   Bytes  Function/Label
+   -----  --------------
+      48  ?<Constant "rc Tx req eng = %d, a...">
+      48  ?<Constant "rc Tx req eng = %d, r...">
+      48  ?<Constant "rc Tx req eng = %d, r...">_1
+      32  ?<Constant "rc=OFF, eng = %d, tx=...">
+      32  ?<Constant "rc=OFF, eng = %d, tx=...">_1
+       4  ??DataTable9
+       4  ??DataTable9_1
+       4  ??DataTable9_2
+      28  dnm_rcm_init
+      14  dnm_rcm_isTraceEnabled
+      88  dnm_rcm_registerChannel
+       6  dnm_rcm_traceControl
+     190  dnm_rcm_transmitFrame
+      60  rcm_v
+       1  traceEnabled
+
+ 
+  61 bytes in section .bss
+ 546 bytes in section .text
+ 
+ 546 bytes of CODE memory
+  61 bytes of DATA memory
+
+Errors: none
+Warnings: none

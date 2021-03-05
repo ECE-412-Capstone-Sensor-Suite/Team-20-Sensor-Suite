@@ -1,0 +1,345 @@
+###############################################################################
+#
+# IAR ANSI C/C++ Compiler V8.40.1.212/W32 for ARM         04/Mar/2021  22:21:00
+# Copyright 1999-2019 IAR Systems AB.
+#
+#    Cpu mode     =  
+#    Endian       =  little
+#    Source file  =
+#        C:\Users\Yesoooof\Documents\GitHub\Team-20-Sensor-Suite\Firmware\On-chip
+#        App\onchipsdk-master\src\app\common\cli_task.c
+#    Command line =
+#        -f C:\Users\Yesoooof\AppData\Local\Temp\EW1932.tmp
+#        ("C:\Users\Yesoooof\Documents\GitHub\Team-20-Sensor-Suite\Firmware\On-chip
+#        App\onchipsdk-master\src\app\common\cli_task.c" -lcN
+#        "C:\Users\Yesoooof\Documents\GitHub\Team-20-Sensor-Suite\Firmware\On-chip
+#        App\onchipsdk-master\projects\iar\00-hello\Debug\List" -o
+#        "C:\Users\Yesoooof\Documents\GitHub\Team-20-Sensor-Suite\Firmware\On-chip
+#        App\onchipsdk-master\projects\iar\00-hello\Debug\Obj" --debug
+#        --endian=little --cpu=Cortex-M3 --no_path_in_file_macros --enum_is_int
+#        -e --fpu=None --dlib_config "C:\Program Files (x86)\IAR
+#        Systems\Embedded Workbench 8.3\arm\inc\c\DLib_Config_Normal.h"
+#        --preinclude
+#        "C:\Users\Yesoooof\Documents\GitHub\Team-20-Sensor-Suite\Firmware\On-chip
+#        App\onchipsdk-master\projects\iar\00-hello\..\all_projects.iarinc" -I
+#        "C:\Users\Yesoooof\Documents\GitHub\Team-20-Sensor-Suite\Firmware\On-chip
+#        App\onchipsdk-master\projects\iar\00-hello\..\..\..\src\app\00-hello\"
+#        -I
+#        "C:\Users\Yesoooof\Documents\GitHub\Team-20-Sensor-Suite\Firmware\On-chip
+#        App\onchipsdk-master\projects\iar\00-hello\..\..\..\src\app\common\"
+#        -I
+#        "C:\Users\Yesoooof\Documents\GitHub\Team-20-Sensor-Suite\Firmware\On-chip
+#        App\onchipsdk-master\projects\iar\00-hello\..\..\..\src\inc\" -I
+#        "C:\Users\Yesoooof\Documents\GitHub\Team-20-Sensor-Suite\Firmware\On-chip
+#        App\onchipsdk-master\projects\iar\00-hello\..\..\..\src\modules\clilib\"
+#        -I
+#        "C:\Users\Yesoooof\Documents\GitHub\Team-20-Sensor-Suite\Firmware\On-chip
+#        App\onchipsdk-master\projects\iar\00-hello\..\..\..\src\modules\ip_applib\"
+#        -Oh)
+#    Locale       =  C
+#    List file    =
+#        C:\Users\Yesoooof\Documents\GitHub\Team-20-Sensor-Suite\Firmware\On-chip
+#        App\onchipsdk-master\projects\iar\00-hello\Debug\List\cli_task.lst
+#    Object file  =
+#        C:\Users\Yesoooof\Documents\GitHub\Team-20-Sensor-Suite\Firmware\On-chip
+#        App\onchipsdk-master\projects\iar\00-hello\Debug\Obj\cli_task.o
+#
+###############################################################################
+
+C:\Users\Yesoooof\Documents\GitHub\Team-20-Sensor-Suite\Firmware\On-chip App\onchipsdk-master\src\app\common\cli_task.c
+      1          /*
+      2          Copyright (c) 2013, Dust Networks.  All rights reserved.
+      3          */
+      4          
+      5          #include <string.h>
+      6          #include "dn_common.h"
+      7          #include "dn_system.h"
+      8          #include "dnm_ucli.h"
+      9          #include "cli_task.h"
+     10          #include "Ver.h"
+     11          
+     12          //=========================== variables =======================================
+     13          
+     14          typedef struct {
+     15             char*                appName;
+     16             dnm_ucli_cmdDef_t const* cliCmds;
+     17             INT32U               cliChannelBuffer[1+DN_CH_ASYNC_RXBUF_SIZE(DN_CLI_NOTIF_SIZE)/sizeof(INT32U)];
+     18             CH_DESC              cliChannelDesc;
+     19             OS_STK               cliTaskStack[CLI_TASK_STK_SIZE];
+     20             INT8U                numCliCommands;
+     21          } cli_task_vars_t;
+     22          
+     23          cli_task_vars_t cli_task_v;
+     24          
+     25          //=========================== prototypes ======================================
+     26          
+     27          static void cliTask(void* unused);
+     28          
+     29          //=========================== public ==========================================
+     30          
+     31          void cli_task_init(char* appName, const dnm_ucli_cmdDef_t * cliCmds) {
+     32             dn_error_t      dnErr;
+     33             INT8U           osErr;
+     34             OS_MEM*         cliChannelMem;
+     35             
+     36             // store params
+     37             cli_task_v.appName        = appName;
+     38             cli_task_v.cliCmds        = cliCmds;
+     39             
+     40             // open CLI port
+     41             dnErr = dnm_ucli_openPort(DN_CLI_PORT_C0, DEFAULT_BAUDRATE);
+     42             ASSERT(dnErr==DN_ERR_NONE);
+     43             
+     44             // change CLI access level
+     45             dnErr = dnm_ucli_changeAccessLevel(DN_CLI_ACCESS_USER);
+     46             ASSERT(dnErr==DN_ERR_NONE);
+     47             
+     48             // print appName
+     49             dnm_ucli_printf("%s app, ver %d.%d.%d.%d\r\n", cli_task_v.appName,
+     50                                                           VER_MAJOR,
+     51                                                           VER_MINOR,
+     52                                                           VER_PATCH,
+     53                                                           VER_BUILD);
+     54             
+     55             // stop here is no CLI commands to register
+     56             if (cli_task_v.cliCmds==NULL) {
+     57                return;
+     58             }
+     59             
+     60             // create a memory block for CLI notification channel
+     61             cliChannelMem = OSMemCreate(
+     62                cli_task_v.cliChannelBuffer,
+     63                1,
+     64                DN_CH_ASYNC_RXBUF_SIZE(DN_CLI_NOTIF_SIZE),
+     65                &osErr
+     66             );
+     67             ASSERT(osErr==OS_ERR_NONE);
+     68             
+     69             // create the CLI notification channel
+     70             dnErr = dn_createAsyncChannel(
+     71                cliChannelMem,
+     72                &cli_task_v.cliChannelDesc
+     73             );
+     74             ASSERT(dnErr==DN_ERR_NONE);
+     75             
+     76             // register the channel for CLI input messages
+     77             dnErr = dn_registerChannel(
+     78                cli_task_v.cliChannelDesc,
+     79                DN_MSG_TYPE_CLI_NOTIF
+     80             );
+     81             ASSERT(dnErr==DN_ERR_NONE);
+     82             
+     83             // create the CLI task
+     84             osErr = OSTaskCreateExt(
+     85                cliTask,
+     86                NULL,
+     87                (OS_STK*)&cli_task_v.cliTaskStack[CLI_TASK_STK_SIZE-1],
+     88                CLI_TASK_PRIORITY,
+     89                CLI_TASK_PRIORITY,
+     90                (OS_STK*)cli_task_v.cliTaskStack,
+     91                CLI_TASK_STK_SIZE,
+     92                NULL,
+     93                OS_TASK_OPT_STK_CHK | OS_TASK_OPT_STK_CLR
+     94             );
+     95             ASSERT(osErr==OS_ERR_NONE);
+     96             OSTaskNameSet(CLI_TASK_PRIORITY, CLI_TASK_NAME, &osErr);
+     97             ASSERT(osErr==OS_ERR_NONE);
+     98          }
+     99          
+    100          /**
+    101          \brief CLI notification handler.
+    102          
+    103          This function is called each time a command is entered by the user.
+    104          
+    105          \pre This function needs to be passed to the #dnm_ucli_init() function.
+    106          
+    107          \param[in] type  The nofication type.
+    108          \param[in] cmdId The identifier of the command entered.
+    109          \param[in] pCmdParams A pointer to the the parameter to pass to the handler.
+    110          \param[in] paramsLen The number of bytes in the pCmdParams buffer.
+    111          */
+    112          dn_error_t cli_procNotif(INT8U type, INT8U cmdId, char const *pCmdParams, INT8U paramsLen) {
+    113             dn_error_t  dnErr = DN_ERR_NONE;
+    114          
+    115             if (
+    116                   cli_task_v.cliCmds==NULL ||
+    117                   cmdId > cli_task_v.numCliCommands
+    118                ) {
+    119                dnm_ucli_printf("Command not supported\r\n");
+    120                return DN_ERR_NONE;
+    121             }
+    122          
+    123             if (type == DN_CLI_NOTIF_INPUT) {
+    124                dnErr = (cli_task_v.cliCmds[cmdId].handler)(pCmdParams, paramsLen);
+    125                if (dnErr == DN_ERR_INVALID) {
+    126                   dnm_ucli_printf("Invalid argument(s)\r\n");
+    127                }
+    128             }
+    129          
+    130             // Print help
+    131             if (type == DN_CLI_NOTIF_HELP) {
+    132                dnm_ucli_printf("Usage: %s\r\n", cli_task_v.cliCmds[cmdId].usage);
+    133             }
+    134             
+    135             dnm_ucli_printf("\r\n> ");
+    136             return DN_ERR_NONE;
+    137          }
+    138          
+    139          //=========================== private =========================================
+    140          
+    141          /**
+    142          \brief Register the CLI commands.
+    143          
+    144          \pre The list of commands have already been stored in the cli_task_v.cliCmds
+    145             variable when calling #cli_task_init() function.
+    146          
+    147          \return DN_ERR_ERROR is the #cli_task_init() hasn't been called when calling
+    148             this function.
+    149          \return 
+    150          */
+    151          static dn_error_t cli_registerCommands(void) {
+    152             INT8U                  i;
+    153             INT8U                  cmdLen;
+    154             dn_cli_registerCmd_t*  rCmd;
+    155             dnm_ucli_cmdDef_t const* pCmd;
+    156             INT8U                  buf[DN_CLI_CTRL_SIZE];
+    157             dn_error_t             rc;
+    158          
+    159             if (cli_task_v.cliCmds==NULL) {
+    160                return DN_ERR_ERROR;
+    161             }
+    162          
+    163             i  = 0;
+    164             rc = DN_ERR_NONE;
+    165             
+    166             // go through the array of available commands and register them
+    167             while (1) {
+    168                
+    169                // retrieve the next command to register
+    170                pCmd = &cli_task_v.cliCmds[i];
+    171                
+    172                // stop the loop if no more commands
+    173                if (pCmd->handler==NULL) {
+    174                   
+    175                   break;
+    176                }
+    177                
+    178                // prepare the command registration parameter
+    179                rCmd                   = (dn_cli_registerCmd_t*)buf;
+    180                rCmd->hdr.cmdId        = (INT8U)i;
+    181                rCmd->hdr.chDesc       = cli_task_v.cliChannelDesc;
+    182                rCmd->hdr.lenCmd       = (INT8U)strlen(pCmd->command);
+    183                rCmd->hdr.accessLevel  = pCmd->accessLevel;
+    184                
+    185                // verify the length of the resulting command
+    186                cmdLen = sizeof(dn_cli_registerCmdHdr_t) + rCmd->hdr.lenCmd;
+    187                if (cmdLen > sizeof(buf)) {
+    188                   rc = DN_ERR_SIZE;
+    189                   break;
+    190                }
+    191                
+    192                // copy the command string
+    193                memcpy(rCmd->data, pCmd->command, rCmd->hdr.lenCmd);
+    194                
+    195                // register the command with the CLI device
+    196                rc = dn_ioctl(
+    197                   DN_CLI_DEV_ID,
+    198                   DN_IOCTL_CLI_REGISTER,
+    199                   (void*)rCmd,
+    200                   sizeof(dn_cli_registerCmd_t)
+    201                );
+    202                if (rc != DN_ERR_NONE) {
+    203                   break;
+    204                }
+    205                
+    206                // increment to the next command
+    207                i++;
+    208             }
+    209             
+    210             // remember how many CLI commands there are
+    211             cli_task_v.numCliCommands = i;
+    212             
+    213             // return the error returned during registration
+    214             return rc;
+    215          }
+    216          
+    217          /**
+    218          \brief Task which handles CLI interaction.
+    219          
+    220          \param[in] unused Unused parameter
+    221          */
+    222          static void cliTask(void* unused) {
+    223             dn_error_t  dnErr;
+    224             
+    225             // initialize the CLI module
+    226             dnm_ucli_init(cli_procNotif);
+    227             
+    228             // register the commands
+    229             // Note: the commands are already stored in cli_task_v.cliCmds
+    230             dnErr = cli_registerCommands();
+    231             ASSERT(dnErr==DN_ERR_NONE);
+    232          
+    233             while (1) { // this is a task, it executes forever
+    234                
+    235                // the following line is blocking
+    236                dnErr = dnm_ucli_input(cli_task_v.cliChannelDesc);
+    237                ASSERT(dnErr==DN_ERR_NONE);
+    238             }
+    239          }
+
+   Maximum stack usage in bytes:
+
+   .cstack Function
+   ------- --------
+      96   cliTask
+        96   -> __aeabi_memcpy
+        96   -> assert_handler
+        96   -> dn_ioctl
+        96   -> dnm_ucli_init
+        96   -> dnm_ucli_input
+        96   -> strlen
+      16   cli_procNotif
+        16   -- Indirect call
+        16   -> dnm_ucli_printf
+      40   cli_task_init
+        40   -> OSMemCreate
+        40   -> OSTaskCreateExt
+        40   -> OSTaskNameSet
+        40   -> assert_handler
+        40   -> dn_createAsyncChannel
+        40   -> dn_registerChannel
+        40   -> dnm_ucli_changeAccessLevel
+        40   -> dnm_ucli_openPort
+        40   -> dnm_ucli_printf
+
+
+   Section sizes:
+
+   Bytes  Function/Label
+   -----  --------------
+       4  ??DataTable9
+       4  ??DataTable9_1
+       4  ??DataTable9_2
+      12  ?_0
+      28  ?_1
+       4  ?_2
+      24  ?_3
+      24  ?_4
+      12  ?_5
+       8  ?_6
+     132  cliTask
+      82  cli_procNotif
+     222  cli_task_init
+     828  cli_task_v
+
+ 
+ 828 bytes in section .bss
+   4 bytes in section .rodata
+ 556 bytes in section .text
+ 
+ 556 bytes of CODE  memory
+   4 bytes of CONST memory
+ 828 bytes of DATA  memory
+
+Errors: none
+Warnings: none
