@@ -1,18 +1,18 @@
-/* The sketch is made for the Sensor Suite project(Capstone Team 20) that consists of 8 sensors total: 
--Humidity/Temperature, O2 Sensor, CO2 sensor, Vibration sensor(ADXL), Rain Sensor, Light Sensor(OPT3001), 
-and Wind Speed Sensor. 
+/* The sketch is made for the Sensor Suite project(Capstone Team 20) that consists of 8 sensors total:
+  -Humidity/Temperature, O2 Sensor, CO2 sensor, Vibration sensor(ADXL), Rain Sensor, Light Sensor(OPT3001),
+  and Wind Speed Sensor.
 
- Credits:
- -Paul Badger 2014
- -Created June 2012 by Anne Mahaffey - hosted on http://annem.github.com/ADXL362
- -ZhixinLiu(zhixin.liu@dfrobot.com)@version V0.2, 2019-10-10
- -Varad Kulkarni <http://www.microcontrollershub.com> Created 28 March 2018
- 
- Hardware setup:
- ESP32 Wroom 3.3V, need volage supply of 5V for Wind Speed Sensor and the CO2 Sensor. Rain sensor 
- can operate at 3-5V. 
+  Credits:
+  -Paul Badger 2014
+  -Created June 2012 by Anne Mahaffey - hosted on http://annem.github.com/ADXL362
+  -ZhixinLiu(zhixin.liu@dfrobot.com)@version V0.2, 2019-10-10
+  -Varad Kulkarni <http://www.microcontrollershub.com> Created 28 March 2018
 
- */
+  Hardware setup:
+  ESP32 Wroom 3.3V, need volage supply of 5V for Wind Speed Sensor and the CO2 Sensor. Rain sensor
+  can operate at 3-5V.
+
+*/
 
 #include <Wire.h>
 #include <DFRobot_OxygenSensor.h>
@@ -35,14 +35,14 @@ int unoAddr = 8; // temperature humidity address (0x08)
 int optAddr = 68; //OPT3001 light address (0x44)
 
 // chain sampling periods
-int humidityT[2] = {10, 100}; // timing characteristics: {measure request - read request, resampling period}
+int humidityT[2] = {10, 5}; // timing characteristics: {WAIT AFTER WRITE 1, WAIT AFTER WRITE2}
 int unoT[2] = {0, 10};
 int opt3001T[2] = {100, 0};
 
 // reading variables
 int reading1; // humidity reading
 int reading2; // temperature reading
-byte reading[10];
+byte reading[32];
 //***************************CO2*************************************//
 int sensorIn = A2; // CO2 Sensor Input
 
@@ -61,12 +61,12 @@ DFRobot_OxygenSensor Oxygen;
 
 // to calibrate your sensor, put a glass over it, but the sensor should not be
 // touching the desktop surface however.
-// adjust the zeroWindAdjustment until your sensor reads about zero with the glass over it. 
+// adjust the zeroWindAdjustment until your sensor reads about zero with the glass over it.
 
 const float zeroWindAdjustment =  .2; // negative numbers yield smaller wind speeds and vice versa.
 
 int TMP_Therm_ADunits;  //temp termistor value from wind sensor
-float RV_Wind_ADunits;    //RV output from wind sensor 
+float RV_Wind_ADunits;    //RV output from wind sensor
 float RV_Wind_Volts;
 unsigned long lastMillis;
 int TempCtimes100;
@@ -77,120 +77,158 @@ float WindSpeed_MPH;
 //******************************Rain Sensor**********************************//
 int sensorValue = analogRead(A3); //Rain Sensor Input
 
-//************************** MAIN CODE *****************************//
+//============================================================================================================//
+//========================================  {INITIALIZE SENSORS} =============================================//
 void setup() {
   Serial.begin(9600);
   Wire.begin(); // Initialize ardiono as master
-  
- //*************************OPT3001 Light Sensor********************//
+
+  //*************************OPT3001 Light Sensor********************//
   Wire.beginTransmission(0x44);     // I2C address of OPT3001 = 0x44
   Wire.write(0xCE);
   Wire.write(0x10);
   Wire.endTransmission();
- 
 
-//**************************DFR O2 Sensor***************************//
-  while(!Oxygen.begin(Oxygen_IICAddress)) {
+
+  //**************************DFR O2 Sensor***************************//
+  while (!Oxygen.begin(Oxygen_IICAddress)) {
     Serial.println("I2c device number error !");
     delay(1000);
   }
   Serial.println("I2c connect success !");
 
-//***************************ADXL**********************************//
+  //***************************ADXL**********************************//
   xl.begin(10);                   // Setup SPI protocol, issue device soft reset
-  xl.beginMeasure();              // Switch ADXL362 to measure mode  
+  xl.beginMeasure();              // Switch ADXL362 to measure mode
 
 }
-
+//============================================================================================================//
+//==========================================  {MAIN LOOP} ====================================================//
 void loop() {
+  
   //********HUMID & TEMP SENSOR********//
-  slaveSample(true, humidityAddr, 4, humidityT); //** SAMPLE RAW BYTES FROM SENSOR
-  
+  ///slaveSample template: 
+  //          {ADDRESS, 1ST WRITE, 2ND WRITE, WAIT TIMES , EXPECTED NO. OF  BYTES}
+  slaveSample(humidityAddr, byte(0x00), byte(0x01), humidityT, 4); //** SAMPLE RAW BYTES FROM SENSOR
+
+
   //** parse bytes from sensor into two 16-bit words, then convert words into accurate data.
-  int humidityWord = (reading[0] << 8) | reading[1];    // shift byte0 up 8 bits and add byte1 to it   
-  int tempWord = (reading[2] << 8) | reading[3];        // shift byte2 up 8 bits and add byte3 to it 
-  
+  int humidityWord = (reading[0] << 8) | reading[1];    // shift byte0 up 8 bits and add byte1 to it
+  int tempWord = (reading[2] << 8) | reading[3];        // shift byte2 up 8 bits and add byte3 to it
+
   float humidity = (((float)(humidityWord & 0x3FFF) / (16384 - 2)) * 100); // mask first two status bits and convert to RH
   float temp = (((float)(tempWord & 0x3FFF)) / (16384 - 2)) * 100 - 40;    // mask first unused bits and convert to (C)
   Serial.print("Humidity(%RH): "); Serial.println( humidity);               // print the reading
   Serial.print("Temp(C): "); Serial.println(temp);                          // print the reading
-  //Serial.println(humidityWord);
- //********ARDUINO OPT3001 Light SENSOR********//
- slaveCommand(0x44, byte(0x00)); // step 1: instruct sensor to measure
-  delay(opt3001T[0]);                   // step 2: wait for readings to happen 
- slaveSample(false, optAddr, 2, opt3001T); //** SAMPLE RAW BYTES FROM SENSOR
-  
+
+
+  //********ARDUINO OPT3001 Light SENSOR********//
+  //slaveSample template: 
+  //         {ADDRESS, 1ST WRITE, byte(0xFF) = DONT WRITE, WAIT TIMES , EXPECTED NO. OF  BYTES}
+  slaveSample(optAddr, byte(0x00), byte(0xFF), opt3001T, 2); //** SAMPLE RAW BYTES FROM SENSOR
+  /// inputting byte(0xFF) into a write word means you dont want to write any words
+
   int optWord = (reading[0] << 8) | reading[1];
-    Serial.print("LUX: ");   // 
-    float fLux = SensorOpt3001_convert(optWord);   // Calculate LUX from sensor data
-    Serial.println(fLux);  //Print the received data
+  Serial.print("LUX: ");                          //
+  float fLux = SensorOpt3001_convert(optWord);    // Calculate LUX from sensor data
+  Serial.println(fLux);                           //Print the received data
 
 
-//**************************DFR O2 Sensor***************************//
+  //**************************DFR O2 Sensor***************************//
   float oxygenData = Oxygen.ReadOxygenData(COLLECT_NUMBER);
   Serial.print("O2: ");
   Serial.print(oxygenData);
   Serial.println(" %vol");
   //delay(1000);
+  //************************** O2 using I2C chain fxn***************************//
+  int O2addr = byte(0x70);
+  int O2_Timing[2] = {100,0};
+  int O2_readflashT[2] = {50,0};
+  int O2_Exptd_bytes = 3;
+  int o2_num_read = 10;                   // collectnum
+  float  OxygenData[100] = {0.00f};
+  float key;
+  static uint8_t i = 0 ,j = 0;
+      
+  //** READFLASH() : has to be done before reading new data
+  slaveSample(O2addr, byte(0x0A), byte(0xFF), O2_readflashT, 1); // read from flash at 0x0A
+  if(reading[0] == 0) {
+    key = 20.9 / 120.0;
+  }else {
+    key = (float)reading[0] / 1000.0;
+  }
+  
+  //** ReadOxygenData() : reading new data
+  if(o2_num_read > 0) {
+    for(j = o2_num_read - 1;  j > 0; j--) {  OxygenData[j] = OxygenData[j-1]; }
+    slaveSample(optAddr, byte(0x03), byte(0xFF), O2_Timing, O2_Exptd_bytes); //** read from oxygen data regester 0x03
+    OxygenData[0] = ((key) * (((float)reading[0]) + ((float)reading[1] / 10.0) + ((float)reading[2] / 100.0)));
+    if(i < o2_num_read) i++;
+    Serial.print("O2: ");
+    Serial.print(getAverageNum(OxygenData, i));
+    Serial.println(" %vol");
+  }else {
+    Serial.print("error");
+  }
 
-//********************Wind Speed Sensor*****************************//
+  //********************Wind Speed Sensor*****************************//
 
-if (millis() - lastMillis > 200){      // read every 200 ms - printing slows this down further
-    
+  if (millis() - lastMillis > 200) {     // read every 200 ms - printing slows this down further
+
     TMP_Therm_ADunits = analogRead(analogPinForTMP);
     RV_Wind_ADunits = analogRead(analogPinForRV);
     RV_Wind_Volts = (RV_Wind_ADunits *  0.0048828125);
 
     // these are all derived from regressions from raw data as such they depend on a lot of experimental factors
     // such as accuracy of temp sensors, and voltage at the actual wind sensor, (wire losses) which were unaccouted for.
-    TempCtimes100 = (0.005 *((float)TMP_Therm_ADunits * (float)TMP_Therm_ADunits)) - (16.862 * (float)TMP_Therm_ADunits) + 9075.4;  
+    TempCtimes100 = (0.005 * ((float)TMP_Therm_ADunits * (float)TMP_Therm_ADunits)) - (16.862 * (float)TMP_Therm_ADunits) + 9075.4;
 
-    zeroWind_ADunits = -0.0006*((float)TMP_Therm_ADunits * (float)TMP_Therm_ADunits) + 1.0727 * (float)TMP_Therm_ADunits + 47.172;  //  13.0C  553  482.39
+    zeroWind_ADunits = -0.0006 * ((float)TMP_Therm_ADunits * (float)TMP_Therm_ADunits) + 1.0727 * (float)TMP_Therm_ADunits + 47.172; //  13.0C  553  482.39
 
-    zeroWind_volts = (zeroWind_ADunits * 0.0048828125) - zeroWindAdjustment;  
+    zeroWind_volts = (zeroWind_ADunits * 0.0048828125) - zeroWindAdjustment;
 
-    // This from a regression from data in the form of 
+    // This from a regression from data in the form of
     // Vraw = V0 + b * WindSpeed ^ c
     // V0 is zero wind at a particular temperature
     // The constants b and c were determined by some Excel wrangling with the solver.
-    
-   WindSpeed_MPH =  pow(((RV_Wind_Volts - zeroWind_volts) /.2300) , 2.7265);   
-   
+
+    WindSpeed_MPH =  pow(((RV_Wind_Volts - zeroWind_volts) / .2300) , 2.7265);
+
     //Serial.print("  TMP volts ");
     //Serial.print(TMP_Therm_ADunits * 0.0048828125);
-    
+
     //Serial.print(" RV volts ");
     //Serial.print((float)RV_Wind_Volts);
 
-  //  Serial.print("\t  TempC*100 ");
-  //  Serial.print(TempCtimes100 );
+    //  Serial.print("\t  TempC*100 ");
+    //  Serial.print(TempCtimes100 );
 
-   // Serial.print("   ZeroWind volts ");
-   // Serial.print(zeroWind_volts);
+    // Serial.print("   ZeroWind volts ");
+    // Serial.print(zeroWind_volts);
 
     Serial.print("WindSpeed MPH: ");
     Serial.println((float)WindSpeed_MPH);
-    lastMillis = millis();    
-}
+    lastMillis = millis();
+  }
 
-//**************************DFR CO2 Sensor**************************//
+  //**************************DFR CO2 Sensor**************************//
   //Read voltage
   int sensorValue = analogRead(sensorIn);
 
   // The analog signal is converted to a voltage
-  float voltage = sensorValue*(3300/1024.0);
-  if(voltage == 0)
+  float voltage = sensorValue * (3300 / 1024.0);
+  if (voltage == 0)
   {
     Serial.println("Fault");
   }
-  else if(voltage < 400)
+  else if (voltage < 400)
   {
     Serial.println("preheating");
   }
   else
   {
-    int voltage_diference=voltage-400;
-    float concentration=voltage_diference*50.0/16.0;
+    int voltage_diference = voltage - 400;
+    float concentration = voltage_diference * 50.0 / 16.0;
     // Print Voltage
     //Serial.print("voltage:");
     //Serial.print(voltage);
@@ -201,24 +239,24 @@ if (millis() - lastMillis > 200){      // read every 200 ms - printing slows thi
     Serial.println("ppm");
   }
 
-//******************************ADXL Sensor************************************//
-// read all three axis in burst to ensure all measurements correspond to same sample time
-  xl.readXYZTData(XValue, YValue, ZValue, Temperature);  
+  //******************************ADXL Sensor************************************//
+  // read all three axis in burst to ensure all measurements correspond to same sample time
+  xl.readXYZTData(XValue, YValue, ZValue, Temperature);
   Serial.print("XVALUE=");
-  Serial.print(XValue);   
+  Serial.print(XValue);
   Serial.print("\tYVALUE=");
-  Serial.print(YValue);  
+  Serial.print(YValue);
   Serial.print("\tZVALUE=");
-  Serial.println(ZValue);  
- // Serial.print("\tTEMPERATURE=");
- // Serial.println(Temperature);   
+  Serial.println(ZValue);
+  // Serial.print("\tTEMPERATURE=");
+  // Serial.println(Temperature);
 
-//******************************Rain Sensor**********************************//
-// read the input on analog pin 3:
+  //******************************Rain Sensor**********************************//
+  // read the input on analog pin 3:
 
   Serial.print("Rain Level: ");
   Serial.println(sensorValue);
-  
+
 
 
 }
@@ -226,21 +264,27 @@ if (millis() - lastMillis > 200){      // read every 200 ms - printing slows thi
 
 
 //************************** SLAVE CALLING FUNCTION *****************************//
-void slaveSample(bool command, int slavAddr, int byteNum, int timing[]) {
-  
-  if (command) {  //*** CHECK IF SLAVE NEEDS MEASURE REQUEST BEFORE READING
-    slaveCommand(slavAddr, byte(0x00)); // step 1: instruct sensor to measure
-    delay(timing[0]);                   // step 2: wait for readings to happen
-    slaveCommand(slavAddr, byte(0x01)); // step 3: instruct sensor to return a particular echo reading
+void slaveSample(int slavAddr, byte word1, byte word2, int wait[] , int byteNum) {
+
+  if (word1 != byte(0xFF)) {  //*** CHECK IF SLAVE NEEDS MEASURE REQUEST BEFORE READING
+    slaveCommand(slavAddr, word1);  // step 1: instruct sensor to measure
+    delay(wait[0]);                   // step 2: wait for readings to happen
   }
+  
+  if (word2 != byte(0xFF)) {  //*** CHECK IF SLAVE NEEDS MEASURE REQUEST BEFORE READING
+    slaveCommand(slavAddr, word2);  // step 3: instruct sensor to return a reading
+    delay(wait[1]);                 // wait before reading
+    
+  }
+
   Wire.requestFrom(slavAddr, byteNum);  // step 4: request reading from sensor
 
-  for(int i=0; i<= byteNum;i++ ){  // repeat iteration for the number of expected bytes
-    if(Wire.available()){
-    reading[i]= Wire.read();       // add each new byte into reading array then increment the array
+  for (int i = 0; i <= byteNum; i++ ) { // repeat iteration for the number of expected bytes
+    if (Wire.available()) {
+      reading[i] = Wire.read();      // add each new byte into reading array then increment the array
     }
   }
-  delay(timing[1]);               // wait a bit since people have to read the output :)
+
 
 }
 
@@ -266,6 +310,15 @@ float SensorOpt3001_convert(uint16_t iRawData)
 {
   uint16_t iExponent, iMantissa;
   iMantissa = iRawData & 0x0FFF;                 // Extract Mantissa
-  iExponent = (iRawData & 0xF000) >> 12;         // Extract Exponent 
+  iExponent = (iRawData & 0xF000) >> 12;         // Extract Exponent
   return iMantissa * (0.01 * pow(2, iExponent)); // Calculate final LUX
+}
+float getAverageNum(float bArray[], uint8_t iFilterLen) 
+{
+  uint8_t i = 0;
+  double bTemp = 0;
+  for(i = 0; i < iFilterLen; i++) {
+    bTemp += bArray[i];
+  }
+  return bTemp / (float)iFilterLen;
 }
