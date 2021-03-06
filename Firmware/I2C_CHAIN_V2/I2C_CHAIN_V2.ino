@@ -135,11 +135,11 @@ void loop() {
 
 
   //**************************DFR O2 Sensor***************************//
-  float oxygenData = Oxygen.ReadOxygenData(COLLECT_NUMBER);
+  /*float oxygenData = Oxygen.ReadOxygenData(COLLECT_NUMBER);
   Serial.print("O2: ");
   Serial.print(oxygenData);
   Serial.println(" %vol");
-  //delay(1000);
+  //delay(1000);*/
   //************************** O2 using I2C chain fxn***************************//
   int O2addr = byte(0x70);
   int O2_Timing[2] = {100,0};
