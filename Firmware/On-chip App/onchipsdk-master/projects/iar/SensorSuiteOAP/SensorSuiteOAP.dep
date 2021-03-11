@@ -1,0 +1,299 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project>
+    <fileVersion>4</fileVersion>
+    <fileChecksum>3604249487</fileChecksum>
+    <configuration>
+        <name>Debug</name>
+        <outputs>
+            <file>$PROJ_DIR$\..\..\..\src\app\common\app_cfg.h</file>
+            <file>$PROJ_DIR$\..\..\..\src\app\common\build.h</file>
+            <file>$PROJ_DIR$\..\..\..\src\app\common\cli_task.c</file>
+            <file>$PROJ_DIR$\..\..\..\src\inc\dn_mesh.h</file>
+            <file>$PROJ_DIR$\..\..\..\src\inc\dn_pack.h</file>
+            <file>$PROJ_DIR$\..\..\..\src\app\common\cli_task.h</file>
+            <file>$PROJ_DIR$\..\..\..\src\app\SensorSuiteOAP\SensorSuite_app.c</file>
+            <file>$PROJ_DIR$\..\..\..\src\inc\dn_api_param.h</file>
+            <file>$PROJ_DIR$\..\..\..\src\app\SensorSuiteOAP\app_task_cfg.h</file>
+            <file>$PROJ_DIR$\..\..\..\src\inc\dn_api_common.h</file>
+            <file>$PROJ_DIR$\..\..\..\src\inc\dn_exe_hdr.h</file>
+            <file>$PROJ_DIR$\..\..\..\src\inc\dn_cli.h</file>
+            <file>$PROJ_DIR$\..\..\..\src\inc\dn_common.h</file>
+            <file>$PROJ_DIR$\..\..\..\src\app\common\Ver.h</file>
+            <file>$PROJ_DIR$\..\..\..\src\app\common\well_known_ports.h</file>
+            <file>$PROJ_DIR$\..\..\..\src\inc\dn_flash_info.h</file>
+            <file>$PROJ_DIR$\..\..\..\src\inc\dn_api_local.h</file>
+            <file>$PROJ_DIR$\..\..\..\src\app\common\loc_task.c</file>
+            <file>$PROJ_DIR$\..\..\..\src\inc\dn_errno.h</file>
+            <file>$PROJ_DIR$\..\..\..\src\app\common\loc_task.h</file>
+            <file>$PROJ_DIR$\..\..\..\src\inc\dn_gpio.h</file>
+            <file>$PROJ_DIR$\..\..\..\src\inc\dn_channel.h</file>
+            <file>$PROJ_DIR$\..\..\..\src\inc\os_cpu.h</file>
+            <file>$PROJ_DIR$\..\..\..\src\modules\ip_applib\dnm_local.c</file>
+            <file>$PROJ_DIR$\..\..\..\src\modules\clilib\dnm_ucli.c</file>
+            <file>$PROJ_DIR$\..\..\..\src\modules\clilib\dnm_ucli.h</file>
+            <file>$PROJ_DIR$\..\..\..\src\modules\ip_applib\dnm_local.h</file>
+            <file>$PROJ_DIR$\Debug\Obj\SensorSuite_app.o</file>
+            <file>$PROJ_DIR$\Debug\Obj\loc_task.__cstat.et</file>
+            <file>$PROJ_DIR$\Debug\Obj\dnm_rate_ctrl.__cstat.et</file>
+            <file>$PROJ_DIR$\..\..\..\src\modules\ip_applib\dnm_service.c</file>
+            <file>$PROJ_DIR$\Debug\Obj\cli_task.xcl</file>
+            <file>$PROJ_DIR$\..\..\..\src\inc\os_cfg.h</file>
+            <file>$PROJ_DIR$\..\..\..\src\inc\ucos_ii.h</file>
+            <file>$PROJ_DIR$\..\..\..\src\lib\libip_stack.a</file>
+            <file>$PROJ_DIR$\..\..\..\src\lib\libucos_full.a</file>
+            <file>$PROJ_DIR$\Debug\Obj\dnm_local.__cstat.et</file>
+            <file>$PROJ_DIR$\Debug\Obj\cli_task.o</file>
+            <file>$PROJ_DIR$\Debug\Obj\dnm_service.__cstat.et</file>
+            <file>$PROJ_DIR$\..\..\..\src\modules\ip_applib\dnm_service.h</file>
+            <file>$TOOLKIT_DIR$\inc\c\DLib_Product_string.h</file>
+            <file>$TOOLKIT_DIR$\config\linker\Linear\DustNetworks\Eterna.icf</file>
+            <file>$PROJ_DIR$\Debug\Obj\cli_task.__cstat.et</file>
+            <file>$PROJ_DIR$\Debug\Obj\SensorSuite_app.xcl</file>
+            <file>$PROJ_DIR$\..\..\..\src\modules\ip_applib\dnm_rate_ctrl.h</file>
+            <file>$PROJ_DIR$\Debug\Obj\loc_task.xcl</file>
+            <file>$PROJ_DIR$\..\..\..\src\inc\dn_typedef.h</file>
+            <file>$PROJ_DIR$\..\..\..\src\inc\dn_system.h</file>
+            <file>$PROJ_DIR$\..\..\..\src\modules\ip_applib\dnm_rate_ctrl.c</file>
+            <file>$TOOLKIT_DIR$\inc\c\ysizet.h</file>
+            <file>$TOOLKIT_DIR$\lib\rt7M_tl.a</file>
+            <file>$TOOLKIT_DIR$\inc\c\string.h</file>
+            <file>$TOOLKIT_DIR$\inc\c\DLib_Defaults.h</file>
+            <file>$PROJ_DIR$\Debug\Obj\dnm_ucli.o</file>
+            <file>$TOOLKIT_DIR$\inc\c\ycheck.h</file>
+            <file>$PROJ_DIR$\Debug\Obj\main.o</file>
+            <file>$PROJ_DIR$\Debug\Obj\main.xcl</file>
+            <file>$PROJ_DIR$\Debug\Obj\dnm_service.xcl</file>
+            <file>$PROJ_DIR$\Debug\Obj\dnm_ucli.xcl</file>
+            <file>$PROJ_DIR$\Debug\Obj\dnm_local.xcl</file>
+            <file>$TOOLKIT_DIR$\inc\c\DLib_Product.h</file>
+            <file>$PROJ_DIR$\Debug\Obj\dnm_rate_ctrl.o</file>
+            <file>$PROJ_DIR$\Debug\Exe\SensorSuiteOAP.out</file>
+            <file>$TOOLKIT_DIR$\inc\c\stddef.h</file>
+            <file>$TOOLKIT_DIR$\inc\c\DLib_Config_Normal.h</file>
+            <file>$PROJ_DIR$\Debug\List\SensorSuiteOAP.map</file>
+            <file>$PROJ_DIR$\main.c</file>
+            <file>$PROJ_DIR$\Debug\Obj\dnm_rate_ctrl.xcl</file>
+            <file>$TOOLKIT_DIR$\inc\c\stdio.h</file>
+            <file>$PROJ_DIR$\Debug\Obj\dnm_service.o</file>
+            <file>$TOOLKIT_DIR$\inc\c\ctype.h</file>
+            <file>$TOOLKIT_DIR$\inc\c\yvals.h</file>
+            <file>$PROJ_DIR$\Debug\Obj\loc_task.o</file>
+            <file>$PROJ_DIR$\Debug\Obj\dnm_local.o</file>
+            <file>$PROJ_DIR$\..\all_projects.iarinc</file>
+            <file>$PROJ_DIR$\Debug\Obj\dnm_ucli.__cstat.et</file>
+            <file>$TOOLKIT_DIR$\lib\m7M_tl.a</file>
+            <file>$TOOLKIT_DIR$\lib\dl7M_tln.a</file>
+            <file>$TOOLKIT_DIR$\inc\c\stdarg.h</file>
+            <file>$PROJ_DIR$\Debug\Obj\SensorSuite_app.__cstat.et</file>
+        </outputs>
+        <file>
+            <name>[ROOT_NODE]</name>
+            <outputs>
+                <tool>
+                    <name>ILINK</name>
+                    <file> 62 65</file>
+                </tool>
+            </outputs>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\..\..\..\src\app\common\cli_task.c</name>
+            <outputs>
+                <tool>
+                    <name>ICCARM</name>
+                    <file> 37</file>
+                </tool>
+                <tool>
+                    <name>BICOMP</name>
+                    <file> 31</file>
+                </tool>
+                <tool>
+                    <name>__cstat</name>
+                    <file> 42</file>
+                </tool>
+            </outputs>
+            <inputs>
+                <tool>
+                    <name>ICCARM</name>
+                    <file> 74 51 54 71 52 64 60 49 40 12 63 46 22 33 0 32 47 18 25 11 4 21 78 5 13 1</file>
+                </tool>
+            </inputs>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\..\..\..\src\app\SensorSuiteOAP\SensorSuite_app.c</name>
+            <outputs>
+                <tool>
+                    <name>ICCARM</name>
+                    <file> 27</file>
+                </tool>
+                <tool>
+                    <name>BICOMP</name>
+                    <file> 43</file>
+                </tool>
+                <tool>
+                    <name>__cstat</name>
+                    <file> 79</file>
+                </tool>
+            </outputs>
+            <inputs>
+                <tool>
+                    <name>ICCARM</name>
+                    <file> 74 12 63 54 71 52 64 60 49 46 22 33 0 32 10 4 5 25 18 11 21 78 19 26 16 9 3 8 13 1 14 20 47</file>
+                </tool>
+            </inputs>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\..\..\..\src\app\common\loc_task.c</name>
+            <outputs>
+                <tool>
+                    <name>ICCARM</name>
+                    <file> 72</file>
+                </tool>
+                <tool>
+                    <name>BICOMP</name>
+                    <file> 45</file>
+                </tool>
+                <tool>
+                    <name>__cstat</name>
+                    <file> 28</file>
+                </tool>
+            </outputs>
+            <inputs>
+                <tool>
+                    <name>ICCARM</name>
+                    <file> 74 12 63 54 71 52 64 60 49 46 22 33 0 32 19 25 18 11 4 21 78 26 16 9 3 7</file>
+                </tool>
+            </inputs>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\..\..\..\src\modules\ip_applib\dnm_local.c</name>
+            <outputs>
+                <tool>
+                    <name>ICCARM</name>
+                    <file> 73</file>
+                </tool>
+                <tool>
+                    <name>BICOMP</name>
+                    <file> 59</file>
+                </tool>
+                <tool>
+                    <name>__cstat</name>
+                    <file> 36</file>
+                </tool>
+            </outputs>
+            <inputs>
+                <tool>
+                    <name>ICCARM</name>
+                    <file> 74 51 54 71 52 64 60 49 40 21 18 22 33 0 46 32 4 26 16 9 3 25 11 78 12 63</file>
+                </tool>
+            </inputs>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\..\..\..\src\modules\clilib\dnm_ucli.c</name>
+            <outputs>
+                <tool>
+                    <name>ICCARM</name>
+                    <file> 53</file>
+                </tool>
+                <tool>
+                    <name>BICOMP</name>
+                    <file> 58</file>
+                </tool>
+                <tool>
+                    <name>__cstat</name>
+                    <file> 75</file>
+                </tool>
+            </outputs>
+            <inputs>
+                <tool>
+                    <name>ICCARM</name>
+                    <file> 74 68 54 71 52 64 60 49 51 40 70 12 63 46 22 33 0 32 25 18 11 4 21 78 47 20 15</file>
+                </tool>
+            </inputs>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\..\..\..\src\modules\ip_applib\dnm_service.c</name>
+            <outputs>
+                <tool>
+                    <name>ICCARM</name>
+                    <file> 69</file>
+                </tool>
+                <tool>
+                    <name>BICOMP</name>
+                    <file> 57</file>
+                </tool>
+                <tool>
+                    <name>__cstat</name>
+                    <file> 38</file>
+                </tool>
+            </outputs>
+            <inputs>
+                <tool>
+                    <name>ICCARM</name>
+                    <file> 74 39 46 22 18 21 33 0 32 4 25 11 78 26 16 9 3</file>
+                </tool>
+            </inputs>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\..\..\..\src\modules\ip_applib\dnm_rate_ctrl.c</name>
+            <outputs>
+                <tool>
+                    <name>ICCARM</name>
+                    <file> 61</file>
+                </tool>
+                <tool>
+                    <name>BICOMP</name>
+                    <file> 67</file>
+                </tool>
+                <tool>
+                    <name>__cstat</name>
+                    <file> 29</file>
+                </tool>
+            </outputs>
+            <inputs>
+                <tool>
+                    <name>ICCARM</name>
+                    <file> 74 44 46 22 18 21 33 0 32 4 25 11 78 26 16 9 3</file>
+                </tool>
+            </inputs>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\Debug\Exe\SensorSuiteOAP.out</name>
+            <outputs>
+                <tool>
+                    <name>ILINK</name>
+                    <file> 65</file>
+                </tool>
+            </outputs>
+            <inputs>
+                <tool>
+                    <name>ILINK</name>
+                    <file> 41 37 73 61 69 53 34 35 72 27 50 76 77</file>
+                </tool>
+            </inputs>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\main.c</name>
+            <outputs>
+                <tool>
+                    <name>ICCARM</name>
+                    <file> 55</file>
+                </tool>
+                <tool>
+                    <name>BICOMP</name>
+                    <file> 56</file>
+                </tool>
+            </outputs>
+        </file>
+        <forcedrebuild>
+            <name>[REBUILD_ALL]</name>
+        </forcedrebuild>
+    </configuration>
+    <configuration>
+        <name>Release</name>
+        <outputs />
+        <forcedrebuild>
+            <name>[MULTI_TOOL]</name>
+            <tool>ILINK</tool>
+        </forcedrebuild>
+    </configuration>
+</project>

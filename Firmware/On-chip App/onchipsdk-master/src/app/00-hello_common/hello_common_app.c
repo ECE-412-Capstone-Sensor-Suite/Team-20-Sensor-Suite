@@ -23,7 +23,7 @@ int p2_init(void) {
       NULL                                  // cliCmds
    );
    loc_task_init(
-      JOIN_NO,                              // fJoin
+      JOIN_YES,                              // fJoin
       NETID_NONE,                           // netId
       UDPPORT_NONE,                         // udpPort
       NULL,                                 // joinedSem

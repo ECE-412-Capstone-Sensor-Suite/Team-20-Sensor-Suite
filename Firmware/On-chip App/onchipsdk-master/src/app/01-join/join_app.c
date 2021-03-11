@@ -87,6 +87,7 @@ static void sendTask(void* unused) {
    INT8U           i;
    INT8U           rc;
    
+   dnm_ucli_printf("are joining!\r\n");
    // wait for the loc_task to finish joining the network
    OSSemPend(join_app_vars.joinedSem, 0, &osErr);
    ASSERT(osErr==OS_ERR_NONE);

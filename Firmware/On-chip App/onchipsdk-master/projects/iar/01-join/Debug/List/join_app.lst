@@ -1,0 +1,276 @@
+###############################################################################
+#
+# IAR ANSI C/C++ Compiler V8.40.1.212/W32 for ARM         08/Mar/2021  00:21:27
+# Copyright 1999-2019 IAR Systems AB.
+#
+#    Cpu mode     =  
+#    Endian       =  little
+#    Source file  =
+#        C:\Users\Yesoooof\Documents\GitHub\Team-20-Sensor-Suite\Firmware\On-chip
+#        App\onchipsdk-master\src\app\01-join\join_app.c
+#    Command line =
+#        -f C:\Users\Yesoooof\AppData\Local\Temp\EW5F71.tmp
+#        ("C:\Users\Yesoooof\Documents\GitHub\Team-20-Sensor-Suite\Firmware\On-chip
+#        App\onchipsdk-master\src\app\01-join\join_app.c" -lcN
+#        "C:\Users\Yesoooof\Documents\GitHub\Team-20-Sensor-Suite\Firmware\On-chip
+#        App\onchipsdk-master\projects\iar\01-join\Debug\List" -o
+#        "C:\Users\Yesoooof\Documents\GitHub\Team-20-Sensor-Suite\Firmware\On-chip
+#        App\onchipsdk-master\projects\iar\01-join\Debug\Obj" --debug
+#        --endian=little --cpu=Cortex-M3 --no_path_in_file_macros --enum_is_int
+#        -e --fpu=None --dlib_config "C:\Program Files (x86)\IAR
+#        Systems\Embedded Workbench 8.3\arm\inc\c\DLib_Config_Normal.h"
+#        --preinclude
+#        "C:\Users\Yesoooof\Documents\GitHub\Team-20-Sensor-Suite\Firmware\On-chip
+#        App\onchipsdk-master\projects\iar\01-join\..\all_projects.iarinc" -I
+#        "C:\Users\Yesoooof\Documents\GitHub\Team-20-Sensor-Suite\Firmware\On-chip
+#        App\onchipsdk-master\projects\iar\01-join\..\..\..\src\app\01-join\"
+#        -I
+#        "C:\Users\Yesoooof\Documents\GitHub\Team-20-Sensor-Suite\Firmware\On-chip
+#        App\onchipsdk-master\projects\iar\01-join\..\..\..\src\app\common\" -I
+#        "C:\Users\Yesoooof\Documents\GitHub\Team-20-Sensor-Suite\Firmware\On-chip
+#        App\onchipsdk-master\projects\iar\01-join\..\..\..\src\inc\" -I
+#        "C:\Users\Yesoooof\Documents\GitHub\Team-20-Sensor-Suite\Firmware\On-chip
+#        App\onchipsdk-master\projects\iar\01-join\..\..\..\src\modules\clilib\"
+#        -I
+#        "C:\Users\Yesoooof\Documents\GitHub\Team-20-Sensor-Suite\Firmware\On-chip
+#        App\onchipsdk-master\projects\iar\01-join\..\..\..\src\modules\ip_applib\"
+#        -Oh)
+#    Locale       =  C
+#    List file    =
+#        C:\Users\Yesoooof\Documents\GitHub\Team-20-Sensor-Suite\Firmware\On-chip
+#        App\onchipsdk-master\projects\iar\01-join\Debug\List\join_app.lst
+#    Object file  =
+#        C:\Users\Yesoooof\Documents\GitHub\Team-20-Sensor-Suite\Firmware\On-chip
+#        App\onchipsdk-master\projects\iar\01-join\Debug\Obj\join_app.o
+#
+###############################################################################
+
+C:\Users\Yesoooof\Documents\GitHub\Team-20-Sensor-Suite\Firmware\On-chip App\onchipsdk-master\src\app\01-join\join_app.c
+      1          /*
+      2          Copyright (c) 2013, Dust Networks.  All rights reserved.
+      3          */
+      4          
+      5          #include "dn_common.h"
+      6          #include "dn_exe_hdr.h"
+      7          #include "cli_task.h"
+      8          #include "loc_task.h"
+      9          #include "dnm_local.h"
+     10          #include "app_task_cfg.h"
+     11          #include "Ver.h"
+     12          #include "Well_known_ports.h"
+     13          
+     14          //=========================== defines =========================================
+     15          #define JOIN_PORT                      WKP_USER_1
+     16          #define PAYLOAD_LENGTH                 10
+     17          
+     18          //=========================== variables =======================================
+     19          
+     20          typedef struct {
+     21             OS_EVENT*       joinedSem;
+     22             OS_STK          sendTaskStack[TASK_APP_SEND_STK_SIZE];
+     23          } join_app_vars_t;
+     24          
+     25          join_app_vars_t join_app_vars;
+     26          
+     27          //=========================== prototypes ======================================
+     28          
+     29          static void sendTask(void* unused);
+     30          dn_error_t rxNotifCb(dn_api_loc_notif_received_t* rxFrame, INT8U length);
+     31          
+     32          //=========================== initialization ==================================
+     33          
+     34          /**
+     35          \brief This is the entry point for the application code.
+     36          */
+     37          int p2_init(void) {
+     38             INT8U           osErr;
+     39             
+     40             // create semaphore for loc_task to indicate when joined
+     41             join_app_vars.joinedSem = OSSemCreate(0);
+     42             
+     43             //===== initialize helper tasks
+     44             
+     45             cli_task_init(
+     46                "join",                               // appName
+     47                NULL                                  // cliCmds
+     48             );
+     49             loc_task_init(
+     50                JOIN_YES,                             // fJoin
+     51                NETID_NONE,                           // netId
+     52                JOIN_PORT,                            // udpPort
+     53                join_app_vars.joinedSem,              // joinedSem
+     54                BANDWIDTH_NONE,                       // bandwidth
+     55                NULL                                  // serviceSem
+     56             );
+     57             
+     58             //==== register a callback for when receiving a packet
+     59             
+     60             dnm_loc_registerRxNotifCallback(rxNotifCb);
+     61             
+     62             //===== initialize sendTask
+     63             
+     64             osErr = OSTaskCreateExt(
+     65                sendTask,
+     66                (void *) 0,
+     67                (OS_STK*) (&join_app_vars.sendTaskStack[TASK_APP_SEND_STK_SIZE - 1]),
+     68                TASK_APP_SEND_PRIORITY,
+     69                TASK_APP_SEND_PRIORITY,
+     70                (OS_STK*) join_app_vars.sendTaskStack,
+     71                TASK_APP_SEND_STK_SIZE,
+     72                (void *) 0,
+     73                OS_TASK_OPT_STK_CHK | OS_TASK_OPT_STK_CLR
+     74             );
+     75             ASSERT(osErr==OS_ERR_NONE);
+     76             OSTaskNameSet(TASK_APP_SEND_PRIORITY, (INT8U*)TASK_APP_SEND_NAME, &osErr);
+     77             ASSERT(osErr==OS_ERR_NONE);
+     78             
+     79             return 0;
+     80          }
+     81          
+     82          static void sendTask(void* unused) {
+     83             dn_error_t      dnErr;
+     84             INT8U           osErr;
+     85             INT8U           pkBuf[sizeof(loc_sendtoNW_t)+PAYLOAD_LENGTH];
+     86             loc_sendtoNW_t* pkToSend;
+     87             INT8U           i;
+     88             INT8U           rc;
+     89             
+     90             dnm_ucli_printf("are joining!\r\n");
+     91             // wait for the loc_task to finish joining the network
+     92             OSSemPend(join_app_vars.joinedSem, 0, &osErr);
+     93             ASSERT(osErr==OS_ERR_NONE);
+     94             
+     95             // print
+     96             dnm_ucli_printf("Done joining!\r\n");
+     97             
+     98             while (1) { // this is a task, it executes forever
+     99                
+    100                // wait a bit between packets
+    101                OSTimeDly(10000);
+    102                
+    103                // prepare packet to send
+    104                pkToSend = (loc_sendtoNW_t*)pkBuf;
+    105                pkToSend->locSendTo.socketId          = loc_getSocketId();
+    106                pkToSend->locSendTo.destAddr          = DN_MGR_IPV6_MULTICAST_ADDR;
+    107                pkToSend->locSendTo.destPort          = JOIN_PORT;
+    108                pkToSend->locSendTo.serviceType       = DN_API_SERVICE_TYPE_BW;   
+    109                pkToSend->locSendTo.priority          = DN_API_PRIORITY_MED;   
+    110                pkToSend->locSendTo.packetId          = 0xFFFF;
+    111                for (i=0;i<PAYLOAD_LENGTH;i++) {
+    112                   pkToSend->locSendTo.payload[i]     = 0x10+i;
+    113                }
+    114                
+    115                // send packet
+    116                dnErr = dnm_loc_sendtoCmd(
+    117                   pkToSend,
+    118                   PAYLOAD_LENGTH,
+    119                   &rc
+    120                );
+    121                ASSERT(dnErr==DN_ERR_NONE);
+    122                
+    123                // print
+    124                if (rc==DN_API_RC_OK) {
+    125                    dnm_ucli_printf("packet sent\r\n");
+    126                } else {
+    127                    dnm_ucli_printf("rc = 0x%02x\r\n",rc);
+    128                }
+    129             }
+    130          }
+    131          
+    132          dn_error_t rxNotifCb(dn_api_loc_notif_received_t* rxFrame, INT8U length) {
+    133             INT8U i;
+    134             
+    135             dnm_ucli_printf("packet received:\r\n");
+    136             dnm_ucli_printf(" - sourceAddr: ");
+    137             for (i=0;i<sizeof(dn_ipv6_addr_t);i++) {
+    138                dnm_ucli_printf("%02x",((INT8U*)&(rxFrame->sourceAddr))[i]);
+    139             }
+    140             dnm_ucli_printf("\r\n");
+    141             dnm_ucli_printf(" - sourcePort: %d\r\n",rxFrame->sourcePort);
+    142             dnm_ucli_printf(" - data:       (%d bytes) ",length-sizeof(dn_api_loc_notif_received_t));
+    143             for (i=0;i<length-sizeof(dn_api_loc_notif_received_t);i++) {
+    144                dnm_ucli_printf("%02x",rxFrame->data[i]);
+    145             }
+    146             dnm_ucli_printf("\r\n");
+    147             
+    148             return DN_ERR_NONE;
+    149          }
+    150          
+    151          //=============================================================================
+    152          //=========================== install a kernel header =========================
+    153          //=============================================================================
+    154          
+    155          /**
+    156          A kernel header is a set of bytes prepended to the actual binary image of this
+    157          application. This header is needed for your application to start running.
+    158          */
+    159          
+    160          DN_CREATE_EXE_HDR(DN_VENDOR_ID_NOT_SET,
+    161                            DN_APP_ID_NOT_SET,
+    162                            VER_MAJOR,
+    163                            VER_MINOR,
+    164                            VER_PATCH,
+    165                            VER_BUILD);
+
+   Maximum stack usage in bytes:
+
+   .cstack Function
+   ------- --------
+      32   p2_init
+        32   -> OSSemCreate
+        32   -> OSTaskCreateExt
+        32   -> OSTaskNameSet
+        32   -> assert_handler
+        32   -> cli_task_init
+        32   -> dnm_loc_registerRxNotifCallback
+        32   -> loc_task_init
+      24   rxNotifCb
+        24   -> dnm_ucli_printf
+      80   sendTask
+        80   -> OSSemPend
+        80   -> OSTimeDly
+        80   -> __aeabi_memcpy
+        80   -> assert_handler
+        80   -> dnm_loc_sendtoCmd
+        80   -> dnm_ucli_printf
+        80   -> loc_getSocketId
+
+
+   Section sizes:
+
+   Bytes  Function/Label
+   -----  --------------
+       4  ??DataTable15
+       4  ??DataTable15_1
+       4  ??DataTable15_2
+       8  ?_0
+      12  ?_1
+       4  ?_10
+      20  ?_11
+      28  ?_12
+       8  ?_2
+      16  ?_3
+      16  ?_4
+      16  ?_5
+      16  ?_6
+      20  ?_7
+      16  ?_8
+       8  ?_9
+    1028  join_app_vars
+      32  kernelExeHdr
+     132  p2_init
+     102  rxNotifCb
+     180  sendTask
+
+ 
+ 1'028 bytes in section .bss
+    32 bytes in section .kernel_exe_hdr
+     4 bytes in section .rodata
+   610 bytes in section .text
+ 
+   610 bytes of CODE  memory
+    36 bytes of CONST memory
+ 1'028 bytes of DATA  memory
+
+Errors: none
+Warnings: none

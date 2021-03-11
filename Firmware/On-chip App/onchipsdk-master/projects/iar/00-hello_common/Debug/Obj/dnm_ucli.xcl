@@ -2,6 +2,8 @@
 -std=c11
 -ferror-limit=0
 -fbracket-depth=512
+-include
+C:\Users\Yesoooof\Documents\GitHub\Team-20-Sensor-Suite\Firmware\On-chip App\onchipsdk-master\projects\iar\00-hello_common\..\all_projects.iarinc
 -MD
 -MF
 C:\Users\Yesoooof\Documents\GitHub\Team-20-Sensor-Suite\Firmware\On-chip App\onchipsdk-master\projects\iar\00-hello_common\Debug\Obj\dnm_ucli.pbi.dep
@@ -10,21 +12,25 @@ dnm_ucli.pbi
 -I
 C:\Users\Yesoooof\Documents\GitHub\Team-20-Sensor-Suite\Firmware\On-chip App\onchipsdk-master\src\modules\clilib
 -I
-C:\Users\Yesoooof\Documents\GitHub\Team-20-Sensor-Suite\Firmware\On-chip App\onchipsdk-master\src\inc
+C:\Users\Yesoooof\Documents\GitHub\Team-20-Sensor-Suite\Firmware\On-chip App\onchipsdk-master\projects\iar\00-hello_common\..\..\..\src\app\00-hello_common
 -I
-C:\Users\Yesoooof\Documents\GitHub\Team-20-Sensor-Suite\Firmware\On-chip App\onchipsdk-master\src\app\common
+C:\Users\Yesoooof\Documents\GitHub\Team-20-Sensor-Suite\Firmware\On-chip App\onchipsdk-master\projects\iar\00-hello_common\..\..\..\src\app\common
 -I
-C:\Users\Yesoooof\Documents\GitHub\Team-20-Sensor-Suite\Firmware\On-chip App\onchipsdk-master\src\modules\clilib
+C:\Users\Yesoooof\Documents\GitHub\Team-20-Sensor-Suite\Firmware\On-chip App\onchipsdk-master\projects\iar\00-hello_common\..\..\..\src\inc
 -I
-C:\Users\Yesoooof\Documents\GitHub\Team-20-Sensor-Suite\Firmware\On-chip App\onchipsdk-master\src\modules\ip_applib
+C:\Users\Yesoooof\Documents\GitHub\Team-20-Sensor-Suite\Firmware\On-chip App\onchipsdk-master\projects\iar\00-hello_common\..\..\..\src\modules\clilib
+-I
+C:\Users\Yesoooof\Documents\GitHub\Team-20-Sensor-Suite\Firmware\On-chip App\onchipsdk-master\projects\iar\00-hello_common\..\..\..\src\modules\ip_applib
 -I
 C:\Program Files (x86)\IAR Systems\Embedded Workbench 8.3\arm\inc
 -I
 C:\Program Files (x86)\IAR Systems\Embedded Workbench 8.3\arm\inc\c
 -I
-C:\Users\Yesoooof\Documents\GitHub\Team-20-Sensor-Suite\Firmware\On-chip App\onchipsdk-master\src\inc
+C:\Users\Yesoooof\Documents\GitHub\Team-20-Sensor-Suite\Firmware\On-chip App\onchipsdk-master\src\app\00-hello_common
 -I
 C:\Users\Yesoooof\Documents\GitHub\Team-20-Sensor-Suite\Firmware\On-chip App\onchipsdk-master\src\app\common
+-I
+C:\Users\Yesoooof\Documents\GitHub\Team-20-Sensor-Suite\Firmware\On-chip App\onchipsdk-master\src\inc
 -I
 C:\Users\Yesoooof\Documents\GitHub\Team-20-Sensor-Suite\Firmware\On-chip App\onchipsdk-master\src\modules\clilib
 -I
@@ -145,6 +151,16 @@ C:\Users\Yesoooof\Documents\GitHub\Team-20-Sensor-Suite\Firmware\On-chip App\onc
 -D__INTMAX_C_SUFFIX__=LL
 -D__UINTMAX_C_SUFFIX__=ULL
 -D__INTMAX_SIZE_PREFIX__="ll"
+-D__ATOMIC_BOOL_LOCK_FREE=2
+-D__ATOMIC_CHAR_LOCK_FREE=2
+-D__ATOMIC_CHAR16_T_LOCK_FREE=2
+-D__ATOMIC_CHAR32_T_LOCK_FREE=2
+-D__ATOMIC_WCHAR_T_LOCK_FREE=2
+-D__ATOMIC_SHORT_LOCK_FREE=2
+-D__ATOMIC_INT_LOCK_FREE=2
+-D__ATOMIC_LONG_LOCK_FREE=2
+-D__ATOMIC_LLONG_LOCK_FREE=0
+-D__ATOMIC_POINTER_LOCK_FREE=2
 -D__FLOAT_SIZE__=4
 -D__FLOAT_ALIGN__=4
 -D__DOUBLE_SIZE__=8
@@ -168,7 +184,7 @@ C:\Users\Yesoooof\Documents\GitHub\Team-20-Sensor-Suite\Firmware\On-chip App\onc
 -D__INTPTR_SIZE_PREFIX__=""
 -D__JMP_BUF_ELEMENT_TYPE__=unsigned long long int
 -D__JMP_BUF_NUM_ELEMENTS__=8
--D__TID__=0xcf10
+-D__TID__=0xcf60
 -D__VER__=8040001
 -D__BUILD_NUMBER__=212
 -D__IAR_SYSTEMS_ICC__=9
@@ -206,21 +222,37 @@ C:\Users\Yesoooof\Documents\GitHub\Team-20-Sensor-Suite\Firmware\On-chip App\onc
 -D__MULTIPLE_INHERITANCE__=1
 -D__AAPCS__=1
 -D__ARM4TM__=4
+-D__ARM5TM__=5
+-D__ARM5T__=5
+-D__ARM5__=5
+-D__ARM6M__=11
+-D__ARM6SM__=12
+-D__ARM6T2__=6
+-D__ARM6__=6
+-D__ARM7M__=7
+-D__ARM7__=7
 -D__ARM_32BIT_STATE=1
 -D__ARM_ACLE=201
 -D__ARM_ALIGN_MAX_PWR=8
 -D__ARM_ALIGN_MAX_STACK_PWR=3
--D__ARM_ARCH=4
--D__ARM_ARCH_ISA_ARM=1
--D__ARM_ARCH_ISA_THUMB=1
--D__ARM_FEATURE_COPROC=1
+-D__ARM_ARCH=7
+-D__ARM_ARCH_ISA_THUMB=2
+-D__ARM_ARCH_PROFILE='M'
+-D__ARM_FEATURE_CLZ=1
+-D__ARM_FEATURE_COPROC=15
+-D__ARM_FEATURE_IDIV=1
+-D__ARM_FEATURE_LDREX=7
+-D__ARM_FEATURE_QBIT=1
+-D__ARM_FEATURE_SAT=1
+-D__ARM_FEATURE_UNALIGNED=1
 -D__ARM_FP16_ARGS=1
 -D__ARM_FP16_FORMAT_IEEE=1
 -D__ARM_PCS=1
--D__ARM_SIZE_MINIMAL_ENUM=1
+-D__ARM_PROFILE_M__=1
+-D__ARM_SIZE_MINIMAL_ENUM=4
 -D__ARM_SIZE_WCHAR_T=4
 -D__CODE_SIZE_LIMIT=0
--D__CORE__=__ARM4TM__
+-D__CORE__=__ARM7M__
 -D__CPU_MODE__=1
 -D__ICCARM_INTRINSICS_VERSION__=2
 -D__ICCARM__=1
@@ -239,7 +271,12 @@ C:\Users\Yesoooof\Documents\GitHub\Team-20-Sensor-Suite\Firmware\On-chip App\onc
 -D__STDC__=1
 -D__STDC_VERSION__=201710L
 -D__STDC_NO_VLA__=1
--D__STDC_NO_ATOMICS__=1
+-D__MEMORY_ORDER_RELAXED__=0
+-D__MEMORY_ORDER_CONSUME__=1
+-D__MEMORY_ORDER_ACQUIRE__=2
+-D__MEMORY_ORDER_RELEASE__=3
+-D__MEMORY_ORDER_ACQ_REL__=4
+-D__MEMORY_ORDER_SEQ_CST__=5
 -D__STDC_UTF_16__=1
 -D__STDC_UTF_32__=1
 -D__STDC_LIB_EXT1__=201112L

@@ -5,98 +5,96 @@
     <configuration>
         <name>Debug</name>
         <outputs>
-            <file>$PROJ_DIR$\..\..\..\src\app\common\Ver.h</file>
-            <file>$PROJ_DIR$\..\..\..\src\inc\dn_system.h</file>
             <file>$PROJ_DIR$\..\..\..\src\inc\dn_common.h</file>
-            <file>$PROJ_DIR$\..\..\..\src\inc\dn_cli.h</file>
-            <file>$PROJ_DIR$\..\..\..\src\inc\dn_errno.h</file>
-            <file>$PROJ_DIR$\..\..\..\src\inc\dn_api_local.h</file>
-            <file>$PROJ_DIR$\..\..\..\src\inc\dn_mesh.h</file>
-            <file>$PROJ_DIR$\..\..\..\src\inc\dn_channel.h</file>
             <file>$PROJ_DIR$\..\..\..\src\inc\dn_flash_info.h</file>
+            <file>$PROJ_DIR$\..\..\..\src\inc\dn_gpio.h</file>
+            <file>$PROJ_DIR$\..\..\..\src\inc\dn_system.h</file>
             <file>$PROJ_DIR$\..\..\..\src\inc\dn_typedef.h</file>
+            <file>$PROJ_DIR$\..\..\..\src\app\common\Ver.h</file>
+            <file>$PROJ_DIR$\..\..\..\src\inc\dn_errno.h</file>
+            <file>$PROJ_DIR$\..\..\..\src\inc\dn_mesh.h</file>
             <file>$PROJ_DIR$\..\..\..\src\inc\dn_pack.h</file>
             <file>$PROJ_DIR$\..\..\..\src\app\common\loc_task.h</file>
-            <file>$PROJ_DIR$\..\..\..\src\inc\dn_gpio.h</file>
+            <file>$PROJ_DIR$\..\..\..\src\inc\dn_channel.h</file>
             <file>$PROJ_DIR$\..\..\..\src\inc\dn_api_common.h</file>
+            <file>$PROJ_DIR$\..\..\..\src\inc\dn_api_local.h</file>
             <file>$PROJ_DIR$\..\..\..\src\inc\dn_api_param.h</file>
-            <file>$PROJ_DIR$\..\..\..\src\app\00-hello\app_task_cfg.h</file>
+            <file>$PROJ_DIR$\..\..\..\src\inc\dn_cli.h</file>
             <file>$PROJ_DIR$\..\..\..\src\app\00-hello\hello_app.c</file>
-            <file>$PROJ_DIR$\..\..\..\src\app\common\app_cfg.h</file>
-            <file>$PROJ_DIR$\..\..\..\src\app\common\build.h</file>
             <file>$PROJ_DIR$\..\..\..\src\app\common\cli_task.c</file>
             <file>$PROJ_DIR$\..\..\..\src\app\common\cli_task.h</file>
+            <file>$PROJ_DIR$\..\..\..\src\app\00-hello\app_task_cfg.h</file>
+            <file>$PROJ_DIR$\..\..\..\src\app\common\app_cfg.h</file>
             <file>$PROJ_DIR$\..\..\..\src\app\common\loc_task.c</file>
+            <file>$PROJ_DIR$\..\..\..\src\app\common\build.h</file>
+            <file>$PROJ_DIR$\Debug\Obj\dnm_local.o</file>
+            <file>$PROJ_DIR$\Debug\List\loc_task.lst</file>
+            <file>$PROJ_DIR$\Debug\Obj\dnm_ucli.xcl</file>
+            <file>$PROJ_DIR$\Debug\Obj\hello_app.__cstat.et</file>
+            <file>$PROJ_DIR$\Debug\Obj\dnm_service.o</file>
+            <file>$PROJ_DIR$\Debug\Obj\dnm_rate_ctrl.o</file>
+            <file>$PROJ_DIR$\Debug\Obj\loc_task.o</file>
+            <file>$TOOLKIT_DIR$\inc\c\string.h</file>
+            <file>$PROJ_DIR$\Debug\List\cli_task.lst</file>
+            <file>$PROJ_DIR$\Debug\List\dnm_rate_ctrl.lst</file>
+            <file>$PROJ_DIR$\Debug\Obj\dnm_ucli.o</file>
+            <file>$PROJ_DIR$\Debug\Obj\dnm_local.xcl</file>
+            <file>$PROJ_DIR$\Debug\Exe\ocfdk_00_hello.out</file>
+            <file>$PROJ_DIR$\..\..\..\src\inc\dn_exe_hdr.h</file>
+            <file>$TOOLKIT_DIR$\lib\dl7M_tln.a</file>
+            <file>$PROJ_DIR$\Debug\List\ocfdk_00_hello.map</file>
+            <file>$PROJ_DIR$\Debug\Obj\hello_app.xcl</file>
+            <file>$TOOLKIT_DIR$\inc\c\stddef.h</file>
+            <file>$TOOLKIT_DIR$\inc\c\yvals.h</file>
+            <file>$TOOLKIT_DIR$\lib\rt7M_tl.a</file>
+            <file>$PROJ_DIR$\Debug\Obj\loc_task.xcl</file>
+            <file>$TOOLKIT_DIR$\inc\c\DLib_Product_string.h</file>
+            <file>$TOOLKIT_DIR$\inc\c\DLib_Defaults.h</file>
+            <file>$PROJ_DIR$\Debug\Obj\cli_task.xcl</file>
+            <file>$PROJ_DIR$\Debug\Obj\dnm_service.xcl</file>
+            <file>$TOOLKIT_DIR$\inc\c\ycheck.h</file>
+            <file>$TOOLKIT_DIR$\inc\c\ctype.h</file>
+            <file>$PROJ_DIR$\Debug\Obj\hello_app.o</file>
+            <file>$PROJ_DIR$\Debug\Obj\dnm_rate_ctrl.xcl</file>
+            <file>$PROJ_DIR$\Debug\Obj\cli_task.o</file>
+            <file>$PROJ_DIR$\Debug\List\hello_app.lst</file>
+            <file>$TOOLKIT_DIR$\inc\c\stdio.h</file>
+            <file>$TOOLKIT_DIR$\lib\m7M_tl.a</file>
+            <file>$PROJ_DIR$\Debug\Obj\dnm_service.__cstat.et</file>
+            <file>$TOOLKIT_DIR$\inc\c\ysizet.h</file>
+            <file>$PROJ_DIR$\Debug\List\dnm_service.lst</file>
+            <file>$PROJ_DIR$\..\..\..\src\modules\clilib\dnm_ucli.h</file>
+            <file>$PROJ_DIR$\..\..\..\src\modules\ip_applib\dnm_service.h</file>
+            <file>$TOOLKIT_DIR$\config\linker\Linear\DustNetworks\Eterna.icf</file>
+            <file>$TOOLKIT_DIR$\inc\c\DLib_Product.h</file>
+            <file>$PROJ_DIR$\..\all_projects.iarinc</file>
+            <file>$PROJ_DIR$\..\..\..\src\lib\libucos_full.a</file>
+            <file>$PROJ_DIR$\Debug\List\dnm_local.lst</file>
+            <file>$TOOLKIT_DIR$\inc\c\stdarg.h</file>
+            <file>$PROJ_DIR$\Debug\Obj\dnm_local.__cstat.et</file>
+            <file>$PROJ_DIR$\Debug\List\dnm_ucli.lst</file>
+            <file>$PROJ_DIR$\..\..\..\src\inc\os_cfg.h</file>
+            <file>$PROJ_DIR$\..\..\..\src\modules\ip_applib\dnm_local.c</file>
             <file>$PROJ_DIR$\..\..\..\src\inc\os_cpu.h</file>
-            <file>$PROJ_DIR$\..\..\..\src\modules\ip_applib\dnm_service.c</file>
+            <file>$PROJ_DIR$\Debug\Obj\loc_task.__cstat.et</file>
+            <file>$PROJ_DIR$\Debug\Obj\dnm_rate_ctrl.__cstat.et</file>
+            <file>$PROJ_DIR$\..\..\..\src\lib\libip_stack.a</file>
+            <file>$PROJ_DIR$\..\..\..\src\inc\ucos_ii.h</file>
+            <file>$PROJ_DIR$\..\..\..\src\modules\ip_applib\dnm_local.h</file>
+            <file>$PROJ_DIR$\..\..\..\src\modules\ip_applib\dnm_rate_ctrl.h</file>
+            <file>$TOOLKIT_DIR$\inc\c\DLib_Config_Normal.h</file>
             <file>$PROJ_DIR$\..\..\..\src\modules\ip_applib\dnm_rate_ctrl.c</file>
             <file>$PROJ_DIR$\..\..\..\src\modules\clilib\dnm_ucli.c</file>
-            <file>$PROJ_DIR$\..\..\..\src\inc\ucos_ii.h</file>
-            <file>$PROJ_DIR$\..\..\..\src\modules\ip_applib\dnm_rate_ctrl.h</file>
-            <file>$PROJ_DIR$\..\..\..\src\modules\ip_applib\dnm_local.h</file>
-            <file>$PROJ_DIR$\..\..\..\src\modules\ip_applib\dnm_service.h</file>
-            <file>$PROJ_DIR$\..\..\..\src\modules\clilib\dnm_ucli.h</file>
-            <file>$PROJ_DIR$\..\..\..\src\modules\ip_applib\dnm_local.c</file>
-            <file>$PROJ_DIR$\..\..\..\src\lib\libucos_full.a</file>
-            <file>$PROJ_DIR$\..\..\..\src\inc\os_cfg.h</file>
-            <file>$PROJ_DIR$\..\..\..\src\lib\libip_stack.a</file>
-            <file>$PROJ_DIR$\Debug\Obj\dnm_rate_ctrl.__cstat.et</file>
-            <file>$PROJ_DIR$\Debug\List\hello_app.lst</file>
-            <file>$TOOLKIT_DIR$\inc\c\DLib_Config_Normal.h</file>
-            <file>$PROJ_DIR$\Debug\Obj\loc_task.__cstat.et</file>
-            <file>$TOOLKIT_DIR$\inc\c\stdarg.h</file>
-            <file>$PROJ_DIR$\Debug\List\dnm_service.lst</file>
-            <file>$PROJ_DIR$\Debug\List\dnm_local.lst</file>
-            <file>$TOOLKIT_DIR$\inc\c\ysizet.h</file>
-            <file>$PROJ_DIR$\Debug\List\loc_task.lst</file>
-            <file>$TOOLKIT_DIR$\inc\c\stdio.h</file>
-            <file>$PROJ_DIR$\Debug\List\dnm_ucli.lst</file>
-            <file>$PROJ_DIR$\Debug\Obj\dnm_local.__cstat.et</file>
+            <file>$PROJ_DIR$\..\..\..\src\modules\ip_applib\dnm_service.c</file>
             <file>$PROJ_DIR$\Debug\Obj\cli_task.__cstat.et</file>
             <file>$PROJ_DIR$\Debug\Obj\dnm_ucli.__cstat.et</file>
-            <file>$PROJ_DIR$\..\all_projects.iarinc</file>
-            <file>$PROJ_DIR$\Debug\Obj\dnm_service.__cstat.et</file>
-            <file>$TOOLKIT_DIR$\config\linker\Linear\DustNetworks\Eterna.icf</file>
-            <file>$TOOLKIT_DIR$\lib\rt7M_tl.a</file>
-            <file>$PROJ_DIR$\Debug\Obj\hello_app.__cstat.et</file>
-            <file>$TOOLKIT_DIR$\lib\m7M_tl.a</file>
-            <file>$TOOLKIT_DIR$\inc\c\DLib_Product.h</file>
-            <file>$TOOLKIT_DIR$\inc\c\stddef.h</file>
-            <file>$PROJ_DIR$\Debug\List\cli_task.lst</file>
-            <file>$TOOLKIT_DIR$\inc\c\ycheck.h</file>
-            <file>$PROJ_DIR$\..\..\..\src\inc\dn_exe_hdr.h</file>
-            <file>$TOOLKIT_DIR$\inc\c\yvals.h</file>
-            <file>$TOOLKIT_DIR$\inc\c\ctype.h</file>
-            <file>$TOOLKIT_DIR$\inc\c\DLib_Defaults.h</file>
-            <file>$TOOLKIT_DIR$\inc\c\string.h</file>
-            <file>$PROJ_DIR$\Debug\List\dnm_rate_ctrl.lst</file>
-            <file>$TOOLKIT_DIR$\inc\c\DLib_Product_string.h</file>
-            <file>$PROJ_DIR$\Debug\Obj\dnm_local.xcl</file>
-            <file>$PROJ_DIR$\Debug\Obj\dnm_local.o</file>
-            <file>$PROJ_DIR$\Debug\Obj\dnm_service.o</file>
-            <file>$PROJ_DIR$\Debug\Obj\hello_app.xcl</file>
-            <file>$PROJ_DIR$\Debug\Obj\dnm_rate_ctrl.xcl</file>
-            <file>$PROJ_DIR$\Debug\Exe\ocfdk_00_hello.out</file>
-            <file>$PROJ_DIR$\Debug\Obj\cli_task.o</file>
-            <file>$PROJ_DIR$\Debug\Obj\dnm_ucli.xcl</file>
-            <file>$PROJ_DIR$\Debug\Obj\00-hello.pbd</file>
-            <file>$TOOLKIT_DIR$\lib\dl7M_tln.a</file>
-            <file>$PROJ_DIR$\Debug\Obj\dnm_ucli.o</file>
-            <file>$PROJ_DIR$\Debug\Obj\dnm_service.xcl</file>
-            <file>$PROJ_DIR$\Debug\Obj\loc_task.o</file>
-            <file>$PROJ_DIR$\Debug\Obj\dnm_rate_ctrl.o</file>
-            <file>$PROJ_DIR$\Debug\Obj\cli_task.xcl</file>
-            <file>$PROJ_DIR$\Debug\Obj\loc_task.xcl</file>
-            <file>$PROJ_DIR$\Debug\Obj\hello_app.o</file>
-            <file>$PROJ_DIR$\Debug\List\ocfdk_00_hello.map</file>
-            <file>$PROJ_DIR$\..\..\..\src\app\02-i2c\i2c_app.c</file>
         </outputs>
         <file>
             <name>[ROOT_NODE]</name>
             <outputs>
                 <tool>
                     <name>ILINK</name>
-                    <file> 71 83</file>
+                    <file> 34 37</file>
                 </tool>
             </outputs>
         </file>
@@ -105,21 +103,21 @@
             <outputs>
                 <tool>
                     <name>ICCARM</name>
-                    <file> 36 82</file>
+                    <file> 52 49</file>
                 </tool>
                 <tool>
                     <name>BICOMP</name>
-                    <file> 69</file>
+                    <file> 38</file>
                 </tool>
                 <tool>
                     <name>__cstat</name>
-                    <file> 53</file>
+                    <file> 25</file>
                 </tool>
             </outputs>
             <inputs>
                 <tool>
                     <name>ICCARM</name>
-                    <file> 49 2 56 58 60 62 37 55 42 9 22 26 17 33 59 10 30 4 3 7 39 28 5 13 6 15 0 18</file>
+                    <file> 62 0 39 47 40 44 77 61 56 4 70 74 19 68 35 8 58 6 14 10 65 75 12 11 7 18 5 21</file>
                 </tool>
             </inputs>
         </file>
@@ -128,21 +126,21 @@
             <outputs>
                 <tool>
                     <name>ICCARM</name>
-                    <file> 57 72</file>
+                    <file> 30 51</file>
                 </tool>
                 <tool>
                     <name>BICOMP</name>
-                    <file> 80</file>
+                    <file> 45</file>
                 </tool>
                 <tool>
                     <name>__cstat</name>
-                    <file> 47</file>
+                    <file> 81</file>
                 </tool>
             </outputs>
             <inputs>
                 <tool>
                     <name>ICCARM</name>
-                    <file> 49 63 58 60 62 37 55 42 65 2 56 9 22 26 17 33 1 4 30 3 10 7 39 20 0 18</file>
+                    <file> 62 29 47 40 44 77 61 56 43 0 39 4 70 74 19 68 3 6 58 14 8 10 65 17 5 21</file>
                 </tool>
             </inputs>
         </file>
@@ -151,113 +149,21 @@
             <outputs>
                 <tool>
                     <name>ICCARM</name>
-                    <file> 43 78</file>
+                    <file> 23 28</file>
                 </tool>
                 <tool>
                     <name>BICOMP</name>
-                    <file> 81</file>
+                    <file> 42</file>
                 </tool>
                 <tool>
                     <name>__cstat</name>
-                    <file> 38</file>
+                    <file> 71</file>
                 </tool>
             </outputs>
             <inputs>
                 <tool>
                     <name>ICCARM</name>
-                    <file> 49 2 56 58 60 62 37 55 42 9 22 26 17 33 11 30 4 3 10 7 39 28 5 13 6 14</file>
-                </tool>
-            </inputs>
-        </file>
-        <file>
-            <name>$PROJ_DIR$\..\..\..\src\modules\ip_applib\dnm_service.c</name>
-            <outputs>
-                <tool>
-                    <name>ICCARM</name>
-                    <file> 40 68</file>
-                </tool>
-                <tool>
-                    <name>BICOMP</name>
-                    <file> 77</file>
-                </tool>
-                <tool>
-                    <name>__cstat</name>
-                    <file> 50</file>
-                </tool>
-            </outputs>
-            <inputs>
-                <tool>
-                    <name>ICCARM</name>
-                    <file> 49 29 9 22 4 7 26 17 33 10 30 3 39 28 5 13 6</file>
-                </tool>
-            </inputs>
-        </file>
-        <file>
-            <name>$PROJ_DIR$\..\..\..\src\modules\ip_applib\dnm_rate_ctrl.c</name>
-            <outputs>
-                <tool>
-                    <name>ICCARM</name>
-                    <file> 64 79</file>
-                </tool>
-                <tool>
-                    <name>BICOMP</name>
-                    <file> 70</file>
-                </tool>
-                <tool>
-                    <name>__cstat</name>
-                    <file> 35</file>
-                </tool>
-            </outputs>
-            <inputs>
-                <tool>
-                    <name>ICCARM</name>
-                    <file> 49 27 9 22 4 7 26 17 33 10 30 3 39 28 5 13 6</file>
-                </tool>
-            </inputs>
-        </file>
-        <file>
-            <name>$PROJ_DIR$\..\..\..\src\modules\clilib\dnm_ucli.c</name>
-            <outputs>
-                <tool>
-                    <name>ICCARM</name>
-                    <file> 45 76</file>
-                </tool>
-                <tool>
-                    <name>BICOMP</name>
-                    <file> 73</file>
-                </tool>
-                <tool>
-                    <name>__cstat</name>
-                    <file> 48</file>
-                </tool>
-            </outputs>
-            <inputs>
-                <tool>
-                    <name>ICCARM</name>
-                    <file> 49 44 58 60 62 37 55 42 63 65 61 2 56 9 22 26 17 33 30 4 3 10 7 39 1 12 8</file>
-                </tool>
-            </inputs>
-        </file>
-        <file>
-            <name>$PROJ_DIR$\..\..\..\src\modules\ip_applib\dnm_local.c</name>
-            <outputs>
-                <tool>
-                    <name>ICCARM</name>
-                    <file> 41 67</file>
-                </tool>
-                <tool>
-                    <name>BICOMP</name>
-                    <file> 66</file>
-                </tool>
-                <tool>
-                    <name>__cstat</name>
-                    <file> 46</file>
-                </tool>
-            </outputs>
-            <inputs>
-                <tool>
-                    <name>ICCARM</name>
-                    <file> 49 63 58 60 62 37 55 42 65 7 4 22 26 17 9 33 10 28 5 13 6 30 3 39 2 56</file>
+                    <file> 62 0 39 47 40 44 77 61 56 4 70 74 19 68 9 58 6 14 8 10 65 75 12 11 7 13</file>
                 </tool>
             </inputs>
         </file>
@@ -266,13 +172,105 @@
             <outputs>
                 <tool>
                     <name>ILINK</name>
-                    <file> 83</file>
+                    <file> 37</file>
                 </tool>
             </outputs>
             <inputs>
                 <tool>
                     <name>ILINK</name>
-                    <file> 51 72 67 79 68 76 82 34 32 78 52 54 75</file>
+                    <file> 60 51 22 27 26 32 49 73 63 28 41 54 36</file>
+                </tool>
+            </inputs>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\..\..\..\src\modules\ip_applib\dnm_local.c</name>
+            <outputs>
+                <tool>
+                    <name>ICCARM</name>
+                    <file> 64 22</file>
+                </tool>
+                <tool>
+                    <name>BICOMP</name>
+                    <file> 33</file>
+                </tool>
+                <tool>
+                    <name>__cstat</name>
+                    <file> 66</file>
+                </tool>
+            </outputs>
+            <inputs>
+                <tool>
+                    <name>ICCARM</name>
+                    <file> 62 29 47 40 44 77 61 56 43 10 6 70 74 19 4 68 8 75 12 11 7 58 14 65 0 39</file>
+                </tool>
+            </inputs>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\..\..\..\src\modules\ip_applib\dnm_rate_ctrl.c</name>
+            <outputs>
+                <tool>
+                    <name>ICCARM</name>
+                    <file> 31 27</file>
+                </tool>
+                <tool>
+                    <name>BICOMP</name>
+                    <file> 50</file>
+                </tool>
+                <tool>
+                    <name>__cstat</name>
+                    <file> 72</file>
+                </tool>
+            </outputs>
+            <inputs>
+                <tool>
+                    <name>ICCARM</name>
+                    <file> 62 76 4 70 6 10 74 19 68 8 58 14 65 75 12 11 7</file>
+                </tool>
+            </inputs>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\..\..\..\src\modules\clilib\dnm_ucli.c</name>
+            <outputs>
+                <tool>
+                    <name>ICCARM</name>
+                    <file> 67 32</file>
+                </tool>
+                <tool>
+                    <name>BICOMP</name>
+                    <file> 24</file>
+                </tool>
+                <tool>
+                    <name>__cstat</name>
+                    <file> 82</file>
+                </tool>
+            </outputs>
+            <inputs>
+                <tool>
+                    <name>ICCARM</name>
+                    <file> 62 53 47 40 44 77 61 56 29 43 48 0 39 4 70 74 19 68 58 6 14 8 10 65 3 2 1</file>
+                </tool>
+            </inputs>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\..\..\..\src\modules\ip_applib\dnm_service.c</name>
+            <outputs>
+                <tool>
+                    <name>ICCARM</name>
+                    <file> 57 26</file>
+                </tool>
+                <tool>
+                    <name>BICOMP</name>
+                    <file> 46</file>
+                </tool>
+                <tool>
+                    <name>__cstat</name>
+                    <file> 55</file>
+                </tool>
+            </outputs>
+            <inputs>
+                <tool>
+                    <name>ICCARM</name>
+                    <file> 62 59 4 70 6 10 74 19 68 8 58 14 65 75 12 11 7</file>
                 </tool>
             </inputs>
         </file>

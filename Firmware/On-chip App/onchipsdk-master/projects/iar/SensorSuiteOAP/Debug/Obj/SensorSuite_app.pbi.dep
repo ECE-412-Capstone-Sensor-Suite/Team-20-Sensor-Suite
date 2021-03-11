@@ -1,0 +1,34 @@
+SensorSuite_app.pbi: \
+  C:\Users\Yesoooof\Documents\GitHub\Team-20-Sensor-Suite\Firmware\On-chip\ App\onchipsdk-master\projects\iar\SensorSuiteOAP\..\..\..\src\inc\dn_system.h \
+  C:\Users\Yesoooof\Documents\GitHub\Team-20-Sensor-Suite\Firmware\On-chip\ App\onchipsdk-master\projects\iar\SensorSuiteOAP\..\..\..\src\inc\dn_gpio.h \
+  C:\Users\Yesoooof\Documents\GitHub\Team-20-Sensor-Suite\Firmware\On-chip\ App\onchipsdk-master\projects\iar\SensorSuiteOAP\..\..\..\src\app\common\Well_known_ports.h \
+  C:\Users\Yesoooof\Documents\GitHub\Team-20-Sensor-Suite\Firmware\On-chip\ App\onchipsdk-master\projects\iar\SensorSuiteOAP\..\..\..\src\app\common\build.h \
+  C:\Users\Yesoooof\Documents\GitHub\Team-20-Sensor-Suite\Firmware\On-chip\ App\onchipsdk-master\projects\iar\SensorSuiteOAP\..\..\..\src\app\common\Ver.h \
+  C:\Users\Yesoooof\Documents\GitHub\Team-20-Sensor-Suite\Firmware\On-chip\ App\onchipsdk-master\src\app\SensorSuiteOAP\app_task_cfg.h \
+  C:\Users\Yesoooof\Documents\GitHub\Team-20-Sensor-Suite\Firmware\On-chip\ App\onchipsdk-master\projects\iar\SensorSuiteOAP\..\..\..\src\inc\dn_mesh.h \
+  C:\Users\Yesoooof\Documents\GitHub\Team-20-Sensor-Suite\Firmware\On-chip\ App\onchipsdk-master\projects\iar\SensorSuiteOAP\..\..\..\src\inc\dn_api_common.h \
+  C:\Users\Yesoooof\Documents\GitHub\Team-20-Sensor-Suite\Firmware\On-chip\ App\onchipsdk-master\projects\iar\SensorSuiteOAP\..\..\..\src\inc\dn_api_local.h \
+  C:\Users\Yesoooof\Documents\GitHub\Team-20-Sensor-Suite\Firmware\On-chip\ App\onchipsdk-master\projects\iar\SensorSuiteOAP\..\..\..\src\modules\ip_applib\dnm_local.h \
+  C:\Users\Yesoooof\Documents\GitHub\Team-20-Sensor-Suite\Firmware\On-chip\ App\onchipsdk-master\projects\iar\SensorSuiteOAP\..\..\..\src\app\common\loc_task.h \
+  C:\Program\ Files\ (x86)\IAR\ Systems\Embedded\ Workbench\ 8.3\arm\inc\c\stdarg.h \
+  C:\Users\Yesoooof\Documents\GitHub\Team-20-Sensor-Suite\Firmware\On-chip\ App\onchipsdk-master\projects\iar\SensorSuiteOAP\..\..\..\src\inc\dn_channel.h \
+  C:\Users\Yesoooof\Documents\GitHub\Team-20-Sensor-Suite\Firmware\On-chip\ App\onchipsdk-master\projects\iar\SensorSuiteOAP\..\..\..\src\inc\dn_cli.h \
+  C:\Users\Yesoooof\Documents\GitHub\Team-20-Sensor-Suite\Firmware\On-chip\ App\onchipsdk-master\projects\iar\SensorSuiteOAP\..\..\..\src\inc\dn_errno.h \
+  C:\Users\Yesoooof\Documents\GitHub\Team-20-Sensor-Suite\Firmware\On-chip\ App\onchipsdk-master\projects\iar\SensorSuiteOAP\..\..\..\src\modules\clilib\dnm_ucli.h \
+  C:\Users\Yesoooof\Documents\GitHub\Team-20-Sensor-Suite\Firmware\On-chip\ App\onchipsdk-master\projects\iar\SensorSuiteOAP\..\..\..\src\app\common\cli_task.h \
+  C:\Users\Yesoooof\Documents\GitHub\Team-20-Sensor-Suite\Firmware\On-chip\ App\onchipsdk-master\projects\iar\SensorSuiteOAP\..\..\..\src\inc\dn_pack.h \
+  C:\Users\Yesoooof\Documents\GitHub\Team-20-Sensor-Suite\Firmware\On-chip\ App\onchipsdk-master\projects\iar\SensorSuiteOAP\..\..\..\src\inc\dn_exe_hdr.h \
+  C:\Users\Yesoooof\Documents\GitHub\Team-20-Sensor-Suite\Firmware\On-chip\ App\onchipsdk-master\projects\iar\SensorSuiteOAP\..\..\..\src\inc\os_cfg.h \
+  C:\Users\Yesoooof\Documents\GitHub\Team-20-Sensor-Suite\Firmware\On-chip\ App\onchipsdk-master\projects\iar\SensorSuiteOAP\..\..\..\src\app\common\app_cfg.h \
+  C:\Users\Yesoooof\Documents\GitHub\Team-20-Sensor-Suite\Firmware\On-chip\ App\onchipsdk-master\projects\iar\SensorSuiteOAP\..\..\..\src\inc\ucos_ii.h \
+  C:\Users\Yesoooof\Documents\GitHub\Team-20-Sensor-Suite\Firmware\On-chip\ App\onchipsdk-master\projects\iar\SensorSuiteOAP\..\..\..\src\inc\os_cpu.h \
+  C:\Users\Yesoooof\Documents\GitHub\Team-20-Sensor-Suite\Firmware\On-chip\ App\onchipsdk-master\projects\iar\SensorSuiteOAP\..\..\..\src\inc\dn_typedef.h \
+  C:\Program\ Files\ (x86)\IAR\ Systems\Embedded\ Workbench\ 8.3\arm\inc\c\ycheck.h \
+  C:\Program\ Files\ (x86)\IAR\ Systems\Embedded\ Workbench\ 8.3\arm\inc\c\ysizet.h \
+  C:\Program\ Files\ (x86)\IAR\ Systems\Embedded\ Workbench\ 8.3\arm\inc\c\DLib_Product.h \
+  C:\Program\ Files\ (x86)\IAR\ Systems\Embedded\ Workbench\ 8.3\arm\inc\c\DLib_Defaults.h \
+  C:\Program\ Files\ (x86)\IAR\ Systems\Embedded\ Workbench\ 8.3\arm\inc\c\yvals.h \
+  C:\Program\ Files\ (x86)\IAR\ Systems\Embedded\ Workbench\ 8.3\arm\inc\c\stddef.h \
+  C:\Users\Yesoooof\Documents\GitHub\Team-20-Sensor-Suite\Firmware\On-chip\ App\onchipsdk-master\projects\iar\SensorSuiteOAP\..\..\..\src\inc\dn_common.h \
+  C:\Users\Yesoooof\Documents\GitHub\Team-20-Sensor-Suite\Firmware\On-chip\ App\onchipsdk-master\projects\iar\SensorSuiteOAP\..\all_projects.iarinc \
+  C:\Users\Yesoooof\Documents\GitHub\Team-20-Sensor-Suite\Firmware\On-chip\ App\onchipsdk-master\src\app\SensorSuiteOAP\SensorSuite_app.c

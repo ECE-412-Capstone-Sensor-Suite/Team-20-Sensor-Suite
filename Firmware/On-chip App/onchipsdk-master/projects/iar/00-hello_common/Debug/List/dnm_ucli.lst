@@ -1,0 +1,645 @@
+###############################################################################
+#
+# IAR ANSI C/C++ Compiler V8.40.1.212/W32 for ARM         07/Mar/2021  18:09:52
+# Copyright 1999-2019 IAR Systems AB.
+#
+#    Cpu mode     =  
+#    Endian       =  little
+#    Source file  =
+#        C:\Users\Yesoooof\Documents\GitHub\Team-20-Sensor-Suite\Firmware\On-chip
+#        App\onchipsdk-master\src\modules\clilib\dnm_ucli.c
+#    Command line =
+#        -f C:\Users\Yesoooof\AppData\Local\Temp\EW2CF6.tmp
+#        ("C:\Users\Yesoooof\Documents\GitHub\Team-20-Sensor-Suite\Firmware\On-chip
+#        App\onchipsdk-master\src\modules\clilib\dnm_ucli.c" -lcN
+#        "C:\Users\Yesoooof\Documents\GitHub\Team-20-Sensor-Suite\Firmware\On-chip
+#        App\onchipsdk-master\projects\iar\00-hello_common\Debug\List" -o
+#        "C:\Users\Yesoooof\Documents\GitHub\Team-20-Sensor-Suite\Firmware\On-chip
+#        App\onchipsdk-master\projects\iar\00-hello_common\Debug\Obj" --debug
+#        --endian=little --cpu=Cortex-M3 --no_path_in_file_macros --enum_is_int
+#        -e --fpu=None --dlib_config "C:\Program Files (x86)\IAR
+#        Systems\Embedded Workbench 8.3\arm\inc\c\DLib_Config_Normal.h"
+#        --preinclude
+#        "C:\Users\Yesoooof\Documents\GitHub\Team-20-Sensor-Suite\Firmware\On-chip
+#        App\onchipsdk-master\projects\iar\00-hello_common\..\all_projects.iarinc"
+#        -I
+#        "C:\Users\Yesoooof\Documents\GitHub\Team-20-Sensor-Suite\Firmware\On-chip
+#        App\onchipsdk-master\projects\iar\00-hello_common\..\..\..\src\app\00-hello_common\"
+#        -I
+#        "C:\Users\Yesoooof\Documents\GitHub\Team-20-Sensor-Suite\Firmware\On-chip
+#        App\onchipsdk-master\projects\iar\00-hello_common\..\..\..\src\app\common\"
+#        -I
+#        "C:\Users\Yesoooof\Documents\GitHub\Team-20-Sensor-Suite\Firmware\On-chip
+#        App\onchipsdk-master\projects\iar\00-hello_common\..\..\..\src\inc\"
+#        -I
+#        "C:\Users\Yesoooof\Documents\GitHub\Team-20-Sensor-Suite\Firmware\On-chip
+#        App\onchipsdk-master\projects\iar\00-hello_common\..\..\..\src\modules\clilib\"
+#        -I
+#        "C:\Users\Yesoooof\Documents\GitHub\Team-20-Sensor-Suite\Firmware\On-chip
+#        App\onchipsdk-master\projects\iar\00-hello_common\..\..\..\src\modules\ip_applib\"
+#        -Oh)
+#    Locale       =  C
+#    List file    =
+#        C:\Users\Yesoooof\Documents\GitHub\Team-20-Sensor-Suite\Firmware\On-chip
+#        App\onchipsdk-master\projects\iar\00-hello_common\Debug\List\dnm_ucli.lst
+#    Object file  =
+#        C:\Users\Yesoooof\Documents\GitHub\Team-20-Sensor-Suite\Firmware\On-chip
+#        App\onchipsdk-master\projects\iar\00-hello_common\Debug\Obj\dnm_ucli.o
+#
+###############################################################################
+
+C:\Users\Yesoooof\Documents\GitHub\Team-20-Sensor-Suite\Firmware\On-chip App\onchipsdk-master\src\modules\clilib\dnm_ucli.c
+      1          /*
+      2          Copyright (c) 2011, Dust Networks.  All rights reserved.
+      3          */
+      4          
+      5          #include <stdio.h>
+      6          #include <string.h>
+      7          #include <ctype.h>
+      8          #include "dn_common.h"
+      9          #include "dnm_ucli.h"
+     10          #include "dn_channel.h"
+     11          #include "dn_system.h"
+     12          #include "dn_gpio.h"
+     13          #include "dn_flash_info.h"
+     14          #ifdef WIN32
+     15             #include <time.h>
+     16             #include <sys/timeb.h>
+     17          #endif
+     18          
+     19          struct {
+     20             INT8U   port;
+     21             INT32U  baudRate;
+     22             OS_EVENT*   blockingTraceMutex;   
+     23             procNotifCb_t notifCb;
+     24          #ifdef WIN32
+     25             FILE * pCliLogFile;
+     26          #endif
+     27          
+     28          } dnm_ucli_v = {
+     29                         DN_CLI_PORT_C0,   // port
+     30                         DEFAULT_BAUDRATE, // baud rate
+     31                         NULL,             // mutex
+     32                         NULL,             // callback
+     33          #ifdef WIN32
+     34                         NULL              // pCliLogFile
+     35          #endif
+     36          };
+     37          
+     38          #define ERR_INDICATOR "..."
+     39          
+     40          //=========================== prototypes ======================================
+     41          static INT8U dnm_ucli_hex2byte_p(char c);
+     42          
+     43          //=========================== public ==========================================
+     44          
+     45          /** 
+     46          \brief Initialize the module.
+     47           * 
+     48          \param[in] callback Function to process CLI notification
+     49           */
+     50          void dnm_ucli_init (procNotifCb_t callback)
+     51          {
+     52             dnm_ucli_v.notifCb = callback;
+     53          }
+     54          
+     55          /**
+     56          \brief Wrapper to open the CLI serial port.
+     57          
+     58          \pre You need to call this function exactly once before you can use the CLI.
+     59          \pre This function is invoked by #dnm_ucli_open() if you choose 
+     60              to use it.
+     61          
+     62          \param[in] port The CLI port to open. Acceptable values are listed in
+     63             #dn_cli_port_t.
+     64          \param[in] baudRate The CLI's baudrate. Use #DEFAULT_BAUDRATE.
+     65          
+     66          \return The same error are the ones returns by the #dn_open() function for
+     67             the \ref device_cli.
+     68          */
+     69          dn_error_t dnm_ucli_openPort (INT8U port, INT32U baudRate)
+     70          {
+     71             dn_cli_open_args_t conf;
+     72          
+     73             conf.port = port;
+     74             conf.baudRate = baudRate;
+     75             dnm_ucli_v.port = port;
+     76             dnm_ucli_v.baudRate = baudRate;
+     77             return dn_open(DN_CLI_DEV_ID, &conf, sizeof(conf));
+     78          }
+     79          
+     80          /**
+     81          \brief Open the CLI serial port using information stored in flash memory.
+     82          
+     83          \pre This function calls #dnm_ucli_openPort
+     84          
+     85          This function reads the CLI port info from the \ref device_flashinfo.
+     86          Baudrate is only read from \ref device_flashinfo if the <tt>baudRate</tt> parameter is set to
+     87          <tt>0</tt>)
+     88          
+     89          \param[in] baudRate The CLI's baudrate. Use #DEFAULT_BAUDRATE or set to
+     90             <tt>0</tt> to use the one from \ref device_flashinfo
+     91          
+     92          \return #DN_ERR_ERROR if the CLI port information could not be read from the 
+     93             \ref device_flashinfo.
+     94          \return #DN_ERR_INVALID if the information retrieved from the
+     95             \ref device_flashinfo indicates CLI is not enabled.
+     96          \return The same error are the ones returns by the 
+     97                 #dnm_ucli_openPort().
+     98          */
+     99          dn_error_t dnm_ucli_open (INT32U baudRate) {
+    100             dn_bsp_param_read_t param;
+    101             int                 len;
+    102             INT8U               port;
+    103          
+    104             // Read CLI mode
+    105             param.input.tag = DN_BSP_PARAM_PORT_OPTIONS;
+    106             len = dn_read(DN_FLASHINFO_DEV_ID, (char *)&param.output.portOpt, sizeof(param.output.portOpt));
+    107             if (len < sizeof(param.output.portOpt)) 
+    108               return DN_ERR_ERROR;
+    109             if ((param.output.portOpt & DN_PORT_OPT_CLI_ENABLED) != DN_PORT_OPT_CLI_ENABLED)
+    110                return DN_ERR_INVALID;
+    111          
+    112             if ((param.output.portOpt & DN_PORT_OPT_CLI_UARTC1) == DN_PORT_OPT_CLI_UARTC1)
+    113                port = DN_CLI_PORT_C1;
+    114             else
+    115                port = DN_CLI_PORT_C0;
+    116          
+    117             if (baudRate == 0) {
+    118                // Read CLI baud rate
+    119                param.input.tag = DN_BSP_PARAM_CLI_PORT_RATE;
+    120                len = dn_read(DN_FLASHINFO_DEV_ID, (char *)&param.output.cliPortRate, sizeof(param.output.cliPortRate));
+    121                if (len >= sizeof(param.output.cliPortRate))  {
+    122                   switch(param.output.cliPortRate) {
+    123                   case DN_BSP_PARAM_BAUD_9600:   baudRate = 9600;   break;
+    124                   case DN_BSP_PARAM_BAUD_19200:  baudRate = 19200;  break;
+    125                   case DN_BSP_PARAM_BAUD_38400:  baudRate = 38400;  break;
+    126                   case DN_BSP_PARAM_BAUD_57600:  baudRate = 57600;  break;
+    127                   case DN_BSP_PARAM_BAUD_115200: baudRate = 115200; break;
+    128                   case DN_BSP_PARAM_BAUD_230400: baudRate = 230400; break;
+    129                   case DN_BSP_PARAM_BAUD_460800: baudRate = 460800; break;
+    130                   case DN_BSP_PARAM_BAUD_921600: baudRate = 921600; break;
+    131                   default: baudRate = DEFAULT_BAUDRATE; break;
+    132                   }
+    133                } else {
+    134                   baudRate = DEFAULT_BAUDRATE;
+    135                }
+    136          
+    137             }
+    138          
+    139             return dnm_ucli_openPort (port, baudRate);
+    140          }
+    141          
+    142          /**
+    143          \brief Print a formatted string.
+    144          
+    145          Call this function to print a string with printf-like formatting. For example,
+    146          call
+    147          
+    148          <tt>dnm_cli_printf("v=%d", v);</tt>
+    149          
+    150          to print the value of variable <tt>v</tt> as a decimal number.
+    151          
+    152          \param[in] format Sprintf-style format string.
+    153          \param[in] '...'  Optional format arguments.
+    154          */
+    155          void dnm_ucli_printf (const char* format, ...)
+    156          {
+    157              va_list args;
+    158              va_start(args, format);
+    159              dnm_ucli_printf_v(format, args);
+    160              va_end(args);
+    161          }
+    162          
+    163          // internal function
+    164          void dnm_ucli_printf_v (const char *format, va_list arg)
+    165          {
+    166             static  BOOLEAN  wasError = FALSE;
+    167          
+    168             INT32S  len, hdrLen;
+    169             INT32S  res;
+    170             char    buf[DN_CLI_CTRL_SIZE];
+    171             BOOLEAN prevVal;
+    172             CS_LOCAL_VAR;
+    173          
+    174          //   ((dn_cli_ctrlMsg_t *)buf)->cmdId   = DN_CLI_CMD_TYPE_TRACE;
+    175          #ifdef WIN32
+    176             if (dnm_ucli_v.pCliLogFile != NULL) vfprintf(dnm_ucli_v.pCliLogFile, format, arg);
+    177          #endif
+    178             
+    179          //   hdrLen = sizeof(dn_cli_ctrlMsg_t);
+    180             hdrLen = 0;
+    181          
+    182             if (wasError) {   // Add "..."
+    183                SNPRINTF(buf + hdrLen, sizeof(buf) - hdrLen, ERR_INDICATOR);
+    184                hdrLen += strlen(ERR_INDICATOR);
+    185             }
+    186          
+    187             len = VSPRINTF(buf + hdrLen, sizeof(buf) - hdrLen, format, arg);
+    188             if(len < 0)   // error - print '***********'
+    189                len = SNPRINTF(buf + hdrLen, sizeof(buf) - hdrLen, "*** CLI_LEN_ERROR ***\r\n");
+    190             buf[sizeof(buf)-1] = 0;
+    191             len += hdrLen;
+    192             if (len>sizeof(buf)) 
+    193                len = sizeof(buf);  
+    194             
+    195             prevVal = wasError;
+    196             res = dn_write(DN_CLI_DEV_ID, buf, len);
+    197          
+    198             OS_ENTER_CRITICAL();
+    199             if (res == DN_ERR_NO_RESOURCES || (!prevVal && wasError))
+    200                wasError = TRUE;
+    201             else
+    202                wasError = FALSE;
+    203             OS_EXIT_CRITICAL();
+    204          }
+    205          
+    206          /**
+    207          \brief Wait for CLI input and process it.
+    208          
+    209          This function blocks waiting for CLI input. When it receives input, it invokes
+    210          function to process CLI notification
+    211          \param[in] chDesc Channel descriptor of CLI input.
+    212          
+    213          \return #DN_ERR_NONE if CLI input was received and handled correctly.
+    214          \return An error if the CLI channel could not be read (see 
+    215          *       #dn_readAsyncMsg()) or processing function returned
+    216          *       error.
+    217          */
+    218          dn_error_t dnm_ucli_input (CH_DESC chDesc)
+    219          {
+    220             INT32U              rxLen, msgType;
+    221             INT8U               buf[DN_CLI_NOTIF_SIZE];
+    222             INT8U               paramsLen;
+    223             dn_error_t          res;
+    224             dn_cli_notifMsg_t * pCliNotif = (dn_cli_notifMsg_t *)buf;
+    225          
+    226             if (dnm_ucli_v.notifCb==NULL) {
+    227                return DN_ERR_NO_RESOURCES;
+    228             }
+    229          
+    230             memset(buf, 0, sizeof(buf));
+    231             res = dn_readAsyncMsg(chDesc, buf, &rxLen, &msgType, sizeof(buf), 0);
+    232             if (res != DN_ERR_NONE)
+    233                return res;
+    234          
+    235             paramsLen = (INT8U)rxLen - (INT8U)((((dn_cli_notifMsg_t*)(0))->data) - ((INT8U *)(dn_cli_notifMsg_t*)0)) - pCliNotif->offset;
+    236             return dnm_ucli_v.notifCb(pCliNotif->type, pCliNotif->cmdId, (const char*)pCliNotif->data+pCliNotif->offset, paramsLen);
+    237          }
+    238          
+    239          /**
+    240          \brief Retrieve the CLI port.
+    241          
+    242          \return The CLI serial port, one of the elements in #dn_cli_port_t.
+    243          */
+    244          INT8U dnm_ucli_getPort (void)
+    245          {
+    246             return dnm_ucli_v.port;
+    247          }
+    248          
+    249          /**
+    250          \brief Retrieve the CLI baudrate.
+    251          
+    252          \return The CLI serial baudrate.
+    253          */
+    254          INT32U dnm_ucli_getBaudRate (void)
+    255          {
+    256             return dnm_ucli_v.baudRate;
+    257          }
+    258          
+    259          /**
+    260          \brief Set the current user access level.
+    261          
+    262          Sets new current user access level. Each command is associated with a minimum
+    263          access level. See \ref device_cli for description of how to 
+    264          register commands. Raising the user access level gives the user 
+    265          access to more commands. 
+    266          
+    267          It's your application's responsibility to raise/lower the user access level
+    268          appropriately. For example, you could implement a 'login' and 'logout'
+    269          CLI command to raise/lower the access level (a parameter for the 'login' CLI
+    270          command could be a password).
+    271          
+    272          \post After this function returns, the user may have access to more/less CLI
+    273             commands, depending on the user access level set.
+    274          
+    275          \param[in] newAccessLevel New user access level. Acceptable values are listed
+    276             in dn_cli_access_t.
+    277          
+    278          \return The error received from calling #dn_ioctl() in the \ref device_cli.
+    279          */
+    280          dn_error_t dnm_ucli_changeAccessLevel(dn_cli_access_t newAccessLevel)
+    281          {
+    282             dn_error_t             rsp;
+    283             INT8U                  buf[sizeof(dn_cli_chAccessCmd_t)];
+    284             dn_cli_chAccessCmd_t * rCmd;
+    285          
+    286             rCmd = (dn_cli_chAccessCmd_t *)buf;
+    287             rCmd->access = (INT8U)newAccessLevel;
+    288             rsp = dn_ioctl(DN_CLI_DEV_ID, DN_IOCTL_CLI_CHANGE_ACCESS, (void *)rCmd, sizeof(dn_cli_chAccessCmd_t));
+    289             return rsp;
+    290          }
+    291          
+    292          //===== Print formatting
+    293          
+    294          // internal function
+    295          void dnm_ucli_printfTimestamp_v(const char *format, va_list arg)
+    296          {
+    297          #ifdef WIN32
+    298             // Print Windows time
+    299             struct _timeb t;
+    300             struct tm     locTime;
+    301             _ftime_s(&t);
+    302             localtime_s(&locTime, &(t.time));
+    303             dnm_ucli_printf("(%02d:%02d:%02d.%03d) ", locTime.tm_hour, locTime.tm_min, locTime.tm_sec, t.millitm);
+    304          #endif
+    305             dnm_ucli_printf("%6u : ", OSTimeGet());   // TODO change to print sec.msec
+    306             dnm_ucli_printf_v(format, arg);
+    307          }
+    308          
+    309          /**
+    310          \brief Print a timestamp, followed by a formatted string.
+    311          
+    312          \param[in] format Sprintf-style format string.
+    313          \param[in] ...    Optional format arguments.
+    314           */
+    315          void dnm_ucli_printfTimestamp(const char* format, ...)
+    316          {
+    317              va_list args;
+    318              va_start(args, format);
+    319              dnm_ucli_printfTimestamp_v(format, args);
+    320              va_end(args);
+    321          }
+    322          
+    323          
+    324          // internal function
+    325          void dnm_ucli_dump_v(const INT8U *data, INT32S len, const char * format, va_list arg)
+    326          {
+    327             int     i;
+    328             dnm_ucli_printfTimestamp_v(format, arg);
+    329             for (i = 0; i < len; i++) {
+    330                if (i % 20 == 0)
+    331                   dnm_ucli_printf("\r\n   %03d : ", i);
+    332                dnm_ucli_printf("%02x ", *data++);
+    333             }
+    334             dnm_ucli_printf("\r\n");
+    335          }
+    336          
+    337          /**
+    338          \brief Print some binary data.
+    339          
+    340          \param[in] data   Pointer to the start of the data to be printed.
+    341          \param[in] len    Number of bytes to print.
+    342          \param[in] format Sprintf-style format string.
+    343          \param[in] ...    Optional format arguments.
+    344          */
+    345          void dnm_ucli_dump(const INT8U *data, INT32S len, const char * format, ...)
+    346          {
+    347             va_list marker;
+    348             va_start(marker, format);
+    349             dnm_ucli_dump_v(data, len, format, marker);
+    350             va_end(marker);
+    351          }
+    352          
+    353          
+    354          //===== Tracing
+    355          
+    356          /**
+    357          \brief Print a formatted trace string if the corresponding trace flag is
+    358             enabled.
+    359          
+    360          \param[in] isTraceEnabled Flag if the trace in the calling 
+    361               module is enabled.
+    362          \param[in] format    Sprintf-style format string.
+    363          \param[in] ...       Optional format arguments.
+    364          */
+    365          void dnm_ucli_trace(BOOLEAN isTraceEnabled, const char* format, ...)
+    366          {
+    367             if (isTraceEnabled) {
+    368                va_list args;
+    369                va_start(args, format);
+    370                dnm_ucli_printfTimestamp_v(format, args);
+    371                va_end(args);
+    372             }
+    373          }
+    374          
+    375          /**
+    376          \brief Print binary data if the corresponding trace flag is enabled.
+    377          
+    378          \param[in] isTraceEnabled Flag if the trace in the calling 
+    379               module is enabled.
+    380          \param[in] data      Pointer to the start of the data to be printed.
+    381          \param[in] len       Number of bytes to print.
+    382          \param[in] format    Sprintf-style format string.
+    383          \param[in] ...       Optional format arguments.
+    384          */
+    385          void    dnm_ucli_traceDump(BOOLEAN isTraceEnabled, 
+    386                                   const INT8U* data, INT32S len, const char* format, ...)
+    387          {
+    388             va_list marker;
+    389             
+    390             if (isTraceEnabled) {
+    391                va_start(marker, format);
+    392                dnm_ucli_dump_v(data, len, format, marker);
+    393                va_end(marker);
+    394             }
+    395          }
+    396          
+    397          /**
+    398          \brief Same as dnm_cli_traceDump with a Mutex to prevent overlapping prints
+    399          */
+    400          void dnm_ucli_traceDumpBlocking(BOOLEAN isTraceEnabled, 
+    401                                         const INT8U* data, INT32S len, const char* format, ...)
+    402          {
+    403             va_list  marker;
+    404             INT8U    err = OS_ERR_NONE;
+    405          
+    406             if (!isTraceEnabled) {
+    407                return;
+    408             }
+    409          
+    410             // create mutex if not created
+    411             if (dnm_ucli_v.blockingTraceMutex == NULL) {
+    412                dnm_ucli_v.blockingTraceMutex = OSSemCreate(1);
+    413             }
+    414          
+    415             // wait for mutex
+    416             OSSemPend(dnm_ucli_v.blockingTraceMutex, 0, &err);
+    417             ASSERT (err == OS_ERR_NONE);
+    418             
+    419             va_start(marker, format);
+    420             dnm_ucli_dump_v(data, len, format, marker);
+    421             va_end(marker);
+    422          
+    423             // release mutex
+    424             err = OSSemPost(dnm_ucli_v.blockingTraceMutex);
+    425             ASSERT (err == OS_ERR_NONE);
+    426          }
+    427          
+    428          /**
+    429          \brief Print data in hext format.
+    430          
+    431          \param[in] buf   Pointer to the start of the data to be printed.
+    432          \param[in] len   Number of bytes to print.
+    433          */
+    434          void dnm_ucli_printBuf(INT8U* buf, INT8U len) {
+    435             INT8U i;
+    436             
+    437             for (i=0; i<len; i++) {
+    438                dnm_ucli_printf("%02X ",buf[i]);
+    439             }
+    440          }
+    441          
+    442          /**
+    443          \brief Convert from hex string to byte array.
+    444          
+    445          Leading spaces are skipped. Special character such as 
+    446          - and : are allowed and will be used to terminate the
+    447          current byte. so "B-A-D:CA:DEAD:BEEF" will be 
+    448          converted to "0B 0A 0D CA DE AD BE EF".
+    449          
+    450          \param[in]  str   Pointer to the start of the string.
+    451          \param[out] buf   Pointer to the start of the array.
+    452          \param[in]  bufSize the size of the target array.
+    453          \return Number of bytes converted.
+    454          */
+    455          INT8S dnm_ucli_hex2byte(const char * str, INT8U * buf, int bufSize) {
+    456             INT8U i;
+    457          
+    458             if (str == NULL || buf == NULL || bufSize<=0) {
+    459                return 0;
+    460             }
+    461          
+    462             while(*str == ' ') str++;
+    463             memset(buf, 0, bufSize);
+    464             for(i=0; *str && !isspace(*str) && i<bufSize; i++) {
+    465                if (*str == '-' || *str == ':') {
+    466                   str++;
+    467                }
+    468                if (!isxdigit(*str)) {
+    469                   break;
+    470                }
+    471                buf[i] = dnm_ucli_hex2byte_p(*str++);
+    472                if (isxdigit(*str)) {
+    473                   buf[i] = (buf[i] << 4) | dnm_ucli_hex2byte_p(*str++);
+    474                }
+    475             }
+    476             if (*str && !isspace(*str)) {
+    477                return DN_ERR_INVALID;          // Invalid value
+    478             }
+    479             return i;
+    480          }
+    481          
+    482          static INT8U dnm_ucli_hex2byte_p(char c) {
+    483             c = (char)tolower(c);
+    484             return c>='0' && c<='9' ? c - '0' : c - 'a' + 10;
+    485          }
+
+   Maximum stack usage in bytes:
+
+   .cstack Function
+   ------- --------
+       8   dnm_ucli_changeAccessLevel
+         8   -> dn_ioctl
+       8   dnm_ucli_dump
+         8   -> dnm_ucli_dump_v
+      24   dnm_ucli_dump_v
+        24   -> OSTimeGet
+         0   -> dnm_ucli_printf
+        24   -> dnm_ucli_printf
+        24   -> dnm_ucli_printf_v
+       0   dnm_ucli_getBaudRate
+       0   dnm_ucli_getPort
+      24   dnm_ucli_hex2byte
+        24   -> __aeabi_memclr
+       0   dnm_ucli_init
+     112   dnm_ucli_input
+       112   -- Indirect call
+       112   -> __aeabi_memclr4
+       112   -> dn_readAsyncMsg
+      16   dnm_ucli_open
+        16   -> dn_read
+        16   -> dnm_ucli_openPort
+      16   dnm_ucli_openPort
+        16   -> dn_open
+      16   dnm_ucli_printBuf
+        16   -> dnm_ucli_printf
+      16   dnm_ucli_printf
+        16   -> dnm_ucli_printf_v
+      24   dnm_ucli_printfTimestamp
+        24   -> OSTimeGet
+        24   -> dnm_ucli_printf
+        24   -> dnm_ucli_printf_v
+      16   dnm_ucli_printfTimestamp_v
+        16   -> OSTimeGet
+        16   -> dnm_ucli_printf
+         0   -> dnm_ucli_printf_v
+     112   dnm_ucli_printf_v
+       112   -> OS_CPU_SR_Restore
+       112   -> OS_CPU_SR_Save
+       112   -> dn_write
+       112   -> snprintf
+       112   -> vsnprintf
+      24   dnm_ucli_trace
+        24   -> OSTimeGet
+        24   -> dnm_ucli_printf
+        24   -> dnm_ucli_printf_v
+       8   dnm_ucli_traceDump
+         8   -> dnm_ucli_dump_v
+      24   dnm_ucli_traceDumpBlocking
+        24   -> OSSemCreate
+        24   -> OSSemPend
+        24   -> OSSemPost
+        24   -> assert_handler
+        24   -> dnm_ucli_dump_v
+
+
+   Section sizes:
+
+   Bytes  Function/Label
+   -----  --------------
+       4  ??DataTable15
+       4  ??DataTable15_1
+       4  ??DataTable15_2
+       4  ??DataTable15_3
+       4  ?_0
+      24  ?_1
+       8  ?_2
+      16  ?_3
+       8  ?_4
+       4  ?_5
+      12  ?_6
+       8  ?_7
+      20  dnm_ucli_changeAccessLevel
+      14  dnm_ucli_dump
+      94  dnm_ucli_dump_v
+       6  dnm_ucli_getBaudRate
+       6  dnm_ucli_getPort
+     204  dnm_ucli_hex2byte
+       6  dnm_ucli_init
+      86  dnm_ucli_input
+     146  dnm_ucli_open
+      28  dnm_ucli_openPort
+      26  dnm_ucli_printBuf
+      14  dnm_ucli_printf
+      34  dnm_ucli_printfTimestamp
+      28  dnm_ucli_printfTimestamp_v
+     138  dnm_ucli_printf_v
+      38  dnm_ucli_trace
+      20  dnm_ucli_traceDump
+      96  dnm_ucli_traceDumpBlocking
+      16  dnm_ucli_v
+       1  wasError
+
+ 
+     1 byte  in section .bss
+    16 bytes in section .data
+     8 bytes in section .rodata
+ 1'096 bytes in section .text
+ 
+ 1'096 bytes of CODE  memory
+     8 bytes of CONST memory
+    17 bytes of DATA  memory
+
+Errors: none
+Warnings: none

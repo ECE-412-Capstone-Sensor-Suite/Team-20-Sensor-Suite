@@ -4,7 +4,10 @@
     <fileChecksum>2441170232</fileChecksum>
     <configuration>
         <name>Debug</name>
-        <outputs />
+        <outputs>
+            <file>$PROJ_DIR$\..\..\..\src\app\02-temperature\app_task_cfg.h</file>
+            <file>$PROJ_DIR$\..\..\..\src\app\02-temperature\temperature_app.c</file>
+        </outputs>
         <forcedrebuild>
             <name>[MULTI_TOOL]</name>
             <tool>ILINK</tool>

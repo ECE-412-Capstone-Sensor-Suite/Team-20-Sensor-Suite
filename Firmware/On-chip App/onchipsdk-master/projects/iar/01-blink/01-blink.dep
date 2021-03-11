@@ -4,7 +4,10 @@
     <fileChecksum>2330313261</fileChecksum>
     <configuration>
         <name>Debug</name>
-        <outputs />
+        <outputs>
+            <file>$PROJ_DIR$\..\..\..\src\app\01-blink\app_task_cfg.h</file>
+            <file>$PROJ_DIR$\..\..\..\src\app\01-blink\blink_app.c</file>
+        </outputs>
         <forcedrebuild>
             <name>[MULTI_TOOL]</name>
             <tool>ILINK</tool>

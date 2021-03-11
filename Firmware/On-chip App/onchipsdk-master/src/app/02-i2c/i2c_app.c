@@ -15,8 +15,8 @@ Copyright (c) 2013, Dust Networks.  All rights reserved.
 
 //=========================== definitions =====================================
 
-#define I2C_SLAVE_ADDR       0x05
-#define I2C_PAYLOAD_LENGTH   3
+#define I2C_SLAVE_ADDR       0x27
+#define I2C_PAYLOAD_LENGTH   4
 
 //=========================== variables =======================================
 
@@ -107,9 +107,9 @@ static void i2cTask(void* unused) {
      
       // prepare buffer
       for (i=0;i<I2C_PAYLOAD_LENGTH;i++) {
-         i2c_app_v.i2cBuffer[i]             = 0x80+i;
+         i2c_app_v.i2cBuffer[i]             = 0x00; //prepare write word
       }
-      
+      i2c_app_v.i2cBuffer[3]             = 0x01;
       // initialize I2C communication parameters
       i2c_app_v.i2cTransfer.slaveAddress    = I2C_SLAVE_ADDR;
       i2c_app_v.i2cTransfer.writeBuf        = i2c_app_v.i2cBuffer;
@@ -147,7 +147,7 @@ static void i2cTask(void* unused) {
       
       // initialize I2C communication parameters
       i2c_app_v.i2cTransfer.slaveAddress    = I2C_SLAVE_ADDR;
-      i2c_app_v.i2cTransfer.writeBuf        = NULL;
+      i2c_app_v.i2cTransfer.writeBuf        = NULL;           // NULL for read
       i2c_app_v.i2cTransfer.readBuf         = i2c_app_v.i2cBuffer;
       i2c_app_v.i2cTransfer.writeLen        = 0;
       i2c_app_v.i2cTransfer.readLen         = sizeof(i2c_app_v.i2cBuffer);

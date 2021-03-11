@@ -1,0 +1,5 @@
+cd %~dp0
+ESP -E
+ESP -P FT-DC2274A-MEM-128K-M4-115K-680-0383-0002REV1.bin 0
+ESP -P mgr_part_r52074.bin 800
+ESP -P manager_ip_1_4_4_3_oski.bin 1000

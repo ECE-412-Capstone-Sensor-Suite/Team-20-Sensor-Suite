@@ -1,0 +1,509 @@
+###############################################################################
+#
+# IAR ANSI C/C++ Compiler V8.40.1.212/W32 for ARM         10/Mar/2021  21:28:33
+# Copyright 1999-2019 IAR Systems AB.
+#
+#    Cpu mode     =  
+#    Endian       =  little
+#    Source file  =
+#        C:\Users\Yesoooof\Documents\GitHub\Team-20-Sensor-Suite\Firmware\On-chip
+#        App\onchipsdk-master\src\app\common\loc_task.c
+#    Command line =
+#        -f C:\Users\Yesoooof\AppData\Local\Temp\EW1DFD.tmp
+#        ("C:\Users\Yesoooof\Documents\GitHub\Team-20-Sensor-Suite\Firmware\On-chip
+#        App\onchipsdk-master\src\app\common\loc_task.c" -lcN
+#        "C:\Users\Yesoooof\Documents\GitHub\Team-20-Sensor-Suite\Firmware\On-chip
+#        App\onchipsdk-master\projects\iar\02-i2c\Debug\List" -o
+#        "C:\Users\Yesoooof\Documents\GitHub\Team-20-Sensor-Suite\Firmware\On-chip
+#        App\onchipsdk-master\projects\iar\02-i2c\Debug\Obj" --debug
+#        --endian=little --cpu=Cortex-M3 --no_path_in_file_macros --enum_is_int
+#        -e --fpu=None --dlib_config "C:\Program Files (x86)\IAR
+#        Systems\Embedded Workbench 8.3\arm\inc\c\DLib_Config_Normal.h"
+#        --preinclude
+#        "C:\Users\Yesoooof\Documents\GitHub\Team-20-Sensor-Suite\Firmware\On-chip
+#        App\onchipsdk-master\projects\iar\02-i2c\..\all_projects.iarinc" -I
+#        "C:\Users\Yesoooof\Documents\GitHub\Team-20-Sensor-Suite\Firmware\On-chip
+#        App\onchipsdk-master\projects\iar\02-i2c\..\..\..\src\app\02-i2c\" -I
+#        "C:\Users\Yesoooof\Documents\GitHub\Team-20-Sensor-Suite\Firmware\On-chip
+#        App\onchipsdk-master\projects\iar\02-i2c\..\..\..\src\app\common\" -I
+#        "C:\Users\Yesoooof\Documents\GitHub\Team-20-Sensor-Suite\Firmware\On-chip
+#        App\onchipsdk-master\projects\iar\02-i2c\..\..\..\src\inc\" -I
+#        "C:\Users\Yesoooof\Documents\GitHub\Team-20-Sensor-Suite\Firmware\On-chip
+#        App\onchipsdk-master\projects\iar\02-i2c\..\..\..\src\modules\clilib\"
+#        -I
+#        "C:\Users\Yesoooof\Documents\GitHub\Team-20-Sensor-Suite\Firmware\On-chip
+#        App\onchipsdk-master\projects\iar\02-i2c\..\..\..\src\modules\ip_applib\"
+#        -Oh)
+#    Locale       =  C
+#    List file    =
+#        C:\Users\Yesoooof\Documents\GitHub\Team-20-Sensor-Suite\Firmware\On-chip
+#        App\onchipsdk-master\projects\iar\02-i2c\Debug\List\loc_task.lst
+#    Object file  =
+#        C:\Users\Yesoooof\Documents\GitHub\Team-20-Sensor-Suite\Firmware\On-chip
+#        App\onchipsdk-master\projects\iar\02-i2c\Debug\Obj\loc_task.o
+#
+###############################################################################
+
+C:\Users\Yesoooof\Documents\GitHub\Team-20-Sensor-Suite\Firmware\On-chip App\onchipsdk-master\src\app\common\loc_task.c
+      1          /*
+      2          Copyright (c) 2013, Dust Networks.  All rights reserved.
+      3          */
+      4          
+      5          #include "dn_common.h"
+      6          #include "loc_task.h"
+      7          #include "dnm_local.h"
+      8          #include "dn_api_param.h"
+      9          
+     10          //=========================== defines =========================================
+     11          
+     12          #define DFLT_EVENTMASK       0xFFFFFFFF
+     13          
+     14          //=========================== variables =======================================
+     15          
+     16          /// Variables local to the loc_task module.
+     17          typedef struct {
+     18             // configuration
+     19             INT8U                fJoin;                   ///< Flag to indicate whether module should should (1) or not (0)
+     20             dn_netid_t           netId;                   ///< Network ID. No effect when set to 0.
+     21             INT16U               udpPort;                 ///< UDP port to bind to.
+     22             INT32U               bandwidth;               ///< Bandwidth to request (inter-packet duration, in ms)
+     23             // stack communication
+     24             INT8U      notifBuf[DN_API_LOC_MAXMSG_SIZE];  ///< Buffer to receive stack notifications in.
+     25             CH_DESC              notifChDesc;             ///< Notification channel.
+     26             OS_FLAG_GRP*         locEventsFlag;           ///< Event flags.
+     27             // tasks
+     28             OS_STK locNotifTaskStack[TASK_APP_LOCNOTIF_STK_SIZE];   ///< Notification task stack.
+     29             OS_STK locCtrlTaskStack[TASK_APP_LOCCTRL_STK_SIZE];     ///< Control task stack.
+     30             // status
+     31             OS_EVENT*            joinedSem;               ///< Semaphore to post when mote done joining.
+     32             OS_EVENT*            serviceSem;              ///< Semaphore to post when service granted.
+     33             INT8U                socketId;                ///< Socket ID.
+     34             // flags
+     35             INT8U                fConfigured;             ///< Flag to indicate whether mote has already be configured.
+     36             INT8U                fHandledOperational;     ///< Flag to indicate whether mote has handled the operational event yet.
+     37             INT8U                fHandledSvcChanged;      ///< Flag to indicate whether mote has handled the "service changed" event yet.
+     38          } notif_task_vars_t;
+     39          
+     40          notif_task_vars_t notif_task_v;
+     41          
+     42          //=========================== prototypes ======================================
+     43          
+     44          // tasks
+     45          static void        locCtrlTask(void* arg);
+     46          static void        locNotifTask(void* unused);
+     47          // dnm_local callbacks
+     48          static dn_error_t  appEventNotifCb(dn_api_loc_notif_events_t* notifEvents, INT8U* rsp);
+     49          
+     50          //=========================== public ==========================================
+     51          
+     52          /**
+     53          \brief Start this module.
+     54          
+     55          This function sets up the notification channel to receive events generated by
+     56          the stack, and creates a notification and an event task.
+     57          */
+     58          void loc_task_init(INT8U           fJoin,
+     59                             dn_netid_t      netId,
+     60                             INT16U          udpPort,
+     61                             OS_EVENT*       joinedSem,
+     62                             INT32U          bandwidth,
+     63                             OS_EVENT*       serviceSem) {
+     64             dn_error_t      dnErr;
+     65             INT8U           osErr;
+     66             
+     67             //===== store params
+     68             notif_task_v.fJoin             = fJoin;
+     69             notif_task_v.netId             = netId;
+     70             notif_task_v.udpPort           = udpPort;
+     71             notif_task_v.joinedSem         = joinedSem;
+     72             notif_task_v.bandwidth         = bandwidth;
+     73             notif_task_v.serviceSem        = serviceSem;
+     74             
+     75             //===== initialize dnm_local module
+     76             
+     77             // create a synchronous channel for the dnm_local module to receive notifications from the stack
+     78             dnErr = dn_createSyncChannel(&notif_task_v.notifChDesc);
+     79             ASSERT(dnErr==DN_ERR_NONE);
+     80             
+     81             // register that channel to DN_MSG_TYPE_NET_NOTIF notifications
+     82             dnErr = dn_registerChannel(notif_task_v.notifChDesc, DN_MSG_TYPE_NET_NOTIF);
+     83             ASSERT(dnErr==DN_ERR_NONE);
+     84             
+     85             // initialize the local interface
+     86             dnErr = dnm_loc_init(
+     87                PASSTHROUGH_OFF,                 // mode
+     88                notif_task_v.notifBuf,           // pBuffer
+     89                sizeof(notif_task_v.notifBuf)    // buffLen
+     90             );
+     91             ASSERT(dnErr==DN_ERR_NONE);
+     92          
+     93             // create a flag for appEventNotifCb() to signal an event to locCtrlTask
+     94             notif_task_v.locEventsFlag = OSFlagCreate(0x0000, &osErr);
+     95             ASSERT(osErr==OS_ERR_NONE);
+     96          
+     97             // ask the dnm_local module to call appEventNotifCb() when an event is reported by the stack
+     98             dnErr = dnm_loc_registerEventNotifCallback(appEventNotifCb);
+     99             ASSERT(dnErr==DN_ERR_NONE);
+    100             
+    101             // create the local control task
+    102             osErr = OSTaskCreateExt(
+    103                locCtrlTask,
+    104                (void *)0,
+    105                (OS_STK*)(&notif_task_v.locCtrlTaskStack[TASK_APP_LOCCTRL_STK_SIZE - 1]),
+    106                TASK_APP_LOCCTRL_PRIORITY,
+    107                TASK_APP_LOCCTRL_PRIORITY,
+    108                (OS_STK*)notif_task_v.locCtrlTaskStack,
+    109                TASK_APP_LOCCTRL_STK_SIZE,
+    110                (void *)0,
+    111                OS_TASK_OPT_STK_CHK | OS_TASK_OPT_STK_CLR
+    112             );
+    113             ASSERT(osErr == OS_ERR_NONE);
+    114             OSTaskNameSet(TASK_APP_LOCCTRL_PRIORITY, (INT8U*) TASK_APP_LOCCTRL_NAME, &osErr);
+    115             ASSERT(osErr == OS_ERR_NONE);
+    116          
+    117             // create the local notifications task
+    118             osErr = OSTaskCreateExt(
+    119                locNotifTask,
+    120                (void *) 0,
+    121                (OS_STK*) (&notif_task_v.locNotifTaskStack[TASK_APP_LOCNOTIF_STK_SIZE - 1]),
+    122                TASK_APP_LOCNOTIF_PRIORITY,
+    123                TASK_APP_LOCNOTIF_PRIORITY,
+    124                (OS_STK*) notif_task_v.locNotifTaskStack,
+    125                TASK_APP_LOCNOTIF_STK_SIZE,
+    126                (void *) 0,
+    127                OS_TASK_OPT_STK_CHK | OS_TASK_OPT_STK_CLR
+    128             );
+    129             ASSERT(osErr == OS_ERR_NONE);
+    130             OSTaskNameSet(TASK_APP_LOCNOTIF_PRIORITY, (INT8U*) TASK_APP_LOCNOTIF_NAME, &osErr);
+    131             ASSERT(osErr == OS_ERR_NONE);
+    132          }
+    133          
+    134          /**
+    135          \brief Retrieve the socket ID opened when connecting to the network.
+    136          
+    137          Only call this function when the mote has passe the LOC_STATE_CONFIG state.
+    138          Calling it before will return <tt>0</tt>.
+    139          
+    140          \return The socket ID that was created.
+    141          */
+    142          INT8U loc_getSocketId() {
+    143             return notif_task_v.socketId;
+    144          }
+    145          
+    146          //=========================== private =========================================
+    147          
+    148          //===== tasks
+    149          
+    150          /**
+    151          \brief uC/OS-II task which reacts to events generated by the dnm_local module.  This task is a Stack Controller.
+    152          
+    153          \note This task is started when loc_task_init() is called.
+    154          
+    155          Local events are signaled by the dnm_local module which calls the appEventNotifCb()
+    156          function. appEventNotifCb() sets one or more flags in the
+    157          notif_task_v.locEventsFlag. This tasks waits for those flags to be set. When
+    158          one of more flags are set, this tasks updates the mote's state, reacts to the
+    159          event, and waits again.
+    160          */
+    161          static void locCtrlTask(void* arg) {
+    162             dn_error_t                     dnErr;
+    163             INT8U                          osErr;
+    164             INT8U                          rc;
+    165             INT8U                          moteInfoBuf[2+sizeof(dn_api_rsp_get_moteinfo_t)];
+    166             dn_api_rsp_get_moteinfo_t*     moteInfo;
+    167             INT8U                          respLen;
+    168             OS_FLAGS                       eventFlags;
+    169             INT16U                         netId;
+    170             INT32U                         eventMask;
+    171                
+    172             
+    173             while (1) { // this is a task, it executes forever
+    174                
+    175                //===== wait for an event from the stack
+    176               
+    177                // This actual event is received by appEventNotifCb(), which posts flags
+    178                eventFlags = OSFlagPend(
+    179                   notif_task_v.locEventsFlag,             // event flag group
+    180                   DN_API_LOC_EV_BOOT        | \
+    181                   DN_API_LOC_EV_ALARMS_CHG  | \
+    182                   DN_API_LOC_EV_TIME_CHG    | \
+    183                   DN_API_LOC_EV_JOINFAIL    | \
+    184                   DN_API_LOC_EV_DISCON      | \
+    185                   DN_API_LOC_EV_OPERATIONAL | \
+    186                   DN_API_LOC_EV_SVC_CHG     | \
+    187                   DN_API_LOC_EV_JOINSTART,                // which flags to check
+    188                   OS_FLAG_WAIT_SET_ANY + OS_FLAG_CONSUME, // wait for any flag, clear flag when happens
+    189                   0,                                      // timeout (0=wait forever)
+    190                   &osErr                                  // error code
+    191                );
+    192                ASSERT(osErr==OS_ERR_NONE);
+    193          
+    194                // this delay is only needed to prevent overlap in traces; traces are not
+    195                // mutexed for performance reasons; the callback function will ack the
+    196                // notification, so this delay will not affect the stack.
+    197                OSTimeDly(SECOND/50);    
+    198                
+    199                // when you get here, eventsFlags is a bitmap of the events that just happened
+    200                
+    201                //===== handle the event
+    202                
+    203                //===
+    204                
+    205                if (eventFlags & DN_API_LOC_EV_BOOT) {
+    206                   // mote just booted
+    207                   
+    208                   if (notif_task_v.fConfigured==0x00) {
+    209                      // not configured yet
+    210                      
+    211                      // retrieve the stack version
+    212                      dnErr = dnm_loc_getParameterCmd(
+    213                         DN_API_PARAM_MOTEINFO,                 // paramId
+    214                         moteInfoBuf,                           // payload
+    215                         0,                                     // txPayloadLen
+    216                         &respLen,                              // rxPayloadLen
+    217                         &rc                                    // rc
+    218                      );
+    219                      ASSERT(dnErr==DN_ERR_NONE);
+    220                      ASSERT(rc==DN_ERR_NONE);
+    221                      
+    222                      // print the stack version
+    223                      moteInfo = (dn_api_rsp_get_moteinfo_t*)(&moteInfoBuf[0]);
+    224                      dnm_ucli_printf(
+    225                         "SmartMeshIP stack, ver %d.%d.%d.%d\r\n",
+    226                         moteInfo->swVer.major,
+    227                         moteInfo->swVer.minor,
+    228                         moteInfo->swVer.patch,
+    229                         htons(moteInfo->swVer.build)
+    230                      );   
+    231                      
+    232                      // overwrite the mote's netid (if specified)
+    233                      if (notif_task_v.netId!=NETID_NONE) {
+    234                         netId = htons(notif_task_v.netId);
+    235                         dnErr = dnm_loc_setParameterCmd(
+    236                            DN_API_PARAM_NETID,                 // paramId
+    237                            (INT8U*)(&netId),                   // payload
+    238                            sizeof(notif_task_v.netId),         // payload length
+    239                            &rc                                 // return code
+    240                         );
+    241                         ASSERT(dnErr==DN_ERR_NONE);
+    242                         ASSERT(rc==DN_ERR_NONE);
+    243                      }
+    244                      
+    245                      // configure the events you want to receive from the stack
+    246                      if (notif_task_v.fJoin) {
+    247                          eventMask = htonl(DFLT_EVENTMASK);
+    248                          dnErr = dnm_loc_setParameterCmd(
+    249                             DN_API_PARAM_EVENTMASK,            // paramId
+    250                             (INT8U*)(&eventMask),              // payload
+    251                             4,                                 // payload length
+    252                             &rc                                // return code
+    253                          );
+    254                          ASSERT(dnErr==DN_ERR_NONE);
+    255                        ASSERT(rc==DN_ERR_NONE);
+    256                      }
+    257                      
+    258                      // open and bind socket (if specified)
+    259                      if (notif_task_v.udpPort!=UDPPORT_NONE) {
+    260                         
+    261                         // open a socket
+    262                         dnErr = dnm_loc_openSocketCmd(
+    263                            DN_API_PROTO_UDP,                   // protocol
+    264                            &notif_task_v.socketId,             // socketId
+    265                            &rc                                 // return code
+    266                         );
+    267                         ASSERT(dnErr==DN_ERR_NONE);
+    268                         ASSERT(rc==DN_ERR_NONE);
+    269                         
+    270                         // bind that socket to a UDP port
+    271                         dnErr = dnm_loc_bindSocketCmd(
+    272                            notif_task_v.socketId,              // socketId
+    273                            notif_task_v.udpPort,               // UDP port to bind to
+    274                            &rc                                 // return code
+    275                         );
+    276                         ASSERT(dnErr==DN_ERR_NONE);
+    277                         ASSERT(rc==DN_ERR_NONE);
+    278                      }
+    279                      
+    280                      // join network (if specified)
+    281                      if (notif_task_v.fJoin) {
+    282                         dnErr = dnm_loc_joinCmd(&rc);
+    283                         ASSERT(dnErr==DN_ERR_NONE);
+    284                         ASSERT(rc==DN_ERR_NONE);
+    285                      }
+    286                      
+    287                      // remember it's configured
+    288                      notif_task_v.fConfigured = 0x01;
+    289                   }
+    290                }
+    291                
+    292                //===
+    293                
+    294                if (eventFlags & DN_API_LOC_EV_OPERATIONAL) {
+    295                   // mote finished joining a network
+    296                   
+    297                   if (notif_task_v.fHandledOperational==0x00) {
+    298                      // I haven't reacted to the operational event yet
+    299                      
+    300                      // post the joinedSem (if any)
+    301                      if (notif_task_v.joinedSem) {
+    302                         osErr = OSSemPost(notif_task_v.joinedSem);
+    303                         ASSERT(osErr==OS_ERR_NONE);
+    304                      }
+    305                      
+    306                      // request service (if specified)
+    307                      if (notif_task_v.bandwidth) {
+    308                         dnErr = dnm_loc_requestServiceCmd(
+    309                            DN_MGR_SHORT_ADDR,        // destAddr
+    310                            DN_API_SERVICE_TYPE_BW,   // svcType
+    311                            notif_task_v.bandwidth,   // svcInfo
+    312                            &rc                       // rc
+    313                         );
+    314                         ASSERT(dnErr==DN_ERR_NONE);
+    315                         ASSERT(rc==DN_ERR_NONE);
+    316                      }
+    317                      
+    318                      // remember I've reacted to the operational event
+    319                      notif_task_v.fHandledOperational = 0x01;
+    320                   }
+    321                }
+    322                
+    323                //===
+    324                
+    325                if (eventFlags & DN_API_LOC_EV_SVC_CHG) {
+    326                   
+    327                   if (notif_task_v.fHandledSvcChanged==0x00) {
+    328                   
+    329                      // post the serviceSem (if any)
+    330                      if (notif_task_v.serviceSem ) {
+    331                         osErr = OSSemPost(notif_task_v.serviceSem);
+    332                         ASSERT(osErr==OS_ERR_NONE);
+    333                      }
+    334                      
+    335                      // remember I've reacted to the "service changed" event
+    336                      notif_task_v.fHandledSvcChanged = 0x01;
+    337                   }
+    338                }
+    339             }
+    340          }
+    341          
+    342          /**
+    343          \brief uC/OS-II task which drives the notification processing at the
+    344             dnm_local module.
+    345          
+    346          \note This task is started when loc_task_init() is called.
+    347          
+    348          The dnm_local module does not define a task which calls the
+    349          dnm_loc_processNotifications() continuously.
+    350          */
+    351          static void locNotifTask(void* unused) {
+    352             
+    353             while (1) { // this is a task, it executes forever
+    354                
+    355                dnm_loc_processNotifications();
+    356             }
+    357          }
+    358          
+    359          //===== dnm_local callbacks
+    360          
+    361          /**
+    362          \brief Function called by the dnm_local module when it has received an event.
+    363          
+    364          When the stack has an event to signal, it calls this function. This function
+    365          releases the locEventsFlag to signal the event to the locCtrlTask(), which is
+    366          pending on locEventsFlag.
+    367          
+    368          \param[in]  notifEvents  Pointer to a variable which will holds event bit masks.
+    369          \param[out] rsp          Response value for stack this function needs to fill in.
+    370          
+    371          \return DN_ERR_NONE if all went well, or another value if the event
+    372              notification callback is defined.
+    373          */
+    374          static dn_error_t appEventNotifCb(dn_api_loc_notif_events_t* notifEvents, INT8U* rsp) {
+    375             INT8U      osErr;
+    376             dn_error_t dnErr;
+    377             INT32U     events;
+    378             
+    379             // by default, all went well
+    380             dnErr  = DN_ERR_NONE;
+    381             
+    382             // change endianness of event signaled in the notification
+    383             events = ntohl(notifEvents->events);
+    384             
+    385             if (events) {
+    386                *rsp = DN_API_RC_OK;
+    387                
+    388                // post the flags corresponding to the events just received, unlocking locCtrlTask
+    389                OSFlagPost(
+    390                   notif_task_v.locEventsFlag,   // the event flag group
+    391                   events,                       // flag to change
+    392                   OS_FLAG_SET,                  // change = set the flags
+    393                   &osErr                        // return code
+    394                );
+    395                ASSERT(osErr==OS_ERR_NONE);
+    396             }
+    397             
+    398             return dnErr;
+    399          }
+    400          
+
+   Maximum stack usage in bytes:
+
+   .cstack Function
+   ------- --------
+      16   appEventNotifCb
+        16   -> OSFlagPost
+        16   -> assert_handler
+      80   locCtrlTask
+        80   -> OSFlagPend
+        80   -> OSSemPost
+        80   -> OSTimeDly
+        80   -> assert_handler
+        80   -> dnm_loc_bindSocketCmd
+        80   -> dnm_loc_getParameterCmd
+        80   -> dnm_loc_joinCmd
+        80   -> dnm_loc_openSocketCmd
+        80   -> dnm_loc_requestServiceCmd
+        80   -> dnm_loc_setParameterCmd
+        80   -> dnm_ucli_printf
+       8   locNotifTask
+         8   -> dnm_loc_processNotifications
+       0   loc_getSocketId
+      40   loc_task_init
+        40   -> OSFlagCreate
+        40   -> OSTaskCreateExt
+        40   -> OSTaskNameSet
+        40   -> assert_handler
+        40   -> dn_createSyncChannel
+        40   -> dn_registerChannel
+        40   -> dnm_loc_init
+        40   -> dnm_loc_registerEventNotifCallback
+
+
+   Section sizes:
+
+   Bytes  Function/Label
+   -----  --------------
+       4  ??DataTable6
+       4  ??DataTable6_1
+      40  ?_0
+      12  ?_1
+       8  ?_2
+      12  ?_3
+      70  appEventNotifCb
+     498  locCtrlTask
+       8  locNotifTask
+       8  loc_getSocketId
+     294  loc_task_init
+    2204  notif_task_v
+
+ 
+ 2'204 bytes in section .bss
+    40 bytes in section .rodata
+   918 bytes in section .text
+ 
+   918 bytes of CODE  memory
+    40 bytes of CONST memory
+ 2'204 bytes of DATA  memory
+
+Errors: none
+Warnings: none

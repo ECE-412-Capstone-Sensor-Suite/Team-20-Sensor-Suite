@@ -1,0 +1,129 @@
+###############################################################################
+#
+# IAR ANSI C/C++ Compiler V8.40.1.212/W32 for ARM         07/Mar/2021  18:09:52
+# Copyright 1999-2019 IAR Systems AB.
+#
+#    Cpu mode     =  
+#    Endian       =  little
+#    Source file  =
+#        C:\Users\Yesoooof\Documents\GitHub\Team-20-Sensor-Suite\Firmware\On-chip
+#        App\onchipsdk-master\src\app\00-hello_common\hello_common_app.c
+#    Command line =
+#        -f C:\Users\Yesoooof\AppData\Local\Temp\EW2E9D.tmp
+#        ("C:\Users\Yesoooof\Documents\GitHub\Team-20-Sensor-Suite\Firmware\On-chip
+#        App\onchipsdk-master\src\app\00-hello_common\hello_common_app.c" -lcN
+#        "C:\Users\Yesoooof\Documents\GitHub\Team-20-Sensor-Suite\Firmware\On-chip
+#        App\onchipsdk-master\projects\iar\00-hello_common\Debug\List" -o
+#        "C:\Users\Yesoooof\Documents\GitHub\Team-20-Sensor-Suite\Firmware\On-chip
+#        App\onchipsdk-master\projects\iar\00-hello_common\Debug\Obj" --debug
+#        --endian=little --cpu=Cortex-M3 --no_path_in_file_macros --enum_is_int
+#        -e --fpu=None --dlib_config "C:\Program Files (x86)\IAR
+#        Systems\Embedded Workbench 8.3\arm\inc\c\DLib_Config_Normal.h"
+#        --preinclude
+#        "C:\Users\Yesoooof\Documents\GitHub\Team-20-Sensor-Suite\Firmware\On-chip
+#        App\onchipsdk-master\projects\iar\00-hello_common\..\all_projects.iarinc"
+#        -I
+#        "C:\Users\Yesoooof\Documents\GitHub\Team-20-Sensor-Suite\Firmware\On-chip
+#        App\onchipsdk-master\projects\iar\00-hello_common\..\..\..\src\app\00-hello_common\"
+#        -I
+#        "C:\Users\Yesoooof\Documents\GitHub\Team-20-Sensor-Suite\Firmware\On-chip
+#        App\onchipsdk-master\projects\iar\00-hello_common\..\..\..\src\app\common\"
+#        -I
+#        "C:\Users\Yesoooof\Documents\GitHub\Team-20-Sensor-Suite\Firmware\On-chip
+#        App\onchipsdk-master\projects\iar\00-hello_common\..\..\..\src\inc\"
+#        -I
+#        "C:\Users\Yesoooof\Documents\GitHub\Team-20-Sensor-Suite\Firmware\On-chip
+#        App\onchipsdk-master\projects\iar\00-hello_common\..\..\..\src\modules\clilib\"
+#        -I
+#        "C:\Users\Yesoooof\Documents\GitHub\Team-20-Sensor-Suite\Firmware\On-chip
+#        App\onchipsdk-master\projects\iar\00-hello_common\..\..\..\src\modules\ip_applib\"
+#        -Oh)
+#    Locale       =  C
+#    List file    =
+#        C:\Users\Yesoooof\Documents\GitHub\Team-20-Sensor-Suite\Firmware\On-chip
+#        App\onchipsdk-master\projects\iar\00-hello_common\Debug\List\hello_common_app.lst
+#    Object file  =
+#        C:\Users\Yesoooof\Documents\GitHub\Team-20-Sensor-Suite\Firmware\On-chip
+#        App\onchipsdk-master\projects\iar\00-hello_common\Debug\Obj\hello_common_app.o
+#
+###############################################################################
+
+C:\Users\Yesoooof\Documents\GitHub\Team-20-Sensor-Suite\Firmware\On-chip App\onchipsdk-master\src\app\00-hello_common\hello_common_app.c
+      1          /*
+      2          Copyright (c) 2013, Dust Networks.  All rights reserved.
+      3          */
+      4          
+      5          #include "dn_common.h"
+      6          #include "dn_exe_hdr.h"
+      7          #include "cli_task.h"
+      8          #include "loc_task.h"
+      9          #include "Ver.h"
+     10          
+     11          //=========================== variables =======================================
+     12          
+     13          
+     14          //=========================== initialization ==================================
+     15          
+     16          /**
+     17          \brief This is the entry point for the application code.
+     18          */
+     19          int p2_init(void) {
+     20             
+     21             cli_task_init(
+     22                "hello_common",                       // appName
+     23                NULL                                  // cliCmds
+     24             );
+     25             loc_task_init(
+     26                JOIN_YES,                              // fJoin
+     27                NETID_NONE,                           // netId
+     28                UDPPORT_NONE,                         // udpPort
+     29                NULL,                                 // joinedSem
+     30                BANDWIDTH_NONE,                       // bandwidth
+     31                NULL                                  // serviceSem
+     32             );
+     33             
+     34             return 0;
+     35          }
+     36          
+     37          //=============================================================================
+     38          //=========================== install a kernel header =========================
+     39          //=============================================================================
+     40          
+     41          /**
+     42          A kernel header is a set of bytes prepended to the actual binary image of this
+     43          application. This header is needed for your application to start running.
+     44          */
+     45          
+     46          DN_CREATE_EXE_HDR(DN_VENDOR_ID_NOT_SET,
+     47                            DN_APP_ID_NOT_SET,
+     48                            VER_MAJOR,
+     49                            VER_MINOR,
+     50                            VER_PATCH,
+     51                            VER_BUILD);
+
+   Maximum stack usage in bytes:
+
+   .cstack Function
+   ------- --------
+      16   p2_init
+        16   -> cli_task_init
+        16   -> loc_task_init
+
+
+   Section sizes:
+
+   Bytes  Function/Label
+   -----  --------------
+      16  ?_0
+      32  kernelExeHdr
+      32  p2_init
+
+ 
+ 32 bytes in section .kernel_exe_hdr
+ 48 bytes in section .text
+ 
+ 48 bytes of CODE  memory
+ 32 bytes of CONST memory
+
+Errors: none
+Warnings: none
