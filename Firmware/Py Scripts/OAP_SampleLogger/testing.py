@@ -40,7 +40,7 @@ MacSample = Mesh.moteMAC('00-17-0d-00-00-32-23-d3').timestamp(19,10)   # store a
 print 'temp = ' + str(float(MacSample.temp)/100) + 'C' + ' @ ' + MacSample.timeStr
 
 
-
+print Mesh.Motes[0].temp[-1]
 
     #for index in range(1,3):
         #print moteI.temp[0]

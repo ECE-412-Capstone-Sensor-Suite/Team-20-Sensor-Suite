@@ -1,19 +1,21 @@
 from datetime import datetime
+
 class samples: # Sample Object structure
     def __init__(self, timeStr, temp, humid, lux, wind, accel):
+        self.timeStr = timeStr
         self.temp = temp
         self.humid = humid
         self.lux = lux
         self.wind = wind
         self.accel = accel
-        self.timeStr = timeStr
 
 
 class Mote(samples): # mote Object structure : inherits from samples
     def __init__(self, MAC):
         self.MAC = MAC
 
-    def LoadMote(self, logfile): # load a single mote from logfile into ram, using motes MAC address
+    # load a single mote from logfile into ram, using motes MAC address:
+    def LoadMote(self, logfile):
         self.temp = []
         self.humid = []
         self.lux = []
@@ -55,6 +57,7 @@ class Mote(samples): # mote Object structure : inherits from samples
                 self.accel.append(XYZ)
         logfile.seek(0)
 
+    # return sample that matches time stamp:
     def timestamp(self, hour, min):
         hours = str(hour)
         mins = str(min)
@@ -71,7 +74,9 @@ class Mote(samples): # mote Object structure : inherits from samples
 class MeshNetwork(Mote): # Mesh Network object structure : inherits from mote
     def __init__(self):
         self.Motes = []
-    def loadMesh(self, logfile): # find unique adresses, define mote object with them, and load each one using loadMote
+
+    # find unique adresses, define mote object with them, and load each one using loadMote():
+    def loadMesh(self, logfile):
         uniqAddr = []
         addresses = []
         for lines in logfile.readlines():
@@ -91,7 +96,24 @@ class MeshNetwork(Mote): # Mesh Network object structure : inherits from mote
             self.Motes.append(Mote(uniqAddr[i])) # define mote object using MAC
             self.Motes[i].LoadMote(logfile)      # load mote into ram
 
+    # return mote object that matches time stamp:
     def moteMAC(self, MACaddress):
         for i in range(len(self.Motes)):
             if self.Motes[i].MAC == MACaddress:
                 return self.Motes[i]
+
+'''
+#========================================= MESH NETWORK =============================================
+                                        /       |       \
+                                      /         |         \
+                                    /           |           \
+#===============================MOTE1=========MOTE2========MOTE3========MOTE_N.. ====
+                                  |             |            |
+                                  |             |            |
+                                  |             |            |
+                            Samples:        Samples:        Samples:
+                            Temp  = []      Temp  = []      Temp  = []
+                            humid = []      humid = []      humid = []
+                            light = []      light = []      light = [] 
+                            etc.. = []      etc.. = []      etc.. = []
+'''
