@@ -13,7 +13,7 @@ TimesList=""
 MotesList=""
 
 
-##1.查看所有的数据 实时更新在第一个按钮， stop
+##1.check all datas
 def helloCallBack():
     mylb.delete(0,99999999)
     for item in read.test1():
@@ -22,21 +22,21 @@ def helloCallBack():
     mylb2.delete(0, 10)
     mylb2.insert(END, "Read all sensors file")
     scrolly.config(command=mylb2.yview)
-## 2.input函数（地址） 然后跳出4个图表
+## 2.read data through time, input time, for example 18# (18:00-19:00) or 18#,19# for 2 hours.
 def helloCallBack1():
     num.clear()
     num.append(2)
     mylb2.delete(0, 10)
     mylb2.insert(END, "Read mote1 file")
     scrolly.config(command=mylb2.yview)
- ##3.history所有的数据定一个时间（自定义时间）
+ ##3.read data through mac address, input address, for example (00-17-0d-00-00-32-dc-61)#
 def helloCallBack2():
     num.clear()
     num.append(3)
     mylb2.delete(0, 10)
     mylb2.insert(END, "Read mote2 file")
     scrolly.config(command=mylb2.yview)
- ##4.history固定的地址里的数据定一个时间（自定义时间）
+ ##4.read data through mac address and time
 def helloCallBack3():
     num.clear()
     num.append(4)
@@ -47,6 +47,7 @@ def helloCallBack3():
     mylb2.delete(0, 10)
     mylb2.insert(END, "Input mac adress to check mote")
     scrolly.config(command=mylb2.yview)
+## for import ok
 def ThisOk():
     print(num)
     if num[0]==2:
