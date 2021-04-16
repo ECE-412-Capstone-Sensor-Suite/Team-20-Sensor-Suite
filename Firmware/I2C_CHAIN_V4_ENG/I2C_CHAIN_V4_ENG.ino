@@ -13,28 +13,27 @@
 
 #include <Wire.h>
 ///////////////////////SMART MESH CLIB//////////////////////////////////////
+// Additional single line code in SETUP and LOOP portions of code
 #include <IpMtWrapper.h>
-#include <TriangleGenerator.h>
 #include <dn_ipmt.h>
 
 IpMtWrapper       ipmtwrapper;
-TriangleGenerator generator;
 int arbitraryData; // this is the number used to test data sending via mote
 
 void generateData(uint16_t* returnVal) { // this is were data is assinged to be sent via mote
-   arbitraryData = (arbitraryData + 1) % 10;
-   returnVal[0] =  arbitraryData;   // return value is a 16 bit per element array to be sent via mote
-   returnVal[1] =  arbitraryData*2;
-   returnVal[2] =  arbitraryData*3;
-   returnVal[3] =  arbitraryData*4;
-   returnVal[4] =  arbitraryData*5;
-   returnVal[5] =  arbitraryData*6;
-   returnVal[6] =  arbitraryData*7;
-   returnVal[7] =  arbitraryData*8;
-   returnVal[8] =  arbitraryData*9;
-   returnVal[9] =  arbitraryData*10;
-   Serial.print("INFO:          SENT FIRST VALUE:");     Serial.println(returnVal[0]);
-   Serial.print("INFO:          RETURNED LAST VALUE:");  Serial.println(returnVal[9]);
+  arbitraryData = (arbitraryData + 1) % 10;
+  returnVal[0] =  arbitraryData;   // return value is a 16 bit per element array to be sent via mote
+  returnVal[1] =  arbitraryData * 2;
+  returnVal[2] =  arbitraryData * 3;
+  returnVal[3] =  arbitraryData * 4;
+  returnVal[4] =  arbitraryData * 5;
+  returnVal[5] =  arbitraryData * 6;
+  returnVal[6] =  arbitraryData * 7;
+  returnVal[7] =  arbitraryData * 8;
+  returnVal[8] =  arbitraryData * 9;
+  returnVal[9] =  arbitraryData * 10;
+  Serial.print("INFO:          SENT FIRST VALUE:");     Serial.println(returnVal[0]);
+  Serial.print("INFO:          RETURNED LAST VALUE:");  Serial.println(returnVal[9]);
 }
 
 //********************************** O2 Configuration *********************//
@@ -44,14 +43,14 @@ void generateData(uint16_t* returnVal) { // this is were data is assinged to be 
 #define           GET_KEY_REGISTER          0x0A           // get key value
 #define COLLECT_NUMBER    10             // collect number, the collection range is 1-100.
 
-  int O2addr = byte(0x73);              
-  float  OxygenData[100] = {0.00};
-  //float key;
-  static uint8_t i = 0 ,j = 0;
-  uint8_t Reg;
-  uint8_t pdata;
-  float _Key = 0.0;                          // oxygen key value
-  float    ReadOxygenData(uint8_t CollectNum);
+int O2addr = byte(0x73);
+float  OxygenData[100] = {0.00};
+//float key;
+static uint8_t i = 0 , j = 0;
+uint8_t Reg;
+uint8_t pdata;
+float _Key = 0.0;                          // oxygen key value
+float    ReadOxygenData(uint8_t CollectNum);
 //************************** Global Variables *****************************//
 // Slave Addresses:
 int humidityAddr = 39; // temperature humidity address (0x27)
@@ -63,7 +62,7 @@ int adxl345 = 0x53; // The ADXL345 sensor I2C address
 int humidityT[2] = {10, 5}; // timing characteristics: {WAIT AFTER WRITE 1, WAIT AFTER WRITE2}
 int unoT[2] = {0, 10};
 int opt3001T[2] = {100, 0};
-int adxl345T[2] = {10,0};
+int adxl345T[2] = {10, 0};
 
 // reading variables
 int reading1; // humidity reading
@@ -101,14 +100,14 @@ int sensorValue = analogRead(0); //P4_7); //Rain Sensor Input
 //============================================================================================================//
 //========================================  {INITIALIZE SENSORS} =============================================//
 void setup() {
-   ipmtwrapper.setup( // SET UP SMART MESH MOTE
-      60000,                           // srcPort
-      (uint8_t*)ipv6Addr_manager,      // destAddr
-      61000,                           // destPort
-      10000,                           // dataPeriod (ms)
-      generateData                     // dataGenerator
-   );
-   
+  ipmtwrapper.setup( // SET UP SMART MESH MOTE
+    60000,                           // srcPort
+    (uint8_t*)ipv6Addr_manager,      // destAddr
+    61000,                           // destPort
+    10000,                           // dataPeriod (ms)
+    generateData                     // dataGenerator
+  );
+
   Wire.begin(); // Initialize ardiono as master
 
   //*************************OPT3001 Light Sensor********************//
@@ -118,17 +117,17 @@ void setup() {
   Wire.write(0x10);
   Wire.endTransmission();
   // Set ADXL345 in measuring mode
-  Wire.beginTransmission(adxl345); // Start communicating with the device 
+  Wire.beginTransmission(adxl345); // Start communicating with the device
   Wire.write(0x2D); // Access/ talk to POWER_CTL Register - 0x2D
   // Enable measurement
-  Wire.write(8); // (8dec -> 0000 1000 binary) Bit D3 High for measuring enable 
+  Wire.write(8); // (8dec -> 0000 1000 binary) Bit D3 High for measuring enable
 
-  
+
   Wire.endTransmission();
 
 
   //**************************DFR O2 Sensor***************************//
-while(!begin(O2addr)) {
+  while (!begin(O2addr)) {
     Serial.println("I2c device number error !");
     delay(1000);
   }
@@ -138,12 +137,12 @@ while(!begin(O2addr)) {
 //==========================================  {MAIN LOOP} ====================================================//
 void loop() {
   ipmtwrapper.loop(); // SMART MESH LOOP
-  
+
   //********HUMID & TEMP SENSOR********//
-  ///slaveSample template: 
+  ///slaveSample template:
   //          {ADDRESS, 1ST WRITE, 2ND WRITE, WAIT TIMES , EXPECTED NO. OF  BYTES}
   slaveSample(humidityAddr, byte(0x00), byte(0x01), humidityT, 4); //** SAMPLE RAW BYTES FROM SENSOR
-  
+
   //** parse bytes from sensor into two 16-bit words, then convert words into accurate data.
   int humidityWord = (reading[0] << 8) | reading[1];    // shift byte0 up 8 bits and add byte1 to it
   int tempWord = (reading[2] << 8) | reading[3];        // shift byte2 up 8 bits and add byte3 to it
@@ -155,7 +154,7 @@ void loop() {
 
 
   //********ARDUINO OPT3001 Light SENSOR********//
-  //slaveSample template: 
+  //slaveSample template:
   //         {ADDRESS, 1ST WRITE, byte(0xFF) = DONT WRITE, WAIT TIMES , EXPECTED NO. OF  BYTES}
   slaveSample(optAddr, byte(0x00), byte(0xFF), opt3001T, 2); //** SAMPLE RAW BYTES FROM SENSOR
   /// inputting byte(0xFF) into a write word means you dont want to write any words
@@ -172,12 +171,12 @@ void loop() {
   Wire.endTransmission(false);
   Wire.requestFrom(adxl345, 6, true); // Read 6 registers total, each axis value is stored in 2 registers
 
-  X_out = ( Wire.read()| Wire.read() << 8); // X-axis value
-  X_out = X_out/256; //For a range of +-2g, we need to divide the raw values by 256, according to the datasheet
-  Y_out = ( Wire.read()| Wire.read() << 8); // Y-axis value
-  Y_out = Y_out/256;
-  Z_out = ( Wire.read()| Wire.read() << 8); // Z-axis value
-  Z_out = Z_out/256;
+  X_out = ( Wire.read() | Wire.read() << 8); // X-axis value
+  X_out = X_out / 256; //For a range of +-2g, we need to divide the raw values by 256, according to the datasheet
+  Y_out = ( Wire.read() | Wire.read() << 8); // Y-axis value
+  Y_out = Y_out / 256;
+  Z_out = ( Wire.read() | Wire.read() << 8); // Z-axis value
+  Z_out = Z_out / 256;
 
   Serial.print("Xa= ");
   Serial.print(X_out);
@@ -282,11 +281,11 @@ void slaveSample(int slavAddr, byte word1, byte word2, int wait[] , int byteNum)
     slaveCommand(slavAddr, word1);  // step 1: instruct sensor to measure
     delay(wait[0]);                   // step 2: wait for readings to happen
   }
-  
+
   if (word2 != byte(0xFF)) {  //*** CHECK IF SLAVE NEEDS MEASURE REQUEST BEFORE READING
     slaveCommand(slavAddr, word2);  // step 3: instruct sensor to return a reading
     delay(wait[1]);                 // wait before reading
-    
+
   }
 
   Wire.requestFrom(slavAddr, byteNum);  // step 4: request reading from sensor
@@ -326,7 +325,7 @@ float SensorOpt3001_convert(uint16_t iRawData)
   return iMantissa * (0.01 * pow(2, iExponent)); // Calculate final LUX
 }
 //**************************DFR O2 Sensor***************************//
-void ReadFlash(){
+void ReadFlash() {
 
   uint8_t value = 0;
   Wire.beginTransmission(O2addr);
@@ -334,34 +333,36 @@ void ReadFlash(){
   Wire.endTransmission();
   delay(50);
   Wire.requestFrom(O2addr, (uint8_t)1);
-    while (Wire.available())
-      value = Wire.read();
-  if(value == 0) {
+  while (Wire.available())
+    value = Wire.read();
+  if (value == 0) {
     _Key = 20.9 / 120.0;
-  }else {
+  } else {
     _Key = (float)value / 1000.0;
   }
 }
 
 /* Reading oxygen concentration */
-float ReadOxygenData(uint8_t CollectNum) 
+float ReadOxygenData(uint8_t CollectNum)
 {
-  uint8_t rxbuf[10]={0}, k = 0;
-  static uint8_t i = 0 ,j = 0;
+  uint8_t rxbuf[10] = {0}, k = 0;
+  static uint8_t i = 0 , j = 0;
   ReadFlash();
-  if(CollectNum > 0) {
-    for(j = CollectNum - 1;  j > 0; j--) {  OxygenData[j] = OxygenData[j-1]; } 
+  if (CollectNum > 0) {
+    for (j = CollectNum - 1;  j > 0; j--) {
+      OxygenData[j] = OxygenData[j - 1];
+    }
     Wire.beginTransmission(O2addr);
     Wire.write(OXYGEN_DATA_REGISTER);
     Wire.endTransmission();
     delay(100);
     Wire.requestFrom(O2addr, (uint8_t)3);
-      while (Wire.available())
-        rxbuf[k++] = Wire.read();
+    while (Wire.available())
+      rxbuf[k++] = Wire.read();
     OxygenData[0] = ((_Key) * (((float)rxbuf[0]) + ((float)rxbuf[1] / 10.0) + ((float)rxbuf[2] / 100.0)));
-    if(i < CollectNum) i++;
+    if (i < CollectNum) i++;
     return getAverageNum(OxygenData, i);
-  }else {
+  } else {
     return -1.0;
   }
 }
@@ -376,11 +377,11 @@ void i2cWrite(uint8_t Reg , uint8_t pdata)
 }
 
 /* Get the average data */
-float getAverageNum(float bArray[], uint8_t iFilterLen) 
+float getAverageNum(float bArray[], uint8_t iFilterLen)
 {
   uint8_t i = 0;
   double bTemp = 0;
-  for(i = 0; i < iFilterLen; i++) {
+  for (i = 0; i < iFilterLen; i++) {
     bTemp += bArray[i];
   }
   return bTemp / (float)iFilterLen;
@@ -388,11 +389,11 @@ float getAverageNum(float bArray[], uint8_t iFilterLen)
 /* join i2c bus (address optional for master) */
 bool begin(uint8_t addr)
 {
-  O2addr = addr;              // Set the host address 
-  Wire.begin();                     // connecting the i2c bus 
+  O2addr = addr;              // Set the host address
+  Wire.begin();                     // connecting the i2c bus
   Wire.beginTransmission(O2addr);
   Wire.write(1);
-  if(Wire.endTransmission() == 0) {
+  if (Wire.endTransmission() == 0) {
     return true;
   }
   return false;
