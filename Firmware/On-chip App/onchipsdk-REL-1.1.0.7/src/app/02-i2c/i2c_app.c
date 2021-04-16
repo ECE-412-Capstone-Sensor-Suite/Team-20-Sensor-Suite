@@ -15,7 +15,7 @@ Copyright (c) 2013, Dust Networks.  All rights reserved.
 
 //=========================== definitions =====================================
 
-#define I2C_SLAVE_ADDR       0x05
+#define I2C_SLAVE_ADDR       0x08
 #define I2C_PAYLOAD_LENGTH   3
 
 //=========================== variables =======================================
@@ -102,7 +102,7 @@ static void i2cTask(void* unused) {
    
    while(1) {
       // infinite loop
-      
+      /*
       //===== step 1. write to I2C slave
       
       // wait a bit
@@ -139,7 +139,7 @@ static void i2cTask(void* unused) {
       } else {
          dnm_ucli_printf("Unable to write over I2C, err=%d\r\n",dnErr);
       }
-      
+      */
       //===== step 2. read from I2C slave
       
       // wait a bit

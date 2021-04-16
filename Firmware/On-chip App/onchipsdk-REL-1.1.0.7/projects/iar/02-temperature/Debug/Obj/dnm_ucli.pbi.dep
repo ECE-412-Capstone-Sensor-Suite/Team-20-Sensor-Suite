@@ -1,0 +1,32 @@
+dnm_ucli.pbi: \
+  C:\Users\Yesoooof\Documents\GitHub\Team-20-Sensor-Suite\Firmware\On-chip\ App\onchipsdk-REL-1.1.0.7\src\modules\clilib\dnm_ucli.c \
+  C:\Users\Yesoooof\Documents\GitHub\Team-20-Sensor-Suite\Firmware\On-chip\ App\onchipsdk-REL-1.1.0.7\projects\iar\02-temperature\..\all_projects.iarinc \
+  C:\Program\ Files\ (x86)\IAR\ Systems\Embedded\ Workbench\ 8.3\arm\inc\c\stdio.h \
+  C:\Program\ Files\ (x86)\IAR\ Systems\Embedded\ Workbench\ 8.3\arm\inc\c\ycheck.h \
+  C:\Program\ Files\ (x86)\IAR\ Systems\Embedded\ Workbench\ 8.3\arm\inc\c\yvals.h \
+  C:\Program\ Files\ (x86)\IAR\ Systems\Embedded\ Workbench\ 8.3\arm\inc\c\DLib_Defaults.h \
+  C:\\Program\ Files\ (x86)\\IAR\ Systems\\Embedded\ Workbench\ 8.3\\arm\\inc\\c\\DLib_Config_Normal.h \
+  C:\Program\ Files\ (x86)\IAR\ Systems\Embedded\ Workbench\ 8.3\arm\inc\c\DLib_Product.h \
+  C:\Program\ Files\ (x86)\IAR\ Systems\Embedded\ Workbench\ 8.3\arm\inc\c\ysizet.h \
+  C:\Program\ Files\ (x86)\IAR\ Systems\Embedded\ Workbench\ 8.3\arm\inc\c\string.h \
+  C:\Program\ Files\ (x86)\IAR\ Systems\Embedded\ Workbench\ 8.3\arm\inc\c\DLib_Product_string.h \
+  C:\Users\Yesoooof\Documents\GitHub\Team-20-Sensor-Suite\Firmware\On-chip\ App\onchipsdk-REL-1.1.0.7\projects\iar\02-temperature\..\..\..\src\inc\dn_common.h \
+  C:\Program\ Files\ (x86)\IAR\ Systems\Embedded\ Workbench\ 8.3\arm\inc\c\stddef.h \
+  C:\Users\Yesoooof\Documents\GitHub\Team-20-Sensor-Suite\Firmware\On-chip\ App\onchipsdk-REL-1.1.0.7\projects\iar\02-temperature\..\..\..\src\inc/dn_typedef.h \
+  C:\Users\Yesoooof\Documents\GitHub\Team-20-Sensor-Suite\Firmware\On-chip\ App\onchipsdk-REL-1.1.0.7\projects\iar\02-temperature\..\..\..\src\inc/os_cpu.h \
+  C:\Users\Yesoooof\Documents\GitHub\Team-20-Sensor-Suite\Firmware\On-chip\ App\onchipsdk-REL-1.1.0.7\projects\iar\02-temperature\..\..\..\src\inc/ucos_ii.h \
+  C:\Users\Yesoooof\Documents\GitHub\Team-20-Sensor-Suite\Firmware\On-chip\ App\onchipsdk-REL-1.1.0.7\projects\iar\02-temperature\..\..\..\src\app\common\app_cfg.h \
+  C:\Users\Yesoooof\Documents\GitHub\Team-20-Sensor-Suite\Firmware\On-chip\ App\onchipsdk-REL-1.1.0.7\projects\iar\02-temperature\..\..\..\src\inc\dn_typedef.h \
+  C:\Users\Yesoooof\Documents\GitHub\Team-20-Sensor-Suite\Firmware\On-chip\ App\onchipsdk-REL-1.1.0.7\projects\iar\02-temperature\..\..\..\src\inc\os_cfg.h \
+  C:\Users\Yesoooof\Documents\GitHub\Team-20-Sensor-Suite\Firmware\On-chip\ App\onchipsdk-REL-1.1.0.7\projects\iar\02-temperature\..\..\..\src\inc\os_cpu.h \
+  C:\Users\Yesoooof\Documents\GitHub\Team-20-Sensor-Suite\Firmware\On-chip\ App\onchipsdk-REL-1.1.0.7\src\modules\clilib/dnm_ucli.h \
+  C:\Users\Yesoooof\Documents\GitHub\Team-20-Sensor-Suite\Firmware\On-chip\ App\onchipsdk-REL-1.1.0.7\projects\iar\02-temperature\..\..\..\src\inc\dn_errno.h \
+  C:\Users\Yesoooof\Documents\GitHub\Team-20-Sensor-Suite\Firmware\On-chip\ App\onchipsdk-REL-1.1.0.7\projects\iar\02-temperature\..\..\..\src\inc\dn_cli.h \
+  C:\Users\Yesoooof\Documents\GitHub\Team-20-Sensor-Suite\Firmware\On-chip\ App\onchipsdk-REL-1.1.0.7\projects\iar\02-temperature\..\..\..\src\inc/dn_pack.h \
+  C:\Users\Yesoooof\Documents\GitHub\Team-20-Sensor-Suite\Firmware\On-chip\ App\onchipsdk-REL-1.1.0.7\projects\iar\02-temperature\..\..\..\src\inc/dn_channel.h \
+  C:\Users\Yesoooof\Documents\GitHub\Team-20-Sensor-Suite\Firmware\On-chip\ App\onchipsdk-REL-1.1.0.7\projects\iar\02-temperature\..\..\..\src\inc/dn_errno.h \
+  C:\Program\ Files\ (x86)\IAR\ Systems\Embedded\ Workbench\ 8.3\arm\inc\c\stdarg.h \
+  C:\Users\Yesoooof\Documents\GitHub\Team-20-Sensor-Suite\Firmware\On-chip\ App\onchipsdk-REL-1.1.0.7\projects\iar\02-temperature\..\..\..\src\inc\dn_channel.h \
+  C:\Users\Yesoooof\Documents\GitHub\Team-20-Sensor-Suite\Firmware\On-chip\ App\onchipsdk-REL-1.1.0.7\projects\iar\02-temperature\..\..\..\src\inc\dn_system.h \
+  C:\Users\Yesoooof\Documents\GitHub\Team-20-Sensor-Suite\Firmware\On-chip\ App\onchipsdk-REL-1.1.0.7\projects\iar\02-temperature\..\..\..\src\inc\dn_gpio.h \
+  C:\Users\Yesoooof\Documents\GitHub\Team-20-Sensor-Suite\Firmware\On-chip\ App\onchipsdk-REL-1.1.0.7\projects\iar\02-temperature\..\..\..\src\inc\dn_flash_info.h

@@ -260,3 +260,150 @@ receivedFrame:
 2021-02-28 20:45:44,336 [Hdlc:INFO] disconnect
 2021-02-28 20:45:44,338 [SerialConnector:INFO] hdlc notification: connection state=False
 2021-02-28 20:45:44,338 [Hdlc:INFO] thread ended
+2021-04-14 19:41:02,312 [SerialConnector:INFO] creating object
+2021-04-14 19:41:02,313 [Hdlc:INFO] Creating object
+2021-04-14 19:41:02,332 [Hdlc:INFO] opened port com12@115200baud
+2021-04-14 19:41:02,332 [SerialConnector:INFO] hdlc notification: connection state=True
+2021-04-14 19:41:02,332 [Hdlc:INFO] thread started
+2021-04-14 19:41:02,332 [ByteArraySerializer:DEBUG] serialize ...
+- commandArray:     ['hello']
+- fieldsToFill:     {'cliSeqNo': 255, 'version': 4, 'mode': 0}
+2021-04-14 19:41:02,332 [ByteArraySerializer:DEBUG] ... serialize into
+- cmdId:            1
+- byteArray:        04-ff-00
+2021-04-14 19:41:02,332 [SerialConnector:DEBUG] _sendInternal cmdId=1 retry=0 isResponse=False serializedFields=[4, 255, 0]
+2021-04-14 19:41:02,332 [SerialConnector:DEBUG] ---------- pcToMote DATA (0) ---------->
+2021-04-14 19:41:02,332 [Crc:DEBUG] calculating for data=00-01-00-03-04-ff-00
+2021-04-14 19:41:02,332 [Crc:DEBUG] fcs=0x3731
+2021-04-14 19:41:02,332 [Hdlc:DEBUG] 
+packetToSend:
+ - payload: 00 01 00 03 04 ff 00
+ - fcs:     37 31
+ - valid:   True
+2021-04-14 19:41:02,845 [SerialConnector:INFO] retry 0
+2021-04-14 19:41:02,845 [SerialConnector:DEBUG] _sendInternal cmdId=1 retry=1 isResponse=False serializedFields=[4, 255, 0]
+2021-04-14 19:41:02,845 [SerialConnector:DEBUG] ---------- pcToMote DATA (0) ---------->
+2021-04-14 19:41:02,845 [Crc:DEBUG] calculating for data=00-01-00-03-04-ff-00
+2021-04-14 19:41:02,845 [Crc:DEBUG] fcs=0x3731
+2021-04-14 19:41:02,845 [Hdlc:DEBUG] 
+packetToSend:
+ - payload: 00 01 00 03 04 ff 00
+ - fcs:     37 31
+ - valid:   True
+2021-04-14 19:41:03,359 [SerialConnector:INFO] retry 1
+2021-04-14 19:41:03,359 [SerialConnector:DEBUG] _sendInternal cmdId=1 retry=2 isResponse=False serializedFields=[4, 255, 0]
+2021-04-14 19:41:03,359 [SerialConnector:DEBUG] ---------- pcToMote DATA (0) ---------->
+2021-04-14 19:41:03,361 [Crc:DEBUG] calculating for data=00-01-00-03-04-ff-00
+2021-04-14 19:41:03,361 [Crc:DEBUG] fcs=0x3731
+2021-04-14 19:41:03,361 [Hdlc:DEBUG] 
+packetToSend:
+ - payload: 00 01 00 03 04 ff 00
+ - fcs:     37 31
+ - valid:   True
+2021-04-14 19:41:03,875 [SerialConnector:INFO] retry 2
+2021-04-14 19:41:03,875 [SerialConnector:DEBUG] _sendInternal cmdId=1 retry=3 isResponse=False serializedFields=[4, 255, 0]
+2021-04-14 19:41:03,875 [SerialConnector:DEBUG] ---------- pcToMote DATA (0) ---------->
+2021-04-14 19:41:03,875 [Crc:DEBUG] calculating for data=00-01-00-03-04-ff-00
+2021-04-14 19:41:03,875 [Crc:DEBUG] fcs=0x3731
+2021-04-14 19:41:03,875 [Hdlc:DEBUG] 
+packetToSend:
+ - payload: 00 01 00 03 04 ff 00
+ - fcs:     37 31
+ - valid:   True
+2021-04-14 19:41:04,375 [SerialConnector:INFO] retry 3
+2021-04-14 19:41:04,375 [SerialConnector:DEBUG] _sendInternal cmdId=1 retry=4 isResponse=False serializedFields=[4, 255, 0]
+2021-04-14 19:41:04,375 [SerialConnector:DEBUG] ---------- pcToMote DATA (0) ---------->
+2021-04-14 19:41:04,375 [Crc:DEBUG] calculating for data=00-01-00-03-04-ff-00
+2021-04-14 19:41:04,375 [Crc:DEBUG] fcs=0x3731
+2021-04-14 19:41:04,375 [Hdlc:DEBUG] 
+packetToSend:
+ - payload: 00 01 00 03 04 ff 00
+ - fcs:     37 31
+ - valid:   True
+2021-04-14 19:41:04,888 [SerialConnector:INFO] retry 4
+2021-04-14 19:41:04,888 [SerialConnector:DEBUG] _sendInternal cmdId=1 retry=5 isResponse=False serializedFields=[4, 255, 0]
+2021-04-14 19:41:04,888 [SerialConnector:DEBUG] ---------- pcToMote DATA (0) ---------->
+2021-04-14 19:41:04,888 [Crc:DEBUG] calculating for data=00-01-00-03-04-ff-00
+2021-04-14 19:41:04,888 [Crc:DEBUG] fcs=0x3731
+2021-04-14 19:41:04,888 [Hdlc:DEBUG] 
+packetToSend:
+ - payload: 00 01 00 03 04 ff 00
+ - fcs:     37 31
+ - valid:   True
+2021-04-14 19:41:05,388 [SerialConnector:INFO] retry 5
+2021-04-14 19:41:05,388 [SerialConnector:ERROR] retried 5 times, max allowed is 5
+2021-04-14 19:41:05,388 [Hdlc:INFO] disconnect
+2021-04-14 19:41:05,390 [SerialConnector:INFO] hdlc notification: connection state=False
+2021-04-14 19:41:05,391 [Hdlc:INFO] thread ended
+2021-04-14 19:41:12,085 [SerialConnector:INFO] creating object
+2021-04-14 19:41:12,085 [Hdlc:INFO] Creating object
+2021-04-14 19:41:12,104 [Hdlc:INFO] opened port com13@115200baud
+2021-04-14 19:41:12,104 [SerialConnector:INFO] hdlc notification: connection state=True
+2021-04-14 19:41:12,104 [Hdlc:INFO] thread started
+2021-04-14 19:41:12,105 [ByteArraySerializer:DEBUG] serialize ...
+- commandArray:     ['hello']
+- fieldsToFill:     {'cliSeqNo': 255, 'version': 4, 'mode': 0}
+2021-04-14 19:41:12,105 [ByteArraySerializer:DEBUG] ... serialize into
+- cmdId:            1
+- byteArray:        04-ff-00
+2021-04-14 19:41:12,105 [SerialConnector:DEBUG] _sendInternal cmdId=1 retry=0 isResponse=False serializedFields=[4, 255, 0]
+2021-04-14 19:41:12,105 [SerialConnector:DEBUG] ---------- pcToMote DATA (0) ---------->
+2021-04-14 19:41:12,105 [Crc:DEBUG] calculating for data=00-01-00-03-04-ff-00
+2021-04-14 19:41:12,105 [Crc:DEBUG] fcs=0x3731
+2021-04-14 19:41:12,105 [Hdlc:DEBUG] 
+packetToSend:
+ - payload: 00 01 00 03 04 ff 00
+ - fcs:     37 31
+ - valid:   True
+2021-04-14 19:41:12,108 [Crc:DEBUG] calculating for data=00-02-00-05-00-04-00-ff-00
+2021-04-14 19:41:12,108 [Crc:DEBUG] fcs=0x2323
+2021-04-14 19:41:12,108 [Hdlc:DEBUG] 
+receivedFrame:
+ - payload: 00 02 00 05 00 04 00 ff 00
+ - fcs:     23 23
+ - valid:   True
+2021-04-14 19:41:12,108 [SerialConnector:DEBUG] cmdId=2 length=5 isResponse=False packetId=0 payload=[0, 4, 0, 255, 0]
+2021-04-14 19:41:12,108 [SerialConnector:DEBUG] <--------- moteToPc DATA (0) ----------
+2021-04-14 19:41:12,108 [SerialConnector:DEBUG] no ack needed
+2021-04-14 19:41:12,108 [ByteArraySerializer:DEBUG] deserialize ...
+- type:             command
+- id:               2
+- byteArray:        00-04-00-ff-00
+2021-04-14 19:41:12,108 [ByteArraySerializer:DEBUG] ... deserialized into
+- nameArray:        ['hello_response']
+- returnFields:     {'cliSeqNo': 255, 'version': 4, 'successCode': 0, 'mgrSeqNo': 0, 'mode': 0}
+2021-04-14 19:41:12,118 [ByteArraySerializer:DEBUG] serialize ...
+- commandArray:     ['subscribe']
+- fieldsToFill:     {'filter': [0, 16], 'unackFilter': [0, 16]}
+2021-04-14 19:41:12,119 [ByteArraySerializer:DEBUG] ... serialize into
+- cmdId:            22
+- byteArray:        00-00-00-10-00-00-00-10
+2021-04-14 19:41:12,119 [SerialConnector:DEBUG] _sendInternal cmdId=22 retry=0 isResponse=False serializedFields=[0, 0, 0, 16, 0, 0, 0, 16]
+2021-04-14 19:41:12,119 [SerialConnector:DEBUG] ---------- pcToMote DATA (0) ---------->
+2021-04-14 19:41:12,119 [Crc:DEBUG] calculating for data=02-16-00-08-00-00-00-10-00-00-00-10
+2021-04-14 19:41:12,119 [Crc:DEBUG] fcs=0x5c3d
+2021-04-14 19:41:12,119 [Hdlc:DEBUG] 
+packetToSend:
+ - payload: 02 16 00 08 00 00 00 10 00 00 00 10
+ - fcs:     5c 3d
+ - valid:   True
+2021-04-14 19:41:12,124 [Crc:DEBUG] calculating for data=03-16-00-01-00
+2021-04-14 19:41:12,124 [Crc:DEBUG] fcs=0x5843
+2021-04-14 19:41:12,124 [Hdlc:DEBUG] 
+receivedFrame:
+ - payload: 03 16 00 01 00
+ - fcs:     58 43
+ - valid:   True
+2021-04-14 19:41:12,124 [SerialConnector:DEBUG] cmdId=22 length=1 isResponse=True packetId=0 payload=[0]
+2021-04-14 19:41:12,124 [SerialConnector:DEBUG] <--------- pcToMote ACK (0) after 0.004 --------
+2021-04-14 19:41:12,124 [SerialConnector:DEBUG] no ack needed
+2021-04-14 19:41:12,125 [ByteArraySerializer:DEBUG] deserialize ...
+- type:             command
+- id:               22
+- byteArray:        00
+2021-04-14 19:41:12,125 [ByteArraySerializer:DEBUG] ... deserialized into
+- nameArray:        ['subscribe']
+- returnFields:     {'RC': 0}
+2021-04-14 20:09:15,186 [Hdlc:INFO] disconnect
+2021-04-14 20:09:15,187 [SerialConnector:INFO] hdlc notification: connection state=False
+2021-04-14 20:09:15,187 [Hdlc:INFO] thread ended

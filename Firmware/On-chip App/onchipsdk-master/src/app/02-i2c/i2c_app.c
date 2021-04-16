@@ -15,8 +15,8 @@ Copyright (c) 2013, Dust Networks.  All rights reserved.
 
 //=========================== definitions =====================================
 
-#define I2C_SLAVE_ADDR       0x27
-#define I2C_PAYLOAD_LENGTH   4
+#define I2C_SLAVE_ADDR       0x08
+#define I2C_PAYLOAD_LENGTH   5
 
 //=========================== variables =======================================
 
@@ -25,6 +25,7 @@ typedef struct {
    dn_ioctl_i2c_transfer_t   i2cTransfer;
    OS_STK                    i2cTaskStack[TASK_APP_I2C_STK_SIZE];
    INT8U                     i2cBuffer[I2C_PAYLOAD_LENGTH];
+   INT8U                     writeWord[2];
 } i2c_app_vars_t;
 
 i2c_app_vars_t     i2c_app_v;
@@ -106,15 +107,15 @@ static void i2cTask(void* unused) {
       OSTimeDly(1000);
      
       // prepare buffer
-      for (i=0;i<I2C_PAYLOAD_LENGTH;i++) {
-         i2c_app_v.i2cBuffer[i]             = 0x00; //prepare write word
+      for (i=0;i<sizeof(i2c_app_v.writeWord);i++) {
+         i2c_app_v.writeWord[i]             = 0x00 +i; //prepare write word
       }
-      i2c_app_v.i2cBuffer[3]             = 0x01;
+      
       // initialize I2C communication parameters
       i2c_app_v.i2cTransfer.slaveAddress    = I2C_SLAVE_ADDR;
-      i2c_app_v.i2cTransfer.writeBuf        = i2c_app_v.i2cBuffer;
+      i2c_app_v.i2cTransfer.writeBuf        = i2c_app_v.writeWord;
       i2c_app_v.i2cTransfer.readBuf         = NULL;
-      i2c_app_v.i2cTransfer.writeLen        = sizeof(i2c_app_v.i2cBuffer);
+      i2c_app_v.i2cTransfer.writeLen        = sizeof(i2c_app_v.writeWord);
       i2c_app_v.i2cTransfer.readLen         = 0;
       i2c_app_v.i2cTransfer.timeout         = 0xff;
       
@@ -129,8 +130,8 @@ static void i2cTask(void* unused) {
       // print
       if (dnErr==DN_ERR_NONE) {
          dnm_ucli_printf("Sent to I2C slave %02x: 0x",I2C_SLAVE_ADDR);
-         for (i=0;i<I2C_PAYLOAD_LENGTH;i++) {
-            dnm_ucli_printf("%02x",i2c_app_v.i2cBuffer[i]);
+         for (i=0;i<sizeof(i2c_app_v.writeWord);i++) {
+            dnm_ucli_printf("%02x",i2c_app_v.writeWord[i]);
          }
          dnm_ucli_printf("\r\n");         
       } else {

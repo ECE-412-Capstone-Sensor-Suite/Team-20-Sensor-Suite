@@ -1,6 +1,6 @@
 ###############################################################################
 #
-# IAR ANSI C/C++ Compiler V8.40.1.212/W32 for ARM         10/Mar/2021  21:28:33
+# IAR ANSI C/C++ Compiler V8.40.1.212/W32 for ARM         09/Apr/2021  19:04:52
 # Copyright 1999-2019 IAR Systems AB.
 #
 #    Cpu mode     =  
@@ -9,7 +9,7 @@
 #        C:\Users\Yesoooof\Documents\GitHub\Team-20-Sensor-Suite\Firmware\On-chip
 #        App\onchipsdk-master\src\app\02-i2c\i2c_app.c
 #    Command line =
-#        -f C:\Users\Yesoooof\AppData\Local\Temp\EW1AA1.tmp
+#        -f C:\Users\Yesoooof\AppData\Local\Temp\EW993C.tmp
 #        ("C:\Users\Yesoooof\Documents\GitHub\Team-20-Sensor-Suite\Firmware\On-chip
 #        App\onchipsdk-master\src\app\02-i2c\i2c_app.c" -lcN
 #        "C:\Users\Yesoooof\Documents\GitHub\Team-20-Sensor-Suite\Firmware\On-chip
@@ -62,8 +62,8 @@ C:\Users\Yesoooof\Documents\GitHub\Team-20-Sensor-Suite\Firmware\On-chip App\onc
      15          
      16          //=========================== definitions =====================================
      17          
-     18          #define I2C_SLAVE_ADDR       0x26
-     19          #define I2C_PAYLOAD_LENGTH   4
+     18          #define I2C_SLAVE_ADDR       0x08
+     19          #define I2C_PAYLOAD_LENGTH   5
      20          
      21          //=========================== variables =======================================
      22          
@@ -72,170 +72,171 @@ C:\Users\Yesoooof\Documents\GitHub\Team-20-Sensor-Suite\Firmware\On-chip App\onc
      25             dn_ioctl_i2c_transfer_t   i2cTransfer;
      26             OS_STK                    i2cTaskStack[TASK_APP_I2C_STK_SIZE];
      27             INT8U                     i2cBuffer[I2C_PAYLOAD_LENGTH];
-     28          } i2c_app_vars_t;
-     29          
-     30          i2c_app_vars_t     i2c_app_v;
-     31          
-     32          //=========================== prototypes ======================================
-     33          
-     34          static void i2cTask(void* unused);
-     35          
-     36          //=========================== initialization ==================================
-     37          
-     38          /**
-     39          \brief This is the entry point in the application code.
-     40          */
-     41          int p2_init(void) {
-     42             INT8U                   osErr;
-     43          
-     44             cli_task_init(
-     45                "i2c",                                // appName
-     46                NULL                                  // cliCmds
-     47             );
-     48             loc_task_init(
-     49                JOIN_NO,                              // fJoin
-     50                NETID_NONE,                           // netId
-     51                UDPPORT_NONE,                         // udpPort
-     52                NULL,                                 // joinedSem
-     53                BANDWIDTH_NONE,                       // bandwidth
-     54                NULL                                  // serviceSem
-     55             );
-     56             
-     57             // create the I2C task
-     58             osErr  = OSTaskCreateExt(
-     59                i2cTask,
-     60                (void *)0,
-     61                (OS_STK*)(&i2c_app_v.i2cTaskStack[TASK_APP_I2C_STK_SIZE-1]),
-     62                TASK_APP_I2C_PRIORITY,
+     28             INT8U                     writeWord[2];
+     29          } i2c_app_vars_t;
+     30          
+     31          i2c_app_vars_t     i2c_app_v;
+     32          
+     33          //=========================== prototypes ======================================
+     34          
+     35          static void i2cTask(void* unused);
+     36          
+     37          //=========================== initialization ==================================
+     38          
+     39          /**
+     40          \brief This is the entry point in the application code.
+     41          */
+     42          int p2_init(void) {
+     43             INT8U                   osErr;
+     44          
+     45             cli_task_init(
+     46                "i2c",                                // appName
+     47                NULL                                  // cliCmds
+     48             );
+     49             loc_task_init(
+     50                JOIN_NO,                              // fJoin
+     51                NETID_NONE,                           // netId
+     52                UDPPORT_NONE,                         // udpPort
+     53                NULL,                                 // joinedSem
+     54                BANDWIDTH_NONE,                       // bandwidth
+     55                NULL                                  // serviceSem
+     56             );
+     57             
+     58             // create the I2C task
+     59             osErr  = OSTaskCreateExt(
+     60                i2cTask,
+     61                (void *)0,
+     62                (OS_STK*)(&i2c_app_v.i2cTaskStack[TASK_APP_I2C_STK_SIZE-1]),
      63                TASK_APP_I2C_PRIORITY,
-     64                (OS_STK*)i2c_app_v.i2cTaskStack,
-     65                TASK_APP_I2C_STK_SIZE,
-     66                (void *)0,
-     67                OS_TASK_OPT_STK_CHK | OS_TASK_OPT_STK_CLR
-     68             );
-     69             ASSERT(osErr==OS_ERR_NONE);
-     70             OSTaskNameSet(TASK_APP_I2C_PRIORITY, (INT8U*)TASK_APP_I2C_NAME, &osErr);
-     71             ASSERT(osErr==OS_ERR_NONE);
-     72             
-     73             return 0;
-     74          }
-     75          
-     76          //=========================== I2C task ========================================
-     77          
-     78          /**
-     79          \brief A demo task to show the use of the I2C.
-     80          */
-     81          static void i2cTask(void* unused) {
-     82             dn_error_t                   dnErr;
-     83             dn_i2c_open_args_t           i2cOpenArgs;
-     84             INT8U                        i;
-     85             
-     86             //===== open the I2C device
-     87             
-     88             // wait a bit
-     89             OSTimeDly(1000);
-     90             
-     91             // open the I2C device
-     92             i2cOpenArgs.frequency = DN_I2C_FREQ_184_KHZ;
-     93             dnErr = dn_open(
-     94                DN_I2C_DEV_ID,
-     95                &i2cOpenArgs,
-     96                sizeof(i2cOpenArgs)
-     97             );
-     98             ASSERT(dnErr==DN_ERR_NONE); 
-     99             
-    100             while(1) {
-    101                // infinite loop
-    102                
-    103                //===== step 1. write to I2C slave
-    104                
-    105                // wait a bit
-    106                OSTimeDly(1000);
-    107               
-    108                // prepare buffer
-    109                for (i=0;i<I2C_PAYLOAD_LENGTH;i++) {
-    110                   i2c_app_v.i2cBuffer[i]             = 0x00; //prepare write word
-    111                }
-    112                i2c_app_v.i2cBuffer[3]             = 0x01;
-    113                // initialize I2C communication parameters
-    114                i2c_app_v.i2cTransfer.slaveAddress    = I2C_SLAVE_ADDR;
-    115                i2c_app_v.i2cTransfer.writeBuf        = i2c_app_v.i2cBuffer;
-    116                i2c_app_v.i2cTransfer.readBuf         = NULL;
-    117                i2c_app_v.i2cTransfer.writeLen        = sizeof(i2c_app_v.i2cBuffer);
-    118                i2c_app_v.i2cTransfer.readLen         = 0;
-    119                i2c_app_v.i2cTransfer.timeout         = 0xff;
-    120                
-    121                // initiate transaction
-    122                dnErr = dn_ioctl(
-    123                   DN_I2C_DEV_ID,
-    124                   DN_IOCTL_I2C_TRANSFER,
-    125                   &i2c_app_v.i2cTransfer,
-    126                   sizeof(i2c_app_v.i2cTransfer)
-    127                );
-    128                
-    129                // print
-    130                if (dnErr==DN_ERR_NONE) {
-    131                   dnm_ucli_printf("Sent to I2C slave %02x: 0x",I2C_SLAVE_ADDR);
-    132                   for (i=0;i<I2C_PAYLOAD_LENGTH;i++) {
-    133                      dnm_ucli_printf("%02x",i2c_app_v.i2cBuffer[i]);
-    134                   }
-    135                   dnm_ucli_printf("\r\n");         
-    136                } else {
-    137                   dnm_ucli_printf("Unable to write over I2C, err=%d\r\n",dnErr);
-    138                }
-    139                
-    140                //===== step 2. read from I2C slave
-    141                
-    142                // wait a bit
-    143                OSTimeDly(1000);
-    144                
-    145                // prepare buffer
-    146                memset(i2c_app_v.i2cBuffer,0,sizeof(i2c_app_v.i2cBuffer));
-    147                
-    148                // initialize I2C communication parameters
-    149                i2c_app_v.i2cTransfer.slaveAddress    = I2C_SLAVE_ADDR;
-    150                i2c_app_v.i2cTransfer.writeBuf        = NULL;           // NULL for read
-    151                i2c_app_v.i2cTransfer.readBuf         = i2c_app_v.i2cBuffer;
-    152                i2c_app_v.i2cTransfer.writeLen        = 0;
-    153                i2c_app_v.i2cTransfer.readLen         = sizeof(i2c_app_v.i2cBuffer);
-    154                i2c_app_v.i2cTransfer.timeout         = 0xff;
-    155                
-    156                // initiate transaction
-    157                dnErr = dn_ioctl(
-    158                   DN_I2C_DEV_ID,
-    159                   DN_IOCTL_I2C_TRANSFER,
-    160                   &i2c_app_v.i2cTransfer,
-    161                   sizeof(i2c_app_v.i2cTransfer)
-    162                );
-    163                
-    164                // print
-    165                if (dnErr==DN_ERR_NONE) {
-    166                   dnm_ucli_printf("Received from I2C slave %02x: 0x",I2C_SLAVE_ADDR);
-    167                   for (i=0;i<I2C_PAYLOAD_LENGTH;i++) {
-    168                      dnm_ucli_printf("%02x",i2c_app_v.i2cBuffer[i]);
-    169                   }
-    170                   dnm_ucli_printf("\r\n");
-    171                } else {
-    172                   dnm_ucli_printf("Unable to read over I2C, err=%d\r\n",dnErr);
-    173                }
-    174             }
-    175          }
-    176          
-    177          //=============================================================================
-    178          //=========================== install a kernel header =========================
-    179          //=============================================================================
-    180          
-    181          /**
-    182          A kernel header is a set of bytes prepended to the actual binary image of this
-    183          application. Thus header is needed for your application to start running.
-    184          */
-    185          
-    186          DN_CREATE_EXE_HDR(DN_VENDOR_ID_NOT_SET,
-    187                            DN_APP_ID_NOT_SET,
-    188                            VER_MAJOR,
-    189                            VER_MINOR,
-    190                            VER_PATCH,
-    191                            VER_BUILD);
+     64                TASK_APP_I2C_PRIORITY,
+     65                (OS_STK*)i2c_app_v.i2cTaskStack,
+     66                TASK_APP_I2C_STK_SIZE,
+     67                (void *)0,
+     68                OS_TASK_OPT_STK_CHK | OS_TASK_OPT_STK_CLR
+     69             );
+     70             ASSERT(osErr==OS_ERR_NONE);
+     71             OSTaskNameSet(TASK_APP_I2C_PRIORITY, (INT8U*)TASK_APP_I2C_NAME, &osErr);
+     72             ASSERT(osErr==OS_ERR_NONE);
+     73             
+     74             return 0;
+     75          }
+     76          
+     77          //=========================== I2C task ========================================
+     78          
+     79          /**
+     80          \brief A demo task to show the use of the I2C.
+     81          */
+     82          static void i2cTask(void* unused) {
+     83             dn_error_t                   dnErr;
+     84             dn_i2c_open_args_t           i2cOpenArgs;
+     85             INT8U                        i;
+     86             
+     87             //===== open the I2C device
+     88             
+     89             // wait a bit
+     90             OSTimeDly(1000);
+     91             
+     92             // open the I2C device
+     93             i2cOpenArgs.frequency = DN_I2C_FREQ_184_KHZ;
+     94             dnErr = dn_open(
+     95                DN_I2C_DEV_ID,
+     96                &i2cOpenArgs,
+     97                sizeof(i2cOpenArgs)
+     98             );
+     99             ASSERT(dnErr==DN_ERR_NONE); 
+    100             
+    101             while(1) {
+    102                // infinite loop
+    103                
+    104                //===== step 1. write to I2C slave
+    105                
+    106                // wait a bit
+    107                OSTimeDly(1000);
+    108               
+    109                // prepare buffer
+    110                for (i=0;i<sizeof(i2c_app_v.writeWord);i++) {
+    111                   i2c_app_v.writeWord[i]             = 0x00 +i; //prepare write word
+    112                }
+    113                
+    114                // initialize I2C communication parameters
+    115                i2c_app_v.i2cTransfer.slaveAddress    = I2C_SLAVE_ADDR;
+    116                i2c_app_v.i2cTransfer.writeBuf        = i2c_app_v.writeWord;
+    117                i2c_app_v.i2cTransfer.readBuf         = NULL;
+    118                i2c_app_v.i2cTransfer.writeLen        = sizeof(i2c_app_v.writeWord);
+    119                i2c_app_v.i2cTransfer.readLen         = 0;
+    120                i2c_app_v.i2cTransfer.timeout         = 0xff;
+    121                
+    122                // initiate transaction
+    123                dnErr = dn_ioctl(
+    124                   DN_I2C_DEV_ID,
+    125                   DN_IOCTL_I2C_TRANSFER,
+    126                   &i2c_app_v.i2cTransfer,
+    127                   sizeof(i2c_app_v.i2cTransfer)
+    128                );
+    129                
+    130                // print
+    131                if (dnErr==DN_ERR_NONE) {
+    132                   dnm_ucli_printf("Sent to I2C slave %02x: 0x",I2C_SLAVE_ADDR);
+    133                   for (i=0;i<sizeof(i2c_app_v.writeWord);i++) {
+    134                      dnm_ucli_printf("%02x",i2c_app_v.writeWord[i]);
+    135                   }
+    136                   dnm_ucli_printf("\r\n");         
+    137                } else {
+    138                   dnm_ucli_printf("Unable to write over I2C, err=%d\r\n",dnErr);
+    139                }
+    140                
+    141                //===== step 2. read from I2C slave
+    142                
+    143                // wait a bit
+    144                OSTimeDly(1000);
+    145                
+    146                // prepare buffer
+    147                memset(i2c_app_v.i2cBuffer,0,sizeof(i2c_app_v.i2cBuffer));
+    148                
+    149                // initialize I2C communication parameters
+    150                i2c_app_v.i2cTransfer.slaveAddress    = I2C_SLAVE_ADDR;
+    151                i2c_app_v.i2cTransfer.writeBuf        = NULL;           // NULL for read
+    152                i2c_app_v.i2cTransfer.readBuf         = i2c_app_v.i2cBuffer;
+    153                i2c_app_v.i2cTransfer.writeLen        = 0;
+    154                i2c_app_v.i2cTransfer.readLen         = sizeof(i2c_app_v.i2cBuffer);
+    155                i2c_app_v.i2cTransfer.timeout         = 0xff;
+    156                
+    157                // initiate transaction
+    158                dnErr = dn_ioctl(
+    159                   DN_I2C_DEV_ID,
+    160                   DN_IOCTL_I2C_TRANSFER,
+    161                   &i2c_app_v.i2cTransfer,
+    162                   sizeof(i2c_app_v.i2cTransfer)
+    163                );
+    164                
+    165                // print
+    166                if (dnErr==DN_ERR_NONE) {
+    167                   dnm_ucli_printf("Received from I2C slave %02x: 0x",I2C_SLAVE_ADDR);
+    168                   for (i=0;i<I2C_PAYLOAD_LENGTH;i++) {
+    169                      dnm_ucli_printf("%02x",i2c_app_v.i2cBuffer[i]);
+    170                   }
+    171                   dnm_ucli_printf("\r\n");
+    172                } else {
+    173                   dnm_ucli_printf("Unable to read over I2C, err=%d\r\n",dnErr);
+    174                }
+    175             }
+    176          }
+    177          
+    178          //=============================================================================
+    179          //=========================== install a kernel header =========================
+    180          //=============================================================================
+    181          
+    182          /**
+    183          A kernel header is a set of bytes prepended to the actual binary image of this
+    184          application. Thus header is needed for your application to start running.
+    185          */
+    186          
+    187          DN_CREATE_EXE_HDR(DN_VENDOR_ID_NOT_SET,
+    188                            DN_APP_ID_NOT_SET,
+    189                            VER_MAJOR,
+    190                            VER_MINOR,
+    191                            VER_PATCH,
+    192                            VER_BUILD);
 
    Maximum stack usage in bytes:
 
@@ -243,6 +244,7 @@ C:\Users\Yesoooof\Documents\GitHub\Team-20-Sensor-Suite\Firmware\On-chip App\onc
    ------- --------
       32   i2cTask
         32   -> OSTimeDly
+        32   -> __aeabi_memclr4
         32   -> assert_handler
         32   -> dn_ioctl
         32   -> dn_open
@@ -269,20 +271,20 @@ C:\Users\Yesoooof\Documents\GitHub\Team-20-Sensor-Suite\Firmware\On-chip App\onc
       28  ?_5
        8  ?_6
        4  ?_7
-     268  i2cTask
-    1048  i2c_app_v
+     272  i2cTask
+    1052  i2c_app_v
       32  kernelExeHdr
      116  p2_init
 
  
- 1'048 bytes in section .bss
+ 1'052 bytes in section .bss
     32 bytes in section .kernel_exe_hdr
    116 bytes in section .rodata
-   448 bytes in section .text
+   452 bytes in section .text
  
-   448 bytes of CODE  memory
+   452 bytes of CODE  memory
    148 bytes of CONST memory
- 1'048 bytes of DATA  memory
+ 1'052 bytes of DATA  memory
 
 Errors: none
 Warnings: none

@@ -1,0 +1,34 @@
+#Generating source browse information for project 02-temperature
+
+
+#Abbreviations
+cc = C$:\Program$ Files$ (x86)\IAR$ Systems\Embedded$ Workbench$ 8.3\common\bin\SourceIndexer.exe
+ll = C$:\Program$ Files$ (x86)\IAR$ Systems\Embedded$ Workbench$ 8.3\common\bin\PbdLink.exe
+bd = C$:\Program$ Files$ (x86)\IAR$ Systems\Embedded$ Workbench$ 8.3\common\bin\makeBrowseData.exe
+
+
+
+#Rules
+rule index
+  depfile = $out.dep
+  command = $cc -out=$out -f $in
+rule link
+  command = $ll -M $out $in
+rule browsedata
+  command = $bd $in -output  $out
+
+
+
+#Build steps
+build temperature_app.pbi : index temperature_app.xcl
+build cli_task.pbi : index cli_task.xcl
+build loc_task.pbi : index loc_task.xcl
+build dnm_ucli.pbi : index dnm_ucli.xcl
+build dnm_local.pbi : index dnm_local.xcl
+build 02-temperature_part0.pbi : link temperature_app.pbi cli_task.pbi
+build 02-temperature_part1.pbi : link loc_task.pbi dnm_ucli.pbi
+build 02-temperature_part2.pbi : link dnm_local.pbi
+build 02-temperature.pbd : link 02-temperature_part0.pbi 02-temperature_part1.pbi 02-temperature_part2.pbi
+build 02-temperature.pbw : browsedata 02-temperature.pbd
+
+
