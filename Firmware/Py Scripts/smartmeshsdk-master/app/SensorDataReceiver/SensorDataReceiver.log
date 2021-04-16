@@ -1,409 +1,242 @@
-2021-02-28 20:42:52,038 [SerialConnector:INFO] creating object
-2021-02-28 20:42:52,038 [Hdlc:INFO] Creating object
-2021-02-28 20:42:52,039 [Hdlc:WARNING] could not open com@115200baud, reason: could not open port com: [Error 2] The system cannot find the file specified.
-2021-02-28 20:42:58,592 [SerialConnector:INFO] creating object
-2021-02-28 20:42:58,592 [Hdlc:INFO] Creating object
-2021-02-28 20:42:58,611 [Hdlc:INFO] opened port com9@115200baud
-2021-02-28 20:42:58,611 [SerialConnector:INFO] hdlc notification: connection state=True
-2021-02-28 20:42:58,611 [Hdlc:INFO] thread started
-2021-02-28 20:42:58,611 [ByteArraySerializer:DEBUG] serialize ...
+2021-04-16 00:59:18,799 [SerialConnector:INFO] creating object
+2021-04-16 00:59:18,799 [Hdlc:INFO] Creating object
+2021-04-16 00:59:18,805 [Hdlc:INFO] opened port com18@115200baud
+2021-04-16 00:59:18,805 [SerialConnector:INFO] hdlc notification: connection state=True
+2021-04-16 00:59:18,805 [Hdlc:INFO] thread started
+2021-04-16 00:59:18,805 [ByteArraySerializer:DEBUG] serialize ...
 - commandArray:     ['hello']
 - fieldsToFill:     {'cliSeqNo': 255, 'version': 4, 'mode': 0}
-2021-02-28 20:42:58,611 [ByteArraySerializer:DEBUG] ... serialize into
+2021-04-16 00:59:18,805 [ByteArraySerializer:DEBUG] ... serialize into
 - cmdId:            1
 - byteArray:        04-ff-00
-2021-02-28 20:42:58,611 [SerialConnector:DEBUG] _sendInternal cmdId=1 retry=0 isResponse=False serializedFields=[4, 255, 0]
-2021-02-28 20:42:58,611 [SerialConnector:DEBUG] ---------- pcToMote DATA (0) ---------->
-2021-02-28 20:42:58,611 [Crc:DEBUG] calculating for data=00-01-00-03-04-ff-00
-2021-02-28 20:42:58,611 [Crc:DEBUG] fcs=0x3731
-2021-02-28 20:42:58,611 [Hdlc:DEBUG] 
+2021-04-16 00:59:18,805 [SerialConnector:DEBUG] _sendInternal cmdId=1 retry=0 isResponse=False serializedFields=[4, 255, 0]
+2021-04-16 00:59:18,805 [SerialConnector:DEBUG] ---------- pcToMote DATA (0) ---------->
+2021-04-16 00:59:18,805 [Crc:DEBUG] calculating for data=00-01-00-03-04-ff-00
+2021-04-16 00:59:18,805 [Crc:DEBUG] fcs=0x3731
+2021-04-16 00:59:18,805 [Hdlc:DEBUG] 
 packetToSend:
  - payload: 00 01 00 03 04 ff 00
  - fcs:     37 31
  - valid:   True
-2021-02-28 20:42:58,615 [Crc:DEBUG] calculating for data=00-02-00-05-00-04-00-ff-00
-2021-02-28 20:42:58,615 [Crc:DEBUG] fcs=0x2323
-2021-02-28 20:42:58,615 [Hdlc:DEBUG] 
+2021-04-16 00:59:18,809 [Crc:DEBUG] calculating for data=00-02-00-05-00-04-00-ff-00
+2021-04-16 00:59:18,809 [Crc:DEBUG] fcs=0x2323
+2021-04-16 00:59:18,809 [Hdlc:DEBUG] 
 receivedFrame:
  - payload: 00 02 00 05 00 04 00 ff 00
  - fcs:     23 23
  - valid:   True
-2021-02-28 20:42:58,615 [SerialConnector:DEBUG] cmdId=2 length=5 isResponse=False packetId=0 payload=[0, 4, 0, 255, 0]
-2021-02-28 20:42:58,615 [SerialConnector:DEBUG] <--------- moteToPc DATA (0) ----------
-2021-02-28 20:42:58,615 [SerialConnector:DEBUG] no ack needed
-2021-02-28 20:42:58,615 [ByteArraySerializer:DEBUG] deserialize ...
+2021-04-16 00:59:18,809 [SerialConnector:DEBUG] cmdId=2 length=5 isResponse=False packetId=0 payload=[0, 4, 0, 255, 0]
+2021-04-16 00:59:18,809 [SerialConnector:DEBUG] <--------- moteToPc DATA (0) ----------
+2021-04-16 00:59:18,809 [SerialConnector:DEBUG] no ack needed
+2021-04-16 00:59:18,809 [ByteArraySerializer:DEBUG] deserialize ...
 - type:             command
 - id:               2
 - byteArray:        00-04-00-ff-00
-2021-02-28 20:42:58,615 [ByteArraySerializer:DEBUG] ... deserialized into
+2021-04-16 00:59:18,809 [ByteArraySerializer:DEBUG] ... deserialized into
 - nameArray:        ['hello_response']
 - returnFields:     {'cliSeqNo': 255, 'version': 4, 'successCode': 0, 'mgrSeqNo': 0, 'mode': 0}
-2021-02-28 20:42:58,624 [ByteArraySerializer:DEBUG] serialize ...
+2021-04-16 00:59:18,815 [ByteArraySerializer:DEBUG] serialize ...
 - commandArray:     ['subscribe']
 - fieldsToFill:     {'filter': [0, 16], 'unackFilter': [0, 16]}
-2021-02-28 20:42:58,624 [ByteArraySerializer:DEBUG] ... serialize into
+2021-04-16 00:59:18,815 [ByteArraySerializer:DEBUG] ... serialize into
 - cmdId:            22
 - byteArray:        00-00-00-10-00-00-00-10
-2021-02-28 20:42:58,624 [SerialConnector:DEBUG] _sendInternal cmdId=22 retry=0 isResponse=False serializedFields=[0, 0, 0, 16, 0, 0, 0, 16]
-2021-02-28 20:42:58,624 [SerialConnector:DEBUG] ---------- pcToMote DATA (0) ---------->
-2021-02-28 20:42:58,625 [Crc:DEBUG] calculating for data=02-16-00-08-00-00-00-10-00-00-00-10
-2021-02-28 20:42:58,625 [Crc:DEBUG] fcs=0x5c3d
-2021-02-28 20:42:58,625 [Hdlc:DEBUG] 
+2021-04-16 00:59:18,815 [SerialConnector:DEBUG] _sendInternal cmdId=22 retry=0 isResponse=False serializedFields=[0, 0, 0, 16, 0, 0, 0, 16]
+2021-04-16 00:59:18,815 [SerialConnector:DEBUG] ---------- pcToMote DATA (0) ---------->
+2021-04-16 00:59:18,815 [Crc:DEBUG] calculating for data=02-16-00-08-00-00-00-10-00-00-00-10
+2021-04-16 00:59:18,815 [Crc:DEBUG] fcs=0x5c3d
+2021-04-16 00:59:18,815 [Hdlc:DEBUG] 
 packetToSend:
  - payload: 02 16 00 08 00 00 00 10 00 00 00 10
  - fcs:     5c 3d
  - valid:   True
-2021-02-28 20:42:58,628 [Crc:DEBUG] calculating for data=03-16-00-01-00
-2021-02-28 20:42:58,628 [Crc:DEBUG] fcs=0x5843
-2021-02-28 20:42:58,628 [Hdlc:DEBUG] 
+2021-04-16 00:59:18,819 [Crc:DEBUG] calculating for data=03-16-00-01-00
+2021-04-16 00:59:18,819 [Crc:DEBUG] fcs=0x5843
+2021-04-16 00:59:18,819 [Hdlc:DEBUG] 
 receivedFrame:
  - payload: 03 16 00 01 00
  - fcs:     58 43
  - valid:   True
-2021-02-28 20:42:58,628 [SerialConnector:DEBUG] cmdId=22 length=1 isResponse=True packetId=0 payload=[0]
-2021-02-28 20:42:58,628 [SerialConnector:DEBUG] <--------- pcToMote ACK (0) after 0.004 --------
-2021-02-28 20:42:58,628 [SerialConnector:DEBUG] no ack needed
-2021-02-28 20:42:58,628 [ByteArraySerializer:DEBUG] deserialize ...
+2021-04-16 00:59:18,819 [SerialConnector:DEBUG] cmdId=22 length=1 isResponse=True packetId=0 payload=[0]
+2021-04-16 00:59:18,819 [SerialConnector:DEBUG] <--------- pcToMote ACK (0) after 0.004 --------
+2021-04-16 00:59:18,819 [SerialConnector:DEBUG] no ack needed
+2021-04-16 00:59:18,819 [ByteArraySerializer:DEBUG] deserialize ...
 - type:             command
 - id:               22
 - byteArray:        00
-2021-02-28 20:42:58,628 [ByteArraySerializer:DEBUG] ... deserialized into
+2021-04-16 00:59:18,819 [ByteArraySerializer:DEBUG] ... deserialized into
 - nameArray:        ['subscribe']
 - returnFields:     {'RC': 0}
-2021-02-28 20:42:59,500 [Crc:DEBUG] calculating for data=00-14-00-34-04-00-00-00-00-3d-22-6c-c8-00-00-40-74-00-17-0d-00-00-32-dc-61-f0-b9-f0-b9-00-04-05-00-ff-01-05-00-00-00-00-3d-22-6c-c8-00-00-4d-9f-00-00-75-30-01-10-07-62
-2021-02-28 20:42:59,500 [Crc:DEBUG] fcs=0xf378
-2021-02-28 20:42:59,500 [Hdlc:DEBUG] 
+2021-04-16 01:00:31,026 [Crc:DEBUG] calculating for data=00-14-00-2d-04-00-00-00-00-3d-22-69-65-00-02-7c-b8-00-17-0d-00-00-32-dc-61-ea-60-ee-48-00-01-00-02-00-03-00-04-00-05-00-06-00-07-00-08-00-09-00-0a
+2021-04-16 01:00:31,026 [Crc:DEBUG] fcs=0xf768
+2021-04-16 01:00:31,026 [Hdlc:DEBUG] 
 receivedFrame:
- - payload: 00 14 00 34 04 00 00 00 00 3d 22 6c c8 00 00 40 74 00 17 0d 00 00 32 dc 61 f0 b9 f0 b9 00 04 05 00 ff 01 05 00 00 00 00 3d 22 6c c8 00 00 4d 9f 00 00 75 30 01 10 07 62
- - fcs:     f3 78
+ - payload: 00 14 00 2d 04 00 00 00 00 3d 22 69 65 00 02 7c b8 00 17 0d 00 00 32 dc 61 ea 60 ee 48 00 01 00 02 00 03 00 04 00 05 00 06 00 07 00 08 00 09 00 0a
+ - fcs:     f7 68
  - valid:   True
-2021-02-28 20:42:59,500 [SerialConnector:DEBUG] cmdId=20 length=52 isResponse=False packetId=0 payload=[4, 0, 0, 0, 0, 61, 34, 108, 200, 0, 0, 64, 116, 0, 23, 13, 0, 0, 50, 220, 97, 240, 185, 240, 185, 0, 4, 5, 0, 255, 1, 5, 0, 0, 0, 0, 61, 34, 108, 200, 0, 0, 77, 159, 0, 0, 117, 48, 1, 16, 7, 98]
-2021-02-28 20:42:59,500 [SerialConnector:DEBUG] <--------- moteToPc DATA (0) ----------
-2021-02-28 20:42:59,500 [SerialConnector:DEBUG] no ack needed
-2021-02-28 20:42:59,500 [ByteArraySerializer:DEBUG] deserialize ...
+2021-04-16 01:00:31,026 [SerialConnector:DEBUG] cmdId=20 length=45 isResponse=False packetId=0 payload=[4, 0, 0, 0, 0, 61, 34, 105, 101, 0, 2, 124, 184, 0, 23, 13, 0, 0, 50, 220, 97, 234, 96, 238, 72, 0, 1, 0, 2, 0, 3, 0, 4, 0, 5, 0, 6, 0, 7, 0, 8, 0, 9, 0, 10]
+2021-04-16 01:00:31,026 [SerialConnector:DEBUG] <--------- moteToPc DATA (0) ----------
+2021-04-16 01:00:31,026 [SerialConnector:DEBUG] no ack needed
+2021-04-16 01:00:31,026 [ByteArraySerializer:DEBUG] deserialize ...
 - type:             notification
 - id:               20
-- byteArray:        04-00-00-00-00-3d-22-6c-c8-00-00-40-74-00-17-0d-00-00-32-dc-61-f0-b9-f0-b9-00-04-05-00-ff-01-05-00-00-00-00-3d-22-6c-c8-00-00-4d-9f-00-00-75-30-01-10-07-62
-2021-02-28 20:42:59,500 [ByteArraySerializer:DEBUG] ... deserialized into
+- byteArray:        04-00-00-00-00-3d-22-69-65-00-02-7c-b8-00-17-0d-00-00-32-dc-61-ea-60-ee-48-00-01-00-02-00-03-00-04-00-05-00-06-00-07-00-08-00-09-00-0a
+2021-04-16 01:00:31,028 [ByteArraySerializer:DEBUG] ... deserialized into
 - nameArray:        ['notification', 'notifData']
-- returnFields:     {'macAddress': [0, 23, 13, 0, 0, 50, 220, 97], 'srcPort': 61625, 'utcUsecs': 16500, 'utcSecs': 1025666248L, 'dstPort': 61625, 'data': [0, 4, 5, 0, 255, 1, 5, 0, 0, 0, 0, 61, 34, 108, 200, 0, 0, 77, 159, 0, 0, 117, 48, 1, 16, 7, 98]}
-2021-02-28 20:43:25,013 [Crc:DEBUG] calculating for data=00-14-00-34-04-00-00-00-00-3d-22-6c-e3-00-0d-66-aa-00-17-0d-00-00-32-23-d3-f0-b9-f0-b9-00-02-05-00-ff-01-05-00-00-00-00-3d-22-6c-e3-00-0d-72-e8-00-00-75-30-01-10-07-f0
-2021-02-28 20:43:25,013 [Crc:DEBUG] fcs=0xc1f7
-2021-02-28 20:43:25,013 [Hdlc:DEBUG] 
+- returnFields:     {'macAddress': [0, 23, 13, 0, 0, 50, 220, 97], 'srcPort': 60000, 'utcUsecs': 163000, 'utcSecs': 1025665381L, 'dstPort': 61000, 'data': [0, 1, 0, 2, 0, 3, 0, 4, 0, 5, 0, 6, 0, 7, 0, 8, 0, 9, 0, 10]}
+2021-04-16 01:00:40,140 [Crc:DEBUG] calculating for data=00-14-00-2d-04-00-00-00-00-3d-22-69-6f-00-05-37-f0-00-17-0d-00-00-32-dc-61-ea-60-ee-48-00-02-00-04-00-06-00-08-00-0a-00-0c-00-0e-00-10-00-12-00-14
+2021-04-16 01:00:40,140 [Crc:DEBUG] fcs=0x4779
+2021-04-16 01:00:40,140 [Hdlc:DEBUG] 
 receivedFrame:
- - payload: 00 14 00 34 04 00 00 00 00 3d 22 6c e3 00 0d 66 aa 00 17 0d 00 00 32 23 d3 f0 b9 f0 b9 00 02 05 00 ff 01 05 00 00 00 00 3d 22 6c e3 00 0d 72 e8 00 00 75 30 01 10 07 f0
- - fcs:     c1 f7
+ - payload: 00 14 00 2d 04 00 00 00 00 3d 22 69 6f 00 05 37 f0 00 17 0d 00 00 32 dc 61 ea 60 ee 48 00 02 00 04 00 06 00 08 00 0a 00 0c 00 0e 00 10 00 12 00 14
+ - fcs:     47 79
  - valid:   True
-2021-02-28 20:43:25,013 [SerialConnector:DEBUG] cmdId=20 length=52 isResponse=False packetId=0 payload=[4, 0, 0, 0, 0, 61, 34, 108, 227, 0, 13, 102, 170, 0, 23, 13, 0, 0, 50, 35, 211, 240, 185, 240, 185, 0, 2, 5, 0, 255, 1, 5, 0, 0, 0, 0, 61, 34, 108, 227, 0, 13, 114, 232, 0, 0, 117, 48, 1, 16, 7, 240]
-2021-02-28 20:43:25,013 [SerialConnector:DEBUG] <--------- moteToPc DATA (0) ----------
-2021-02-28 20:43:25,013 [SerialConnector:DEBUG] no ack needed
-2021-02-28 20:43:25,013 [ByteArraySerializer:DEBUG] deserialize ...
+2021-04-16 01:00:40,140 [SerialConnector:DEBUG] cmdId=20 length=45 isResponse=False packetId=0 payload=[4, 0, 0, 0, 0, 61, 34, 105, 111, 0, 5, 55, 240, 0, 23, 13, 0, 0, 50, 220, 97, 234, 96, 238, 72, 0, 2, 0, 4, 0, 6, 0, 8, 0, 10, 0, 12, 0, 14, 0, 16, 0, 18, 0, 20]
+2021-04-16 01:00:40,140 [SerialConnector:DEBUG] <--------- moteToPc DATA (0) ----------
+2021-04-16 01:00:40,140 [SerialConnector:DEBUG] no ack needed
+2021-04-16 01:00:40,140 [ByteArraySerializer:DEBUG] deserialize ...
 - type:             notification
 - id:               20
-- byteArray:        04-00-00-00-00-3d-22-6c-e3-00-0d-66-aa-00-17-0d-00-00-32-23-d3-f0-b9-f0-b9-00-02-05-00-ff-01-05-00-00-00-00-3d-22-6c-e3-00-0d-72-e8-00-00-75-30-01-10-07-f0
-2021-02-28 20:43:25,015 [ByteArraySerializer:DEBUG] ... deserialized into
+- byteArray:        04-00-00-00-00-3d-22-69-6f-00-05-37-f0-00-17-0d-00-00-32-dc-61-ea-60-ee-48-00-02-00-04-00-06-00-08-00-0a-00-0c-00-0e-00-10-00-12-00-14
+2021-04-16 01:00:40,140 [ByteArraySerializer:DEBUG] ... deserialized into
 - nameArray:        ['notification', 'notifData']
-- returnFields:     {'macAddress': [0, 23, 13, 0, 0, 50, 35, 211], 'srcPort': 61625, 'utcUsecs': 878250, 'utcSecs': 1025666275L, 'dstPort': 61625, 'data': [0, 2, 5, 0, 255, 1, 5, 0, 0, 0, 0, 61, 34, 108, 227, 0, 13, 114, 232, 0, 0, 117, 48, 1, 16, 7, 240]}
-2021-02-28 20:43:27,717 [Crc:DEBUG] calculating for data=00-14-00-34-04-00-00-00-00-3d-22-6c-e6-00-00-42-68-00-17-0d-00-00-32-dc-61-f0-b9-f0-b9-00-04-05-00-ff-01-05-00-00-00-00-3d-22-6c-e6-00-00-4d-62-00-00-75-30-01-10-07-25
-2021-02-28 20:43:27,717 [Crc:DEBUG] fcs=0xafc1
-2021-02-28 20:43:27,717 [Hdlc:DEBUG] 
+- returnFields:     {'macAddress': [0, 23, 13, 0, 0, 50, 220, 97], 'srcPort': 60000, 'utcUsecs': 342000, 'utcSecs': 1025665391L, 'dstPort': 61000, 'data': [0, 2, 0, 4, 0, 6, 0, 8, 0, 10, 0, 12, 0, 14, 0, 16, 0, 18, 0, 20]}
+2021-04-16 01:00:50,181 [Crc:DEBUG] calculating for data=00-14-00-2d-04-00-00-00-00-3d-22-69-79-00-07-f3-28-00-17-0d-00-00-32-dc-61-ea-60-ee-48-00-03-00-06-00-09-00-0c-00-0f-00-12-00-15-00-18-00-1b-00-1e
+2021-04-16 01:00:50,181 [Crc:DEBUG] fcs=0x1430
+2021-04-16 01:00:50,181 [Hdlc:DEBUG] 
 receivedFrame:
- - payload: 00 14 00 34 04 00 00 00 00 3d 22 6c e6 00 00 42 68 00 17 0d 00 00 32 dc 61 f0 b9 f0 b9 00 04 05 00 ff 01 05 00 00 00 00 3d 22 6c e6 00 00 4d 62 00 00 75 30 01 10 07 25
- - fcs:     af c1
+ - payload: 00 14 00 2d 04 00 00 00 00 3d 22 69 79 00 07 f3 28 00 17 0d 00 00 32 dc 61 ea 60 ee 48 00 03 00 06 00 09 00 0c 00 0f 00 12 00 15 00 18 00 1b 00 1e
+ - fcs:     14 30
  - valid:   True
-2021-02-28 20:43:27,717 [SerialConnector:DEBUG] cmdId=20 length=52 isResponse=False packetId=0 payload=[4, 0, 0, 0, 0, 61, 34, 108, 230, 0, 0, 66, 104, 0, 23, 13, 0, 0, 50, 220, 97, 240, 185, 240, 185, 0, 4, 5, 0, 255, 1, 5, 0, 0, 0, 0, 61, 34, 108, 230, 0, 0, 77, 98, 0, 0, 117, 48, 1, 16, 7, 37]
-2021-02-28 20:43:27,717 [SerialConnector:DEBUG] <--------- moteToPc DATA (0) ----------
-2021-02-28 20:43:27,717 [SerialConnector:DEBUG] no ack needed
-2021-02-28 20:43:27,717 [ByteArraySerializer:DEBUG] deserialize ...
+2021-04-16 01:00:50,181 [SerialConnector:DEBUG] cmdId=20 length=45 isResponse=False packetId=0 payload=[4, 0, 0, 0, 0, 61, 34, 105, 121, 0, 7, 243, 40, 0, 23, 13, 0, 0, 50, 220, 97, 234, 96, 238, 72, 0, 3, 0, 6, 0, 9, 0, 12, 0, 15, 0, 18, 0, 21, 0, 24, 0, 27, 0, 30]
+2021-04-16 01:00:50,181 [SerialConnector:DEBUG] <--------- moteToPc DATA (0) ----------
+2021-04-16 01:00:50,181 [SerialConnector:DEBUG] no ack needed
+2021-04-16 01:00:50,181 [ByteArraySerializer:DEBUG] deserialize ...
 - type:             notification
 - id:               20
-- byteArray:        04-00-00-00-00-3d-22-6c-e6-00-00-42-68-00-17-0d-00-00-32-dc-61-f0-b9-f0-b9-00-04-05-00-ff-01-05-00-00-00-00-3d-22-6c-e6-00-00-4d-62-00-00-75-30-01-10-07-25
-2021-02-28 20:43:27,717 [ByteArraySerializer:DEBUG] ... deserialized into
+- byteArray:        04-00-00-00-00-3d-22-69-79-00-07-f3-28-00-17-0d-00-00-32-dc-61-ea-60-ee-48-00-03-00-06-00-09-00-0c-00-0f-00-12-00-15-00-18-00-1b-00-1e
+2021-04-16 01:00:50,181 [ByteArraySerializer:DEBUG] ... deserialized into
 - nameArray:        ['notification', 'notifData']
-- returnFields:     {'macAddress': [0, 23, 13, 0, 0, 50, 220, 97], 'srcPort': 61625, 'utcUsecs': 17000, 'utcSecs': 1025666278L, 'dstPort': 61625, 'data': [0, 4, 5, 0, 255, 1, 5, 0, 0, 0, 0, 61, 34, 108, 230, 0, 0, 77, 98, 0, 0, 117, 48, 1, 16, 7, 37]}
-2021-02-28 20:43:56,101 [Crc:DEBUG] calculating for data=00-14-00-34-04-00-00-00-00-3d-22-6d-01-00-0d-68-9e-00-17-0d-00-00-32-23-d3-f0-b9-f0-b9-00-02-05-00-ff-01-05-00-00-00-00-3d-22-6d-01-00-0d-72-88-00-00-75-30-01-10-08-05
-2021-02-28 20:43:56,101 [Crc:DEBUG] fcs=0xf1a7
-2021-02-28 20:43:56,101 [Hdlc:DEBUG] 
+- returnFields:     {'macAddress': [0, 23, 13, 0, 0, 50, 220, 97], 'srcPort': 60000, 'utcUsecs': 521000, 'utcSecs': 1025665401L, 'dstPort': 61000, 'data': [0, 3, 0, 6, 0, 9, 0, 12, 0, 15, 0, 18, 0, 21, 0, 24, 0, 27, 0, 30]}
+2021-04-16 01:01:01,150 [Crc:DEBUG] calculating for data=00-14-00-2d-04-00-00-00-00-3d-22-69-83-00-0a-ae-60-00-17-0d-00-00-32-dc-61-ea-60-ee-48-00-04-00-08-00-0c-00-10-00-14-00-18-00-1c-00-20-00-24-00-28
+2021-04-16 01:01:01,150 [Crc:DEBUG] fcs=0x87be
+2021-04-16 01:01:01,150 [Hdlc:DEBUG] 
 receivedFrame:
- - payload: 00 14 00 34 04 00 00 00 00 3d 22 6d 01 00 0d 68 9e 00 17 0d 00 00 32 23 d3 f0 b9 f0 b9 00 02 05 00 ff 01 05 00 00 00 00 3d 22 6d 01 00 0d 72 88 00 00 75 30 01 10 08 05
- - fcs:     f1 a7
+ - payload: 00 14 00 2d 04 00 00 00 00 3d 22 69 83 00 0a ae 60 00 17 0d 00 00 32 dc 61 ea 60 ee 48 00 04 00 08 00 0c 00 10 00 14 00 18 00 1c 00 20 00 24 00 28
+ - fcs:     87 be
  - valid:   True
-2021-02-28 20:43:56,101 [SerialConnector:DEBUG] cmdId=20 length=52 isResponse=False packetId=0 payload=[4, 0, 0, 0, 0, 61, 34, 109, 1, 0, 13, 104, 158, 0, 23, 13, 0, 0, 50, 35, 211, 240, 185, 240, 185, 0, 2, 5, 0, 255, 1, 5, 0, 0, 0, 0, 61, 34, 109, 1, 0, 13, 114, 136, 0, 0, 117, 48, 1, 16, 8, 5]
-2021-02-28 20:43:56,101 [SerialConnector:DEBUG] <--------- moteToPc DATA (0) ----------
-2021-02-28 20:43:56,101 [SerialConnector:DEBUG] no ack needed
-2021-02-28 20:43:56,101 [ByteArraySerializer:DEBUG] deserialize ...
+2021-04-16 01:01:01,150 [SerialConnector:DEBUG] cmdId=20 length=45 isResponse=False packetId=0 payload=[4, 0, 0, 0, 0, 61, 34, 105, 131, 0, 10, 174, 96, 0, 23, 13, 0, 0, 50, 220, 97, 234, 96, 238, 72, 0, 4, 0, 8, 0, 12, 0, 16, 0, 20, 0, 24, 0, 28, 0, 32, 0, 36, 0, 40]
+2021-04-16 01:01:01,150 [SerialConnector:DEBUG] <--------- moteToPc DATA (0) ----------
+2021-04-16 01:01:01,151 [SerialConnector:DEBUG] no ack needed
+2021-04-16 01:01:01,151 [ByteArraySerializer:DEBUG] deserialize ...
 - type:             notification
 - id:               20
-- byteArray:        04-00-00-00-00-3d-22-6d-01-00-0d-68-9e-00-17-0d-00-00-32-23-d3-f0-b9-f0-b9-00-02-05-00-ff-01-05-00-00-00-00-3d-22-6d-01-00-0d-72-88-00-00-75-30-01-10-08-05
-2021-02-28 20:43:56,101 [ByteArraySerializer:DEBUG] ... deserialized into
+- byteArray:        04-00-00-00-00-3d-22-69-83-00-0a-ae-60-00-17-0d-00-00-32-dc-61-ea-60-ee-48-00-04-00-08-00-0c-00-10-00-14-00-18-00-1c-00-20-00-24-00-28
+2021-04-16 01:01:01,151 [ByteArraySerializer:DEBUG] ... deserialized into
 - nameArray:        ['notification', 'notifData']
-- returnFields:     {'macAddress': [0, 23, 13, 0, 0, 50, 35, 211], 'srcPort': 61625, 'utcUsecs': 878750, 'utcSecs': 1025666305L, 'dstPort': 61625, 'data': [0, 2, 5, 0, 255, 1, 5, 0, 0, 0, 0, 61, 34, 109, 1, 0, 13, 114, 136, 0, 0, 117, 48, 1, 16, 8, 5]}
-2021-02-28 20:43:56,862 [Crc:DEBUG] calculating for data=00-14-00-34-04-00-00-00-00-3d-22-6d-04-00-00-44-5c-00-17-0d-00-00-32-dc-61-f0-b9-f0-b9-00-04-05-00-ff-01-05-00-00-00-00-3d-22-6d-04-00-00-4d-24-00-00-75-30-01-10-07-62
-2021-02-28 20:43:56,862 [Crc:DEBUG] fcs=0x14 1
-2021-02-28 20:43:56,862 [Hdlc:DEBUG] 
+- returnFields:     {'macAddress': [0, 23, 13, 0, 0, 50, 220, 97], 'srcPort': 60000, 'utcUsecs': 700000, 'utcSecs': 1025665411L, 'dstPort': 61000, 'data': [0, 4, 0, 8, 0, 12, 0, 16, 0, 20, 0, 24, 0, 28, 0, 32, 0, 36, 0, 40]}
+2021-04-16 01:01:11,191 [Crc:DEBUG] calculating for data=00-14-00-2d-04-00-00-00-00-3d-22-69-8d-00-0d-69-98-00-17-0d-00-00-32-dc-61-ea-60-ee-48-00-05-00-0a-00-0f-00-14-00-19-00-1e-00-23-00-28-00-2d-00-32
+2021-04-16 01:01:11,191 [Crc:DEBUG] fcs=0x2b2e
+2021-04-16 01:01:11,191 [Hdlc:DEBUG] 
 receivedFrame:
- - payload: 00 14 00 34 04 00 00 00 00 3d 22 6d 04 00 00 44 5c 00 17 0d 00 00 32 dc 61 f0 b9 f0 b9 00 04 05 00 ff 01 05 00 00 00 00 3d 22 6d 04 00 00 4d 24 00 00 75 30 01 10 07 62
- - fcs:     14 01
+ - payload: 00 14 00 2d 04 00 00 00 00 3d 22 69 8d 00 0d 69 98 00 17 0d 00 00 32 dc 61 ea 60 ee 48 00 05 00 0a 00 0f 00 14 00 19 00 1e 00 23 00 28 00 2d 00 32
+ - fcs:     2b 2e
  - valid:   True
-2021-02-28 20:43:56,862 [SerialConnector:DEBUG] cmdId=20 length=52 isResponse=False packetId=0 payload=[4, 0, 0, 0, 0, 61, 34, 109, 4, 0, 0, 68, 92, 0, 23, 13, 0, 0, 50, 220, 97, 240, 185, 240, 185, 0, 4, 5, 0, 255, 1, 5, 0, 0, 0, 0, 61, 34, 109, 4, 0, 0, 77, 36, 0, 0, 117, 48, 1, 16, 7, 98]
-2021-02-28 20:43:56,862 [SerialConnector:DEBUG] <--------- moteToPc DATA (0) ----------
-2021-02-28 20:43:56,862 [SerialConnector:DEBUG] no ack needed
-2021-02-28 20:43:56,862 [ByteArraySerializer:DEBUG] deserialize ...
+2021-04-16 01:01:11,191 [SerialConnector:DEBUG] cmdId=20 length=45 isResponse=False packetId=0 payload=[4, 0, 0, 0, 0, 61, 34, 105, 141, 0, 13, 105, 152, 0, 23, 13, 0, 0, 50, 220, 97, 234, 96, 238, 72, 0, 5, 0, 10, 0, 15, 0, 20, 0, 25, 0, 30, 0, 35, 0, 40, 0, 45, 0, 50]
+2021-04-16 01:01:11,191 [SerialConnector:DEBUG] <--------- moteToPc DATA (0) ----------
+2021-04-16 01:01:11,191 [SerialConnector:DEBUG] no ack needed
+2021-04-16 01:01:11,191 [ByteArraySerializer:DEBUG] deserialize ...
 - type:             notification
 - id:               20
-- byteArray:        04-00-00-00-00-3d-22-6d-04-00-00-44-5c-00-17-0d-00-00-32-dc-61-f0-b9-f0-b9-00-04-05-00-ff-01-05-00-00-00-00-3d-22-6d-04-00-00-4d-24-00-00-75-30-01-10-07-62
-2021-02-28 20:43:56,862 [ByteArraySerializer:DEBUG] ... deserialized into
+- byteArray:        04-00-00-00-00-3d-22-69-8d-00-0d-69-98-00-17-0d-00-00-32-dc-61-ea-60-ee-48-00-05-00-0a-00-0f-00-14-00-19-00-1e-00-23-00-28-00-2d-00-32
+2021-04-16 01:01:11,191 [ByteArraySerializer:DEBUG] ... deserialized into
 - nameArray:        ['notification', 'notifData']
-- returnFields:     {'macAddress': [0, 23, 13, 0, 0, 50, 220, 97], 'srcPort': 61625, 'utcUsecs': 17500, 'utcSecs': 1025666308L, 'dstPort': 61625, 'data': [0, 4, 5, 0, 255, 1, 5, 0, 0, 0, 0, 61, 34, 109, 4, 0, 0, 77, 36, 0, 0, 117, 48, 1, 16, 7, 98]}
-2021-02-28 20:44:25,246 [Crc:DEBUG] calculating for data=00-14-00-34-04-00-00-00-00-3d-22-6d-1f-00-0d-6a-92-00-17-0d-00-00-32-23-d3-f0-b9-f0-b9-00-02-05-00-ff-01-05-00-00-00-00-3d-22-6d-1f-00-0d-72-63-00-00-75-30-01-10-08-19
-2021-02-28 20:44:25,246 [Crc:DEBUG] fcs=0xa868
-2021-02-28 20:44:25,246 [Hdlc:DEBUG] 
+- returnFields:     {'macAddress': [0, 23, 13, 0, 0, 50, 220, 97], 'srcPort': 60000, 'utcUsecs': 879000, 'utcSecs': 1025665421L, 'dstPort': 61000, 'data': [0, 5, 0, 10, 0, 15, 0, 20, 0, 25, 0, 30, 0, 35, 0, 40, 0, 45, 0, 50]}
+2021-04-16 01:01:21,232 [Crc:DEBUG] calculating for data=00-14-00-2d-04-00-00-00-00-3d-22-69-98-00-00-e2-90-00-17-0d-00-00-32-dc-61-ea-60-ee-48-00-06-00-0c-00-12-00-18-00-1e-00-24-00-2a-00-30-00-36-00-3c
+2021-04-16 01:01:21,232 [Crc:DEBUG] fcs=0x84c8
+2021-04-16 01:01:21,233 [Hdlc:DEBUG] 
 receivedFrame:
- - payload: 00 14 00 34 04 00 00 00 00 3d 22 6d 1f 00 0d 6a 92 00 17 0d 00 00 32 23 d3 f0 b9 f0 b9 00 02 05 00 ff 01 05 00 00 00 00 3d 22 6d 1f 00 0d 72 63 00 00 75 30 01 10 08 19
- - fcs:     a8 68
+ - payload: 00 14 00 2d 04 00 00 00 00 3d 22 69 98 00 00 e2 90 00 17 0d 00 00 32 dc 61 ea 60 ee 48 00 06 00 0c 00 12 00 18 00 1e 00 24 00 2a 00 30 00 36 00 3c
+ - fcs:     84 c8
  - valid:   True
-2021-02-28 20:44:25,246 [SerialConnector:DEBUG] cmdId=20 length=52 isResponse=False packetId=0 payload=[4, 0, 0, 0, 0, 61, 34, 109, 31, 0, 13, 106, 146, 0, 23, 13, 0, 0, 50, 35, 211, 240, 185, 240, 185, 0, 2, 5, 0, 255, 1, 5, 0, 0, 0, 0, 61, 34, 109, 31, 0, 13, 114, 99, 0, 0, 117, 48, 1, 16, 8, 25]
-2021-02-28 20:44:25,246 [SerialConnector:DEBUG] <--------- moteToPc DATA (0) ----------
-2021-02-28 20:44:25,246 [SerialConnector:DEBUG] no ack needed
-2021-02-28 20:44:25,246 [ByteArraySerializer:DEBUG] deserialize ...
+2021-04-16 01:01:21,233 [SerialConnector:DEBUG] cmdId=20 length=45 isResponse=False packetId=0 payload=[4, 0, 0, 0, 0, 61, 34, 105, 152, 0, 0, 226, 144, 0, 23, 13, 0, 0, 50, 220, 97, 234, 96, 238, 72, 0, 6, 0, 12, 0, 18, 0, 24, 0, 30, 0, 36, 0, 42, 0, 48, 0, 54, 0, 60]
+2021-04-16 01:01:21,233 [SerialConnector:DEBUG] <--------- moteToPc DATA (0) ----------
+2021-04-16 01:01:21,233 [SerialConnector:DEBUG] no ack needed
+2021-04-16 01:01:21,233 [ByteArraySerializer:DEBUG] deserialize ...
 - type:             notification
 - id:               20
-- byteArray:        04-00-00-00-00-3d-22-6d-1f-00-0d-6a-92-00-17-0d-00-00-32-23-d3-f0-b9-f0-b9-00-02-05-00-ff-01-05-00-00-00-00-3d-22-6d-1f-00-0d-72-63-00-00-75-30-01-10-08-19
-2021-02-28 20:44:25,246 [ByteArraySerializer:DEBUG] ... deserialized into
+- byteArray:        04-00-00-00-00-3d-22-69-98-00-00-e2-90-00-17-0d-00-00-32-dc-61-ea-60-ee-48-00-06-00-0c-00-12-00-18-00-1e-00-24-00-2a-00-30-00-36-00-3c
+2021-04-16 01:01:21,233 [ByteArraySerializer:DEBUG] ... deserialized into
 - nameArray:        ['notification', 'notifData']
-- returnFields:     {'macAddress': [0, 23, 13, 0, 0, 50, 35, 211], 'srcPort': 61625, 'utcUsecs': 879250, 'utcSecs': 1025666335L, 'dstPort': 61625, 'data': [0, 2, 5, 0, 255, 1, 5, 0, 0, 0, 0, 61, 34, 109, 31, 0, 13, 114, 99, 0, 0, 117, 48, 1, 16, 8, 25]}
-2021-02-28 20:44:26,934 [Crc:DEBUG] calculating for data=00-14-00-34-04-00-00-00-00-3d-22-6d-22-00-00-46-50-00-17-0d-00-00-32-dc-61-f0-b9-f0-b9-00-04-05-00-ff-01-05-00-00-00-00-3d-22-6d-22-00-00-4c-e0-00-00-75-30-01-10-07-76
-2021-02-28 20:44:26,934 [Crc:DEBUG] fcs=0x5f22
-2021-02-28 20:44:26,934 [Hdlc:DEBUG] 
+- returnFields:     {'macAddress': [0, 23, 13, 0, 0, 50, 220, 97], 'srcPort': 60000, 'utcUsecs': 58000, 'utcSecs': 1025665432L, 'dstPort': 61000, 'data': [0, 6, 0, 12, 0, 18, 0, 24, 0, 30, 0, 36, 0, 42, 0, 48, 0, 54, 0, 60]}
+2021-04-16 01:01:31,273 [Crc:DEBUG] calculating for data=00-14-00-2d-04-00-00-00-00-3d-22-69-a2-00-03-ba-1a-00-17-0d-00-00-32-dc-61-ea-60-ee-48-00-07-00-0e-00-15-00-1c-00-23-00-2a-00-31-00-38-00-3f-00-46
+2021-04-16 01:01:31,273 [Crc:DEBUG] fcs=0xeff0
+2021-04-16 01:01:31,273 [Hdlc:DEBUG] 
 receivedFrame:
- - payload: 00 14 00 34 04 00 00 00 00 3d 22 6d 22 00 00 46 50 00 17 0d 00 00 32 dc 61 f0 b9 f0 b9 00 04 05 00 ff 01 05 00 00 00 00 3d 22 6d 22 00 00 4c e0 00 00 75 30 01 10 07 76
- - fcs:     5f 22
+ - payload: 00 14 00 2d 04 00 00 00 00 3d 22 69 a2 00 03 ba 1a 00 17 0d 00 00 32 dc 61 ea 60 ee 48 00 07 00 0e 00 15 00 1c 00 23 00 2a 00 31 00 38 00 3f 00 46
+ - fcs:     ef f0
  - valid:   True
-2021-02-28 20:44:26,936 [SerialConnector:DEBUG] cmdId=20 length=52 isResponse=False packetId=0 payload=[4, 0, 0, 0, 0, 61, 34, 109, 34, 0, 0, 70, 80, 0, 23, 13, 0, 0, 50, 220, 97, 240, 185, 240, 185, 0, 4, 5, 0, 255, 1, 5, 0, 0, 0, 0, 61, 34, 109, 34, 0, 0, 76, 224, 0, 0, 117, 48, 1, 16, 7, 118]
-2021-02-28 20:44:26,936 [SerialConnector:DEBUG] <--------- moteToPc DATA (0) ----------
-2021-02-28 20:44:26,936 [SerialConnector:DEBUG] no ack needed
-2021-02-28 20:44:26,936 [ByteArraySerializer:DEBUG] deserialize ...
+2021-04-16 01:01:31,273 [SerialConnector:DEBUG] cmdId=20 length=45 isResponse=False packetId=0 payload=[4, 0, 0, 0, 0, 61, 34, 105, 162, 0, 3, 186, 26, 0, 23, 13, 0, 0, 50, 220, 97, 234, 96, 238, 72, 0, 7, 0, 14, 0, 21, 0, 28, 0, 35, 0, 42, 0, 49, 0, 56, 0, 63, 0, 70]
+2021-04-16 01:01:31,273 [SerialConnector:DEBUG] <--------- moteToPc DATA (0) ----------
+2021-04-16 01:01:31,273 [SerialConnector:DEBUG] no ack needed
+2021-04-16 01:01:31,273 [ByteArraySerializer:DEBUG] deserialize ...
 - type:             notification
 - id:               20
-- byteArray:        04-00-00-00-00-3d-22-6d-22-00-00-46-50-00-17-0d-00-00-32-dc-61-f0-b9-f0-b9-00-04-05-00-ff-01-05-00-00-00-00-3d-22-6d-22-00-00-4c-e0-00-00-75-30-01-10-07-76
-2021-02-28 20:44:26,936 [ByteArraySerializer:DEBUG] ... deserialized into
+- byteArray:        04-00-00-00-00-3d-22-69-a2-00-03-ba-1a-00-17-0d-00-00-32-dc-61-ea-60-ee-48-00-07-00-0e-00-15-00-1c-00-23-00-2a-00-31-00-38-00-3f-00-46
+2021-04-16 01:01:31,273 [ByteArraySerializer:DEBUG] ... deserialized into
 - nameArray:        ['notification', 'notifData']
-- returnFields:     {'macAddress': [0, 23, 13, 0, 0, 50, 220, 97], 'srcPort': 61625, 'utcUsecs': 18000, 'utcSecs': 1025666338L, 'dstPort': 61625, 'data': [0, 4, 5, 0, 255, 1, 5, 0, 0, 0, 0, 61, 34, 109, 34, 0, 0, 76, 224, 0, 0, 117, 48, 1, 16, 7, 118]}
-2021-02-28 20:44:55,151 [Crc:DEBUG] calculating for data=00-14-00-34-04-00-00-00-00-3d-22-6d-3d-00-0d-6c-86-00-17-0d-00-00-32-23-d3-f0-b9-f0-b9-00-02-05-00-ff-01-05-00-00-00-00-3d-22-6d-3d-00-0d-72-43-00-00-75-30-01-10-08-2e
-2021-02-28 20:44:55,151 [Crc:DEBUG] fcs=0xb160
-2021-02-28 20:44:55,151 [Hdlc:DEBUG] 
+- returnFields:     {'macAddress': [0, 23, 13, 0, 0, 50, 220, 97], 'srcPort': 60000, 'utcUsecs': 244250, 'utcSecs': 1025665442L, 'dstPort': 61000, 'data': [0, 7, 0, 14, 0, 21, 0, 28, 0, 35, 0, 42, 0, 49, 0, 56, 0, 63, 0, 70]}
+2021-04-16 01:01:41,315 [Crc:DEBUG] calculating for data=00-14-00-2d-04-00-00-00-00-3d-22-69-ac-00-06-75-52-00-17-0d-00-00-32-dc-61-ea-60-ee-48-00-08-00-10-00-18-00-20-00-28-00-30-00-38-00-40-00-48-00-50
+2021-04-16 01:01:41,315 [Crc:DEBUG] fcs=0x6a14
+2021-04-16 01:01:41,315 [Hdlc:DEBUG] 
 receivedFrame:
- - payload: 00 14 00 34 04 00 00 00 00 3d 22 6d 3d 00 0d 6c 86 00 17 0d 00 00 32 23 d3 f0 b9 f0 b9 00 02 05 00 ff 01 05 00 00 00 00 3d 22 6d 3d 00 0d 72 43 00 00 75 30 01 10 08 2e
- - fcs:     b1 60
+ - payload: 00 14 00 2d 04 00 00 00 00 3d 22 69 ac 00 06 75 52 00 17 0d 00 00 32 dc 61 ea 60 ee 48 00 08 00 10 00 18 00 20 00 28 00 30 00 38 00 40 00 48 00 50
+ - fcs:     6a 14
  - valid:   True
-2021-02-28 20:44:55,151 [SerialConnector:DEBUG] cmdId=20 length=52 isResponse=False packetId=0 payload=[4, 0, 0, 0, 0, 61, 34, 109, 61, 0, 13, 108, 134, 0, 23, 13, 0, 0, 50, 35, 211, 240, 185, 240, 185, 0, 2, 5, 0, 255, 1, 5, 0, 0, 0, 0, 61, 34, 109, 61, 0, 13, 114, 67, 0, 0, 117, 48, 1, 16, 8, 46]
-2021-02-28 20:44:55,151 [SerialConnector:DEBUG] <--------- moteToPc DATA (0) ----------
-2021-02-28 20:44:55,151 [SerialConnector:DEBUG] no ack needed
-2021-02-28 20:44:55,151 [ByteArraySerializer:DEBUG] deserialize ...
+2021-04-16 01:01:41,315 [SerialConnector:DEBUG] cmdId=20 length=45 isResponse=False packetId=0 payload=[4, 0, 0, 0, 0, 61, 34, 105, 172, 0, 6, 117, 82, 0, 23, 13, 0, 0, 50, 220, 97, 234, 96, 238, 72, 0, 8, 0, 16, 0, 24, 0, 32, 0, 40, 0, 48, 0, 56, 0, 64, 0, 72, 0, 80]
+2021-04-16 01:01:41,315 [SerialConnector:DEBUG] <--------- moteToPc DATA (0) ----------
+2021-04-16 01:01:41,315 [SerialConnector:DEBUG] no ack needed
+2021-04-16 01:01:41,315 [ByteArraySerializer:DEBUG] deserialize ...
 - type:             notification
 - id:               20
-- byteArray:        04-00-00-00-00-3d-22-6d-3d-00-0d-6c-86-00-17-0d-00-00-32-23-d3-f0-b9-f0-b9-00-02-05-00-ff-01-05-00-00-00-00-3d-22-6d-3d-00-0d-72-43-00-00-75-30-01-10-08-2e
-2021-02-28 20:44:55,151 [ByteArraySerializer:DEBUG] ... deserialized into
+- byteArray:        04-00-00-00-00-3d-22-69-ac-00-06-75-52-00-17-0d-00-00-32-dc-61-ea-60-ee-48-00-08-00-10-00-18-00-20-00-28-00-30-00-38-00-40-00-48-00-50
+2021-04-16 01:01:41,315 [ByteArraySerializer:DEBUG] ... deserialized into
 - nameArray:        ['notification', 'notifData']
-- returnFields:     {'macAddress': [0, 23, 13, 0, 0, 50, 35, 211], 'srcPort': 61625, 'utcUsecs': 879750, 'utcSecs': 1025666365L, 'dstPort': 61625, 'data': [0, 2, 5, 0, 255, 1, 5, 0, 0, 0, 0, 61, 34, 109, 61, 0, 13, 114, 67, 0, 0, 117, 48, 1, 16, 8, 46]}
-2021-02-28 20:44:57,095 [Crc:DEBUG] calculating for data=00-14-00-34-04-00-00-00-00-3d-22-6d-40-00-00-48-44-00-17-0d-00-00-32-dc-61-f0-b9-f0-b9-00-04-05-00-ff-01-05-00-00-00-00-3d-22-6d-40-00-00-4c-a4-00-00-75-30-01-10-07-4e
-2021-02-28 20:44:57,095 [Crc:DEBUG] fcs=0x5252
-2021-02-28 20:44:57,095 [Hdlc:DEBUG] 
+- returnFields:     {'macAddress': [0, 23, 13, 0, 0, 50, 220, 97], 'srcPort': 60000, 'utcUsecs': 423250, 'utcSecs': 1025665452L, 'dstPort': 61000, 'data': [0, 8, 0, 16, 0, 24, 0, 32, 0, 40, 0, 48, 0, 56, 0, 64, 0, 72, 0, 80]}
+2021-04-16 01:01:51,357 [Crc:DEBUG] calculating for data=00-14-00-2d-04-00-00-00-00-3d-22-69-b6-00-09-30-8a-00-17-0d-00-00-32-dc-61-ea-60-ee-48-00-09-00-12-00-1b-00-24-00-2d-00-36-00-3f-00-48-00-51-00-5a
+2021-04-16 01:01:51,357 [Crc:DEBUG] fcs=0x6883
+2021-04-16 01:01:51,357 [Hdlc:DEBUG] 
 receivedFrame:
- - payload: 00 14 00 34 04 00 00 00 00 3d 22 6d 40 00 00 48 44 00 17 0d 00 00 32 dc 61 f0 b9 f0 b9 00 04 05 00 ff 01 05 00 00 00 00 3d 22 6d 40 00 00 4c a4 00 00 75 30 01 10 07 4e
- - fcs:     52 52
+ - payload: 00 14 00 2d 04 00 00 00 00 3d 22 69 b6 00 09 30 8a 00 17 0d 00 00 32 dc 61 ea 60 ee 48 00 09 00 12 00 1b 00 24 00 2d 00 36 00 3f 00 48 00 51 00 5a
+ - fcs:     68 83
  - valid:   True
-2021-02-28 20:44:57,095 [SerialConnector:DEBUG] cmdId=20 length=52 isResponse=False packetId=0 payload=[4, 0, 0, 0, 0, 61, 34, 109, 64, 0, 0, 72, 68, 0, 23, 13, 0, 0, 50, 220, 97, 240, 185, 240, 185, 0, 4, 5, 0, 255, 1, 5, 0, 0, 0, 0, 61, 34, 109, 64, 0, 0, 76, 164, 0, 0, 117, 48, 1, 16, 7, 78]
-2021-02-28 20:44:57,095 [SerialConnector:DEBUG] <--------- moteToPc DATA (0) ----------
-2021-02-28 20:44:57,095 [SerialConnector:DEBUG] no ack needed
-2021-02-28 20:44:57,095 [ByteArraySerializer:DEBUG] deserialize ...
+2021-04-16 01:01:51,357 [SerialConnector:DEBUG] cmdId=20 length=45 isResponse=False packetId=0 payload=[4, 0, 0, 0, 0, 61, 34, 105, 182, 0, 9, 48, 138, 0, 23, 13, 0, 0, 50, 220, 97, 234, 96, 238, 72, 0, 9, 0, 18, 0, 27, 0, 36, 0, 45, 0, 54, 0, 63, 0, 72, 0, 81, 0, 90]
+2021-04-16 01:01:51,357 [SerialConnector:DEBUG] <--------- moteToPc DATA (0) ----------
+2021-04-16 01:01:51,357 [SerialConnector:DEBUG] no ack needed
+2021-04-16 01:01:51,357 [ByteArraySerializer:DEBUG] deserialize ...
 - type:             notification
 - id:               20
-- byteArray:        04-00-00-00-00-3d-22-6d-40-00-00-48-44-00-17-0d-00-00-32-dc-61-f0-b9-f0-b9-00-04-05-00-ff-01-05-00-00-00-00-3d-22-6d-40-00-00-4c-a4-00-00-75-30-01-10-07-4e
-2021-02-28 20:44:57,095 [ByteArraySerializer:DEBUG] ... deserialized into
+- byteArray:        04-00-00-00-00-3d-22-69-b6-00-09-30-8a-00-17-0d-00-00-32-dc-61-ea-60-ee-48-00-09-00-12-00-1b-00-24-00-2d-00-36-00-3f-00-48-00-51-00-5a
+2021-04-16 01:01:51,357 [ByteArraySerializer:DEBUG] ... deserialized into
 - nameArray:        ['notification', 'notifData']
-- returnFields:     {'macAddress': [0, 23, 13, 0, 0, 50, 220, 97], 'srcPort': 61625, 'utcUsecs': 18500, 'utcSecs': 1025666368L, 'dstPort': 61625, 'data': [0, 4, 5, 0, 255, 1, 5, 0, 0, 0, 0, 61, 34, 109, 64, 0, 0, 76, 164, 0, 0, 117, 48, 1, 16, 7, 78]}
-2021-02-28 20:45:26,239 [Crc:DEBUG] calculating for data=00-14-00-34-04-00-00-00-00-3d-22-6d-5b-00-0d-6e-7a-00-17-0d-00-00-32-23-d3-f0-b9-f0-b9-00-02-05-00-ff-01-05-00-00-00-00-3d-22-6d-5b-00-0d-72-22-00-00-75-30-01-10-08-19
-2021-02-28 20:45:26,240 [Crc:DEBUG] fcs=0x27da
-2021-02-28 20:45:26,240 [Hdlc:DEBUG] 
+- returnFields:     {'macAddress': [0, 23, 13, 0, 0, 50, 220, 97], 'srcPort': 60000, 'utcUsecs': 602250, 'utcSecs': 1025665462L, 'dstPort': 61000, 'data': [0, 9, 0, 18, 0, 27, 0, 36, 0, 45, 0, 54, 0, 63, 0, 72, 0, 81, 0, 90]}
+2021-04-16 01:02:03,405 [Crc:DEBUG] calculating for data=00-14-00-2d-04-00-00-00-00-3d-22-69-c0-00-0b-eb-c2-00-17-0d-00-00-32-dc-61-ea-60-ee-48-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00
+2021-04-16 01:02:03,405 [Crc:DEBUG] fcs=0x9b5f
+2021-04-16 01:02:03,405 [Hdlc:DEBUG] 
 receivedFrame:
- - payload: 00 14 00 34 04 00 00 00 00 3d 22 6d 5b 00 0d 6e 7a 00 17 0d 00 00 32 23 d3 f0 b9 f0 b9 00 02 05 00 ff 01 05 00 00 00 00 3d 22 6d 5b 00 0d 72 22 00 00 75 30 01 10 08 19
- - fcs:     27 da
+ - payload: 00 14 00 2d 04 00 00 00 00 3d 22 69 c0 00 0b eb c2 00 17 0d 00 00 32 dc 61 ea 60 ee 48 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+ - fcs:     9b 5f
  - valid:   True
-2021-02-28 20:45:26,240 [SerialConnector:DEBUG] cmdId=20 length=52 isResponse=False packetId=0 payload=[4, 0, 0, 0, 0, 61, 34, 109, 91, 0, 13, 110, 122, 0, 23, 13, 0, 0, 50, 35, 211, 240, 185, 240, 185, 0, 2, 5, 0, 255, 1, 5, 0, 0, 0, 0, 61, 34, 109, 91, 0, 13, 114, 34, 0, 0, 117, 48, 1, 16, 8, 25]
-2021-02-28 20:45:26,240 [SerialConnector:DEBUG] <--------- moteToPc DATA (0) ----------
-2021-02-28 20:45:26,240 [SerialConnector:DEBUG] no ack needed
-2021-02-28 20:45:26,240 [ByteArraySerializer:DEBUG] deserialize ...
+2021-04-16 01:02:03,405 [SerialConnector:DEBUG] cmdId=20 length=45 isResponse=False packetId=0 payload=[4, 0, 0, 0, 0, 61, 34, 105, 192, 0, 11, 235, 194, 0, 23, 13, 0, 0, 50, 220, 97, 234, 96, 238, 72, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+2021-04-16 01:02:03,405 [SerialConnector:DEBUG] <--------- moteToPc DATA (0) ----------
+2021-04-16 01:02:03,405 [SerialConnector:DEBUG] no ack needed
+2021-04-16 01:02:03,405 [ByteArraySerializer:DEBUG] deserialize ...
 - type:             notification
 - id:               20
-- byteArray:        04-00-00-00-00-3d-22-6d-5b-00-0d-6e-7a-00-17-0d-00-00-32-23-d3-f0-b9-f0-b9-00-02-05-00-ff-01-05-00-00-00-00-3d-22-6d-5b-00-0d-72-22-00-00-75-30-01-10-08-19
-2021-02-28 20:45:26,240 [ByteArraySerializer:DEBUG] ... deserialized into
+- byteArray:        04-00-00-00-00-3d-22-69-c0-00-0b-eb-c2-00-17-0d-00-00-32-dc-61-ea-60-ee-48-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00
+2021-04-16 01:02:03,405 [ByteArraySerializer:DEBUG] ... deserialized into
 - nameArray:        ['notification', 'notifData']
-- returnFields:     {'macAddress': [0, 23, 13, 0, 0, 50, 35, 211], 'srcPort': 61625, 'utcUsecs': 880250, 'utcSecs': 1025666395L, 'dstPort': 61625, 'data': [0, 2, 5, 0, 255, 1, 5, 0, 0, 0, 0, 61, 34, 109, 91, 0, 13, 114, 34, 0, 0, 117, 48, 1, 16, 8, 25]}
-2021-02-28 20:45:27,167 [Crc:DEBUG] calculating for data=00-14-00-34-04-00-00-00-00-3d-22-6d-5e-00-00-4a-38-00-17-0d-00-00-32-dc-61-f0-b9-f0-b9-00-04-05-00-ff-01-05-00-00-00-00-3d-22-6d-5e-00-00-4c-62-00-00-75-30-01-10-07-9f
-2021-02-28 20:45:27,167 [Crc:DEBUG] fcs=0x4bc0
-2021-02-28 20:45:27,167 [Hdlc:DEBUG] 
-receivedFrame:
- - payload: 00 14 00 34 04 00 00 00 00 3d 22 6d 5e 00 00 4a 38 00 17 0d 00 00 32 dc 61 f0 b9 f0 b9 00 04 05 00 ff 01 05 00 00 00 00 3d 22 6d 5e 00 00 4c 62 00 00 75 30 01 10 07 9f
- - fcs:     4b c0
- - valid:   True
-2021-02-28 20:45:27,167 [SerialConnector:DEBUG] cmdId=20 length=52 isResponse=False packetId=0 payload=[4, 0, 0, 0, 0, 61, 34, 109, 94, 0, 0, 74, 56, 0, 23, 13, 0, 0, 50, 220, 97, 240, 185, 240, 185, 0, 4, 5, 0, 255, 1, 5, 0, 0, 0, 0, 61, 34, 109, 94, 0, 0, 76, 98, 0, 0, 117, 48, 1, 16, 7, 159]
-2021-02-28 20:45:27,167 [SerialConnector:DEBUG] <--------- moteToPc DATA (0) ----------
-2021-02-28 20:45:27,167 [SerialConnector:DEBUG] no ack needed
-2021-02-28 20:45:27,167 [ByteArraySerializer:DEBUG] deserialize ...
-- type:             notification
-- id:               20
-- byteArray:        04-00-00-00-00-3d-22-6d-5e-00-00-4a-38-00-17-0d-00-00-32-dc-61-f0-b9-f0-b9-00-04-05-00-ff-01-05-00-00-00-00-3d-22-6d-5e-00-00-4c-62-00-00-75-30-01-10-07-9f
-2021-02-28 20:45:27,167 [ByteArraySerializer:DEBUG] ... deserialized into
-- nameArray:        ['notification', 'notifData']
-- returnFields:     {'macAddress': [0, 23, 13, 0, 0, 50, 220, 97], 'srcPort': 61625, 'utcUsecs': 19000, 'utcSecs': 1025666398L, 'dstPort': 61625, 'data': [0, 4, 5, 0, 255, 1, 5, 0, 0, 0, 0, 61, 34, 109, 94, 0, 0, 76, 98, 0, 0, 117, 48, 1, 16, 7, 159]}
-2021-02-28 20:45:44,336 [Hdlc:INFO] disconnect
-2021-02-28 20:45:44,338 [SerialConnector:INFO] hdlc notification: connection state=False
-2021-02-28 20:45:44,338 [Hdlc:INFO] thread ended
-2021-04-14 19:41:02,312 [SerialConnector:INFO] creating object
-2021-04-14 19:41:02,313 [Hdlc:INFO] Creating object
-2021-04-14 19:41:02,332 [Hdlc:INFO] opened port com12@115200baud
-2021-04-14 19:41:02,332 [SerialConnector:INFO] hdlc notification: connection state=True
-2021-04-14 19:41:02,332 [Hdlc:INFO] thread started
-2021-04-14 19:41:02,332 [ByteArraySerializer:DEBUG] serialize ...
-- commandArray:     ['hello']
-- fieldsToFill:     {'cliSeqNo': 255, 'version': 4, 'mode': 0}
-2021-04-14 19:41:02,332 [ByteArraySerializer:DEBUG] ... serialize into
-- cmdId:            1
-- byteArray:        04-ff-00
-2021-04-14 19:41:02,332 [SerialConnector:DEBUG] _sendInternal cmdId=1 retry=0 isResponse=False serializedFields=[4, 255, 0]
-2021-04-14 19:41:02,332 [SerialConnector:DEBUG] ---------- pcToMote DATA (0) ---------->
-2021-04-14 19:41:02,332 [Crc:DEBUG] calculating for data=00-01-00-03-04-ff-00
-2021-04-14 19:41:02,332 [Crc:DEBUG] fcs=0x3731
-2021-04-14 19:41:02,332 [Hdlc:DEBUG] 
-packetToSend:
- - payload: 00 01 00 03 04 ff 00
- - fcs:     37 31
- - valid:   True
-2021-04-14 19:41:02,845 [SerialConnector:INFO] retry 0
-2021-04-14 19:41:02,845 [SerialConnector:DEBUG] _sendInternal cmdId=1 retry=1 isResponse=False serializedFields=[4, 255, 0]
-2021-04-14 19:41:02,845 [SerialConnector:DEBUG] ---------- pcToMote DATA (0) ---------->
-2021-04-14 19:41:02,845 [Crc:DEBUG] calculating for data=00-01-00-03-04-ff-00
-2021-04-14 19:41:02,845 [Crc:DEBUG] fcs=0x3731
-2021-04-14 19:41:02,845 [Hdlc:DEBUG] 
-packetToSend:
- - payload: 00 01 00 03 04 ff 00
- - fcs:     37 31
- - valid:   True
-2021-04-14 19:41:03,359 [SerialConnector:INFO] retry 1
-2021-04-14 19:41:03,359 [SerialConnector:DEBUG] _sendInternal cmdId=1 retry=2 isResponse=False serializedFields=[4, 255, 0]
-2021-04-14 19:41:03,359 [SerialConnector:DEBUG] ---------- pcToMote DATA (0) ---------->
-2021-04-14 19:41:03,361 [Crc:DEBUG] calculating for data=00-01-00-03-04-ff-00
-2021-04-14 19:41:03,361 [Crc:DEBUG] fcs=0x3731
-2021-04-14 19:41:03,361 [Hdlc:DEBUG] 
-packetToSend:
- - payload: 00 01 00 03 04 ff 00
- - fcs:     37 31
- - valid:   True
-2021-04-14 19:41:03,875 [SerialConnector:INFO] retry 2
-2021-04-14 19:41:03,875 [SerialConnector:DEBUG] _sendInternal cmdId=1 retry=3 isResponse=False serializedFields=[4, 255, 0]
-2021-04-14 19:41:03,875 [SerialConnector:DEBUG] ---------- pcToMote DATA (0) ---------->
-2021-04-14 19:41:03,875 [Crc:DEBUG] calculating for data=00-01-00-03-04-ff-00
-2021-04-14 19:41:03,875 [Crc:DEBUG] fcs=0x3731
-2021-04-14 19:41:03,875 [Hdlc:DEBUG] 
-packetToSend:
- - payload: 00 01 00 03 04 ff 00
- - fcs:     37 31
- - valid:   True
-2021-04-14 19:41:04,375 [SerialConnector:INFO] retry 3
-2021-04-14 19:41:04,375 [SerialConnector:DEBUG] _sendInternal cmdId=1 retry=4 isResponse=False serializedFields=[4, 255, 0]
-2021-04-14 19:41:04,375 [SerialConnector:DEBUG] ---------- pcToMote DATA (0) ---------->
-2021-04-14 19:41:04,375 [Crc:DEBUG] calculating for data=00-01-00-03-04-ff-00
-2021-04-14 19:41:04,375 [Crc:DEBUG] fcs=0x3731
-2021-04-14 19:41:04,375 [Hdlc:DEBUG] 
-packetToSend:
- - payload: 00 01 00 03 04 ff 00
- - fcs:     37 31
- - valid:   True
-2021-04-14 19:41:04,888 [SerialConnector:INFO] retry 4
-2021-04-14 19:41:04,888 [SerialConnector:DEBUG] _sendInternal cmdId=1 retry=5 isResponse=False serializedFields=[4, 255, 0]
-2021-04-14 19:41:04,888 [SerialConnector:DEBUG] ---------- pcToMote DATA (0) ---------->
-2021-04-14 19:41:04,888 [Crc:DEBUG] calculating for data=00-01-00-03-04-ff-00
-2021-04-14 19:41:04,888 [Crc:DEBUG] fcs=0x3731
-2021-04-14 19:41:04,888 [Hdlc:DEBUG] 
-packetToSend:
- - payload: 00 01 00 03 04 ff 00
- - fcs:     37 31
- - valid:   True
-2021-04-14 19:41:05,388 [SerialConnector:INFO] retry 5
-2021-04-14 19:41:05,388 [SerialConnector:ERROR] retried 5 times, max allowed is 5
-2021-04-14 19:41:05,388 [Hdlc:INFO] disconnect
-2021-04-14 19:41:05,390 [SerialConnector:INFO] hdlc notification: connection state=False
-2021-04-14 19:41:05,391 [Hdlc:INFO] thread ended
-2021-04-14 19:41:12,085 [SerialConnector:INFO] creating object
-2021-04-14 19:41:12,085 [Hdlc:INFO] Creating object
-2021-04-14 19:41:12,104 [Hdlc:INFO] opened port com13@115200baud
-2021-04-14 19:41:12,104 [SerialConnector:INFO] hdlc notification: connection state=True
-2021-04-14 19:41:12,104 [Hdlc:INFO] thread started
-2021-04-14 19:41:12,105 [ByteArraySerializer:DEBUG] serialize ...
-- commandArray:     ['hello']
-- fieldsToFill:     {'cliSeqNo': 255, 'version': 4, 'mode': 0}
-2021-04-14 19:41:12,105 [ByteArraySerializer:DEBUG] ... serialize into
-- cmdId:            1
-- byteArray:        04-ff-00
-2021-04-14 19:41:12,105 [SerialConnector:DEBUG] _sendInternal cmdId=1 retry=0 isResponse=False serializedFields=[4, 255, 0]
-2021-04-14 19:41:12,105 [SerialConnector:DEBUG] ---------- pcToMote DATA (0) ---------->
-2021-04-14 19:41:12,105 [Crc:DEBUG] calculating for data=00-01-00-03-04-ff-00
-2021-04-14 19:41:12,105 [Crc:DEBUG] fcs=0x3731
-2021-04-14 19:41:12,105 [Hdlc:DEBUG] 
-packetToSend:
- - payload: 00 01 00 03 04 ff 00
- - fcs:     37 31
- - valid:   True
-2021-04-14 19:41:12,108 [Crc:DEBUG] calculating for data=00-02-00-05-00-04-00-ff-00
-2021-04-14 19:41:12,108 [Crc:DEBUG] fcs=0x2323
-2021-04-14 19:41:12,108 [Hdlc:DEBUG] 
-receivedFrame:
- - payload: 00 02 00 05 00 04 00 ff 00
- - fcs:     23 23
- - valid:   True
-2021-04-14 19:41:12,108 [SerialConnector:DEBUG] cmdId=2 length=5 isResponse=False packetId=0 payload=[0, 4, 0, 255, 0]
-2021-04-14 19:41:12,108 [SerialConnector:DEBUG] <--------- moteToPc DATA (0) ----------
-2021-04-14 19:41:12,108 [SerialConnector:DEBUG] no ack needed
-2021-04-14 19:41:12,108 [ByteArraySerializer:DEBUG] deserialize ...
-- type:             command
-- id:               2
-- byteArray:        00-04-00-ff-00
-2021-04-14 19:41:12,108 [ByteArraySerializer:DEBUG] ... deserialized into
-- nameArray:        ['hello_response']
-- returnFields:     {'cliSeqNo': 255, 'version': 4, 'successCode': 0, 'mgrSeqNo': 0, 'mode': 0}
-2021-04-14 19:41:12,118 [ByteArraySerializer:DEBUG] serialize ...
-- commandArray:     ['subscribe']
-- fieldsToFill:     {'filter': [0, 16], 'unackFilter': [0, 16]}
-2021-04-14 19:41:12,119 [ByteArraySerializer:DEBUG] ... serialize into
-- cmdId:            22
-- byteArray:        00-00-00-10-00-00-00-10
-2021-04-14 19:41:12,119 [SerialConnector:DEBUG] _sendInternal cmdId=22 retry=0 isResponse=False serializedFields=[0, 0, 0, 16, 0, 0, 0, 16]
-2021-04-14 19:41:12,119 [SerialConnector:DEBUG] ---------- pcToMote DATA (0) ---------->
-2021-04-14 19:41:12,119 [Crc:DEBUG] calculating for data=02-16-00-08-00-00-00-10-00-00-00-10
-2021-04-14 19:41:12,119 [Crc:DEBUG] fcs=0x5c3d
-2021-04-14 19:41:12,119 [Hdlc:DEBUG] 
-packetToSend:
- - payload: 02 16 00 08 00 00 00 10 00 00 00 10
- - fcs:     5c 3d
- - valid:   True
-2021-04-14 19:41:12,124 [Crc:DEBUG] calculating for data=03-16-00-01-00
-2021-04-14 19:41:12,124 [Crc:DEBUG] fcs=0x5843
-2021-04-14 19:41:12,124 [Hdlc:DEBUG] 
-receivedFrame:
- - payload: 03 16 00 01 00
- - fcs:     58 43
- - valid:   True
-2021-04-14 19:41:12,124 [SerialConnector:DEBUG] cmdId=22 length=1 isResponse=True packetId=0 payload=[0]
-2021-04-14 19:41:12,124 [SerialConnector:DEBUG] <--------- pcToMote ACK (0) after 0.004 --------
-2021-04-14 19:41:12,124 [SerialConnector:DEBUG] no ack needed
-2021-04-14 19:41:12,125 [ByteArraySerializer:DEBUG] deserialize ...
-- type:             command
-- id:               22
-- byteArray:        00
-2021-04-14 19:41:12,125 [ByteArraySerializer:DEBUG] ... deserialized into
-- nameArray:        ['subscribe']
-- returnFields:     {'RC': 0}
-2021-04-14 20:09:15,186 [Hdlc:INFO] disconnect
-2021-04-14 20:09:15,187 [SerialConnector:INFO] hdlc notification: connection state=False
-2021-04-14 20:09:15,187 [Hdlc:INFO] thread ended
+- returnFields:     {'macAddress': [0, 23, 13, 0, 0, 50, 220, 97], 'srcPort': 60000, 'utcUsecs': 781250, 'utcSecs': 1025665472L, 'dstPort': 61000, 'data': [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]}
+2021-04-16 01:02:18,654 [Hdlc:INFO] disconnect
+2021-04-16 01:02:18,655 [SerialConnector:INFO] hdlc notification: connection state=False
+2021-04-16 01:02:18,657 [Hdlc:INFO] thread ended

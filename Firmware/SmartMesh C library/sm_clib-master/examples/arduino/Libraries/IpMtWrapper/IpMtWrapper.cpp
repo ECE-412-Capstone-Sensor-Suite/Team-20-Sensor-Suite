@@ -480,8 +480,8 @@ void IpMtWrapper::api_requestService_reply() {
 
 void IpMtWrapper::api_sendTo(void) {
    dn_err_t err;
-   uint16_t dataVal;
-   uint8_t  payload[2];
+   uint16_t dataVal[2];
+   uint8_t  payload[4];
    uint8_t  lenWritten;
    
    // record time
@@ -497,7 +497,11 @@ void IpMtWrapper::api_sendTo(void) {
    // create payload
    app_vars.dataGenerator(&dataVal);
    dn_write_uint16_t(payload, dataVal);
-   
+   payload[0] = (dataVal[0] >> 0) & 0xff;
+   payload[1] = (dataVal[0] >> 8) & 0xff;
+   payload[2] = (dataVal[1] >> 0) & 0xff;
+   payload[3] = (dataVal[1] >> 8) & 0xff;
+
    // issue function
    err = dn_ipmt_sendTo(
       app_vars.socketId,                                   // socketId

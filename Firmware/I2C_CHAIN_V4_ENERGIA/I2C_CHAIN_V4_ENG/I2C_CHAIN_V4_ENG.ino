@@ -12,6 +12,31 @@
 */
 
 #include <Wire.h>
+///////////////////////SMART MESH CLIB//////////////////////////////////////
+#include <IpMtWrapper.h>
+#include <TriangleGenerator.h>
+#include <dn_ipmt.h>
+
+IpMtWrapper       ipmtwrapper;
+TriangleGenerator generator;
+int arbitraryData; // this is the number used to test data sending via mote
+
+void generateData(uint16_t* returnVal) { // this is were data is assinged to be sent via mote
+   arbitraryData = (arbitraryData + 1) % 10;
+   returnVal[0] =  arbitraryData;   // return value is a 16 bit per element array to be sent via mote
+   returnVal[1] =  arbitraryData*2;
+   returnVal[2] =  arbitraryData*3;
+   returnVal[3] =  arbitraryData*4;
+   returnVal[4] =  arbitraryData*5;
+   returnVal[5] =  arbitraryData*6;
+   returnVal[6] =  arbitraryData*7;
+   returnVal[7] =  arbitraryData*8;
+   returnVal[8] =  arbitraryData*9;
+   returnVal[9] =  arbitraryData*10;
+   Serial.print("INFO:          SENT FIRST VALUE:");     Serial.println(returnVal[0]);
+   Serial.print("INFO:          RETURNED LAST VALUE:");  Serial.println(returnVal[9]);
+}
+
 //********************************** O2 Configuration *********************//
 #define           OXYGEN_DATA_REGISTER      0x03           // Oxygen data register
 #define           USER_SET_REGISTER         0x08           // user set key value
@@ -45,15 +70,15 @@ int reading1; // humidity reading
 int reading2; // temperature reading
 byte reading[32];
 //***************************CO2*************************************//
-int sensorIn = P4_0; // CO2 Sensor Input
+int sensorIn = 0;//P4_0; // CO2 Sensor Input
 
 //*******************ADXL Sensor ************************************//
 float X_out, Y_out, Z_out;  // Outputs
 
 //*****************************Wind Speed Sensor*******************//
 
-#define analogPinForRV    P4_2   // change to pins you the analog pins are using
-#define analogPinForTMP   P4_5
+#define analogPinForRV    0//P4_2   // change to pins you the analog pins are using
+#define analogPinForTMP   0//P4_5
 
 // to calibrate your sensor, put a glass over it, but the sensor should not be
 // touching the desktop surface however.
@@ -71,12 +96,19 @@ float zeroWind_volts;
 float WindSpeed_MPH;
 
 //******************************Rain Sensor**********************************//
-int sensorValue = analogRead(P4_7); //Rain Sensor Input
+int sensorValue = analogRead(0); //P4_7); //Rain Sensor Input
 
 //============================================================================================================//
 //========================================  {INITIALIZE SENSORS} =============================================//
 void setup() {
-  Serial.begin(9600);
+   ipmtwrapper.setup( // SET UP SMART MESH MOTE
+      60000,                           // srcPort
+      (uint8_t*)ipv6Addr_manager,      // destAddr
+      61000,                           // destPort
+      10000,                           // dataPeriod (ms)
+      generateData                     // dataGenerator
+   );
+   
   Wire.begin(); // Initialize ardiono as master
 
   //*************************OPT3001 Light Sensor********************//
@@ -105,13 +137,13 @@ while(!begin(O2addr)) {
 //============================================================================================================//
 //==========================================  {MAIN LOOP} ====================================================//
 void loop() {
+  ipmtwrapper.loop(); // SMART MESH LOOP
   
   //********HUMID & TEMP SENSOR********//
   ///slaveSample template: 
   //          {ADDRESS, 1ST WRITE, 2ND WRITE, WAIT TIMES , EXPECTED NO. OF  BYTES}
   slaveSample(humidityAddr, byte(0x00), byte(0x01), humidityT, 4); //** SAMPLE RAW BYTES FROM SENSOR
-
-
+  
   //** parse bytes from sensor into two 16-bit words, then convert words into accurate data.
   int humidityWord = (reading[0] << 8) | reading[1];    // shift byte0 up 8 bits and add byte1 to it
   int tempWord = (reading[2] << 8) | reading[3];        // shift byte2 up 8 bits and add byte3 to it
