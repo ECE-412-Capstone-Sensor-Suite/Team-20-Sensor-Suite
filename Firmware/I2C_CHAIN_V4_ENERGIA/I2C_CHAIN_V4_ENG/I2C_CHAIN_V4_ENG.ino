@@ -11,7 +11,7 @@
   can operate at 3-5V.
 */
 
-#include <Wire_CC.h>
+#include <Wire.h>
 ///////////////////////SMART MESH CLIB//////////////////////////////////////
 // Additional single line code in SETUP and LOOP portions of code
 #include <IpMtWrapper.h>
