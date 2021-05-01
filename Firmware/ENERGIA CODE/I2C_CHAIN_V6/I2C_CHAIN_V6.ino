@@ -14,32 +14,11 @@
 */
 
 
-///////////////////////SMART MESH CLIB//////////////////////////////////////
-// Additional single line code in SETUP and LOOP portions of code
+
 #include <IpMtWrapper.h>
 #include <dn_ipmt.h>
 
 IpMtWrapper       ipmtwrapper;
-int arbitraryData; // this is the number used to test data sending via mote
-
-int sensorData [10] = {0};
-
-
-void generateData(uint16_t* returnVal) { // this is were data is assinged to be sent via mote
-  arbitraryData = (arbitraryData + 1) % 10;
-  returnVal[0] =  arbitraryData;   // return value is a 16 bit per element array to be sent via mote
-  returnVal[1] =  arbitraryData * 2;
-  returnVal[2] =  arbitraryData * 3;
-  returnVal[3] =  arbitraryData * 4;
-  returnVal[4] =  arbitraryData * 5;
-  returnVal[5] =  arbitraryData * 6;
-  returnVal[6] =  arbitraryData * 7;
-  returnVal[7] =  arbitraryData * 8;
-  returnVal[8] =  arbitraryData * 9;
-  returnVal[9] =  arbitraryData * 10;
-  Serial.print("INFO:          SENT FIRST VALUE:");     Serial.println(returnVal[0]);
-  Serial.println("INFO:          RETURNED LAST VALUE:");  Serial.println(returnVal[9]);
-}
 
 //********************************** O2 Configuration *********************//
 #define           OXYGEN_DATA_REGISTER      0x03           // Oxygen data register
@@ -101,7 +80,41 @@ float zeroWind_volts;
 float WindSpeed_MPH;
 
 //******************************Rain Sensor**********************************//
-int sensorValue = analogRead(2); //P4_7); //Rain Sensor Input
+int rainValue = analogRead(2); //P4_7); //Rain Sensor Input
+
+///////////////////////SMART MESH CLIB//////////////////////////////////////
+// Additional single line code in SETUP and LOOP portions of code
+int sensorData[10] = {0}; // global array to hold all the sensor values
+
+
+void generateData(uint16_t* returnVal) { // this is were data is assinged to be sent via mote
+
+  
+  sensorData[5] = (int)(X_out * 100);
+  sensorData[6] = (int)(Y_out * 100);
+  sensorData[7] = (int)(Z_out * 100);
+  sensorData[8] = (int)(WindSpeed_MPH * 100);
+  sensorData[9] = rainValue;
+  for(int i; i<sizeof(sensorData); i++){
+    
+     returnVal[i] =  sensorData[i];   // return value is a 16 bit per element array to be sent via mote
+     
+  }
+  /* Sensor[0] =  Temperature
+   * Sensor[1] =  Humidity
+   * Sensor[2] =  Light
+   * Sensor[3] =  O2
+   * Sensor[4] =  Co2
+   * Sensor[5,6,7] =  Accelerometer(x,y,z)
+   * Sensor[8] =  Wind
+   * Sensor[9] =  Water level
+   * **NOT USED***Sensor[10] =  Rain
+   */
+  Serial.print("INFO:          SENT FIRST VALUE:");     Serial.println(returnVal[0]);
+  Serial.println("INFO:          RETURNED LAST VALUE:");  Serial.println(returnVal[9]);
+}
+
+
 
 
 
@@ -165,7 +178,8 @@ void loop() {
   float temp = (((float)(tempWord & 0x3FFF)) / (16384 - 2)) * 100 - 40;    // mask first unused bits and convert to (C)
   Serial.print("Humidity(%RH): "); Serial.println( humidity);               // print the reading
   Serial.print("Temp(C): "); Serial.println(temp);                          // print the reading
-
+  sensorData[0] = (int)(temp*100);
+  sensorData[1] = (int)(humidity*100);
    delay(100);
 
   //********ARDUINO OPT3001 Light SENSOR********//
@@ -178,6 +192,7 @@ void loop() {
   Serial.print("LUX: ");                          //
   float fLux = SensorOpt3001_convert(optWord);    // Calculate LUX from sensor data
   Serial.println(fLux);                           //Print the received data
+  sensorData[2] = (int)(fLux*100);
 
   //********ADXL345 Acceleramoter Sensor*********//
   // === Read acceleromter data === //
@@ -206,6 +221,7 @@ void loop() {
   Serial.print("Oxygen concentration is ");
   Serial.print(oxygenData);
   Serial.println(" %vol");
+  sensorData[3] = (int)(oxygenData*100);
 
   //********************Wind Speed Sensor*****************************//
 
@@ -249,10 +265,11 @@ void loop() {
 
   //**************************DFR CO2 Sensor**************************//
   //Read voltage
-  int sensorValue = analogRead(sensorIn);
+  int rainValue = analogRead(sensorIn);
 
   // The analog signal is converted to a voltage
-  float voltage = sensorValue * (3300 / 1024.0);
+  float voltage = rainValue * (3300 / 1024.0);
+  float concentration;
   if (voltage == 0)
   {
     Serial.println("Fault");
@@ -264,7 +281,7 @@ void loop() {
   else
   {
     int voltage_diference = voltage - 400;
-    float concentration = voltage_diference * 50.0 / 16.0;
+    concentration = voltage_diference * 50.0 / 16.0;
     // Print Voltage
     //Serial.print("voltage:");
     //Serial.print(voltage);
@@ -274,14 +291,14 @@ void loop() {
     Serial.print(concentration);
     Serial.println("ppm");
   }
-
+  sensorData[4] = (int)(concentration*100);
 
 
   //******************************Rain Sensor**********************************//
   // read the input on analog pin 3:
 
   Serial.print("Rain Level: ");
-  Serial.println(sensorValue);
+  Serial.println(rainValue);
 
 
 
