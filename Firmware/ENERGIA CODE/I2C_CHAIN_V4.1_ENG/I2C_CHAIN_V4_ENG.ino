@@ -11,7 +11,7 @@
   can operate at 3-5V.
 */
 
-#include <Wire.h>
+#include <Wire_CC.h>
 ///////////////////////SMART MESH CLIB//////////////////////////////////////
 // Additional single line code in SETUP and LOOP portions of code
 #include <IpMtWrapper.h>
@@ -100,17 +100,12 @@ int sensorValue = analogRead(0); //P4_7); //Rain Sensor Input
 //============================================================================================================//
 //========================================  {INITIALIZE SENSORS} =============================================//
 void setup() {
-  ipmtwrapper.setup( // SET UP SMART MESH MOTE
-    60000,                           // srcPort
-    (uint8_t*)ipv6Addr_manager,      // destAddr
-    61000,                           // destPort
-    10000,                           // dataPeriod (ms)
-    generateData                     // dataGenerator
-  );
-
+  pinMode(7, OUTPUT);
   Wire.begin(); // Initialize ardiono as master
 
+
   //*************************OPT3001 Light Sensor********************//
+
   Wire.beginTransmission(0x44);     // I2C address of OPT3001 = 0x44
   Wire.write(0x01);
   Wire.write(0xCE);
@@ -124,20 +119,30 @@ void setup() {
 
 
   Wire.endTransmission();
-
-
+  
   //**************************DFR O2 Sensor***************************//
+ 
   while (!begin(O2addr)) {
-    Serial.println("I2c device number error !");
+    //Serial.println("I2c device number error !");
     delay(1000);
   }
-  Serial.println("I2c connect success !");
+  //Serial.println("I2c connect success !");
+
+  ipmtwrapper.setup( // SET UP SMART MESH MOTE
+    60000,                           // srcPort
+    (uint8_t*)ipv6Addr_manager,      // destAddr
+    61000,                           // destPort
+    10000,                           // dataPeriod (ms)
+    generateData                     // dataGenerator
+  );
+
 }
 //============================================================================================================//
 //==========================================  {MAIN LOOP} ====================================================//
 void loop() {
-  ipmtwrapper.loop(); // SMART MESH LOOP
-
+  //Serial1.begin(115200);
+  
+  //Wire.begin();
   //********HUMID & TEMP SENSOR********//
   ///slaveSample template:
   //          {ADDRESS, 1ST WRITE, 2ND WRITE, WAIT TIMES , EXPECTED NO. OF  BYTES}
@@ -149,8 +154,8 @@ void loop() {
 
   float humidity = (((float)(humidityWord & 0x3FFF) / (16384 - 2)) * 100); // mask first two status bits and convert to RH
   float temp = (((float)(tempWord & 0x3FFF)) / (16384 - 2)) * 100 - 40;    // mask first unused bits and convert to (C)
-  Serial.print("Humidity(%RH): "); Serial.println( humidity);               // print the reading
-  Serial.print("Temp(C): "); Serial.println(temp);                          // print the reading
+  //Serial.print("Humidity(%RH): "); Serial.println( humidity);               // print the reading
+  //Serial.print("Temp(C): "); Serial.println(temp);                          // print the reading
 
 
   //********ARDUINO OPT3001 Light SENSOR********//
@@ -160,9 +165,9 @@ void loop() {
   /// inputting byte(0xFF) into a write word means you dont want to write any words
 
   int optWord = (reading[0] << 8) | reading[1];
-  Serial.print("LUX: ");                          //
+  //Serial.print("LUX: ");                          //
   float fLux = SensorOpt3001_convert(optWord);    // Calculate LUX from sensor data
-  Serial.println(fLux);                           //Print the received data
+  //Serial.println(fLux);                           //Print the received data
 
   //********ADXL345 Acceleramoter Sensor*********//
   // === Read acceleromter data === //
@@ -178,19 +183,19 @@ void loop() {
   Z_out = ( Wire.read() | Wire.read() << 8); // Z-axis value
   Z_out = Z_out / 256;
 
-  Serial.print("Xa= ");
-  Serial.print(X_out);
-  Serial.print("   Ya= ");
-  Serial.print(Y_out);
-  Serial.print("   Za= ");
-  Serial.println(Z_out);
+  //Serial.print("Xa= ");
+  //Serial.print(X_out);
+  //Serial.print("   Ya= ");
+  //Serial.print(Y_out);
+  //Serial.print("   Za= ");
+  //Serial.println(Z_out);
 
 
   //**************************DFR O2 Sensor***************************//
   float oxygenData = ReadOxygenData(COLLECT_NUMBER);
-  Serial.print("Oxygen concentration is ");
-  Serial.print(oxygenData);
-  Serial.println(" %vol");
+  //Serial.print("Oxygen concentration is ");
+  //Serial.print(oxygenData);
+  //Serial.println(" %vol");
 
   //********************Wind Speed Sensor*****************************//
 
@@ -227,8 +232,8 @@ void loop() {
     // Serial.print("   ZeroWind volts ");
     // Serial.print(zeroWind_volts);
 
-    Serial.print("WindSpeed MPH: ");
-    Serial.println((float)WindSpeed_MPH);
+    //Serial.print("WindSpeed MPH: ");
+    //Serial.println((float)WindSpeed_MPH);
     lastMillis = millis();
   }
 
@@ -240,11 +245,11 @@ void loop() {
   float voltage = sensorValue * (3300 / 1024.0);
   if (voltage == 0)
   {
-    Serial.println("Fault");
+    //Serial.println("Fault");
   }
   else if (voltage < 400)
   {
-    Serial.println("preheating");
+    //Serial.println("preheating");
   }
   else
   {
@@ -255,9 +260,9 @@ void loop() {
     //Serial.print(voltage);
     //Serial.println("mv");
     //Print CO2 concentration
-    Serial.print("CO2: ");
-    Serial.print(concentration);
-    Serial.println("ppm");
+    //Serial.print("CO2: ");
+    //Serial.print(concentration);
+    //Serial.println("ppm");
   }
 
 
@@ -265,11 +270,11 @@ void loop() {
   //******************************Rain Sensor**********************************//
   // read the input on analog pin 3:
 
-  Serial.print("Rain Level: ");
-  Serial.println(sensorValue);
+  //Serial.print("Rain Level: ");
+  //Serial.println(sensorValue);
 
-
-
+  digitalWrite(7, LOW);
+  ipmtwrapper.loop(); // SMART MESH LOOP
 }
 
 

@@ -100,13 +100,14 @@ int sensorValue = analogRead(0); //P4_7); //Rain Sensor Input
 //============================================================================================================//
 //========================================  {INITIALIZE SENSORS} =============================================//
 void setup() {
+  /*
   ipmtwrapper.setup( // SET UP SMART MESH MOTE
     60000,                           // srcPort
     (uint8_t*)ipv6Addr_manager,      // destAddr
     61000,                           // destPort
     10000,                           // dataPeriod (ms)
     generateData                     // dataGenerator
-  );
+  );*/
 
   Wire.begin(); // Initialize ardiono as master
 
@@ -136,7 +137,7 @@ void setup() {
 //============================================================================================================//
 //==========================================  {MAIN LOOP} ====================================================//
 void loop() {
-  ipmtwrapper.loop(); // SMART MESH LOOP
+  /*ipmtwrapper.loop(); // SMART MESH LOOP*/
 
   //********HUMID & TEMP SENSOR********//
   ///slaveSample template:

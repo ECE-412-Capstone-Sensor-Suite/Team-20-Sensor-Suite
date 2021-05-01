@@ -1,6 +1,6 @@
 import Tkinter
 import read
-import cv2
+#import cv2
 
 top = Tkinter.Tk()
 top2 = Tkinter.Tk()

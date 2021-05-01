@@ -718,3 +718,4 @@ Time=19:13:20	mote address=(00-17-0d-00-00-5a-99-ef)	Temperature=2216C	humidity=
 Time=19:13:22	mote address=(00-17-0d-00-00-32-23-d3)	Temperature=2155C	humidity=5573	light=190	wind speed=386m/s	accelerometer=(4,2,0),
 Time=19:13:29	mote address=(00-17-0d-00-00-32-dc-61)	Temperature=2114C	humidity=3467	light=584	wind speed=431m/s	accelerometer=(6,8,4),
 Time=19:13:32	mote address=(00-17-0d-00-00-5a-e9-f8)	Temperature=2012C	humidity=6833	light=424	wind speed=39m/s	accelerometer=(7,5,7),
+Time=19:13:39	mote address=(00-17-0d-00-00-32-cd-b6)	Temperature=2032C	humidity=1101	light=917	wind speed=422m/s	accelerometer=(6,1,3),

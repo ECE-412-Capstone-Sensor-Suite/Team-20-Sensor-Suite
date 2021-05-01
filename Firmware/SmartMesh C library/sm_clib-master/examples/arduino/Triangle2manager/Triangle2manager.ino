@@ -31,6 +31,7 @@ File > Upload.
 #include <IpMtWrapper.h>
 #include <TriangleGenerator.h>
 #include <dn_ipmt.h>
+#include <Wire_CC.h>
 
 IpMtWrapper       ipmtwrapper;
 TriangleGenerator generator;
@@ -62,6 +63,7 @@ void generateData(uint16_t *returnVal) {
 //=========================== "main" ==========================================
 
 void setup() {
+   Wire.begin();
    ipmtwrapper.setup( // SET UP SMART MESH MOTE
       60000,                           // srcPort
       (uint8_t*)ipv6Addr_manager,      // destAddr
@@ -69,10 +71,13 @@ void setup() {
       10000,                           // dataPeriod (ms)
       generateData                     // dataGenerator
    );
-   
 }
 
 void loop() {
+  Wire.beginTransmission(0x44);     // I2C address of OPT3001 = 0x44
+  Wire.write(0x01);
+  Wire.write(0xCE);
+  Wire.write(0x10);
+  Wire.endTransmission();
    ipmtwrapper.loop();
-   
 }

@@ -35,13 +35,13 @@ File > Upload.
 IpMtWrapper       ipmtwrapper;
 TriangleGenerator generator;
 
-//=========================== data generator ==================================
+//============================== data generator ==================================
 
 void generateData(uint16_t* returnVal) {
    generator.nextValue(returnVal);
 }
 
-//=========================== "main" ==========================================
+//============================== "main" ==========================================
 
 void setup() {
    ipmtwrapper.setup(
