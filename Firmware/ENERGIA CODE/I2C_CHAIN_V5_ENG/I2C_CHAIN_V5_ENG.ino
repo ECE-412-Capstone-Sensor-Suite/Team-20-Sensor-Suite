@@ -1,5 +1,3 @@
-#include <Wire_CC.h>
-
 /* The sketch is made for the Sensor Suite project(Capstone Team 20) that consists of 8 sensors total:
   -Humidity/Temperature, O2 Sensor, CO2 sensor, Vibration sensor(ADXL), Rain Sensor, Light Sensor(OPT3001),
   and Wind Speed Sensor.
@@ -13,7 +11,7 @@
   can operate at 3-5V.
 */
 
-
+#include <Wire.h>
 ///////////////////////SMART MESH CLIB//////////////////////////////////////
 // Additional single line code in SETUP and LOOP portions of code
 #include <IpMtWrapper.h>
@@ -35,7 +33,7 @@ void generateData(uint16_t* returnVal) { // this is were data is assinged to be 
   returnVal[8] =  arbitraryData * 9;
   returnVal[9] =  arbitraryData * 10;
   Serial.print("INFO:          SENT FIRST VALUE:");     Serial.println(returnVal[0]);
-  Serial.println("INFO:          RETURNED LAST VALUE:");  Serial.println(returnVal[9]);
+  Serial.print("INFO:          RETURNED LAST VALUE:");  Serial.println(returnVal[9]);
 }
 
 //********************************** O2 Configuration *********************//
@@ -54,11 +52,6 @@ uint8_t pdata;
 float _Key = 0.0;                          // oxygen key value
 float    ReadOxygenData(uint8_t CollectNum);
 //************************** Global Variables *****************************//
-//I2c Mux
-
-#define TCAADDR 0x70
-#define TCAADDR1 0x71
-
 // Slave Addresses:
 int humidityAddr = 39; // temperature humidity address (0x27)
 int unoAddr = 8; // temperature humidity address (0x08)
@@ -76,7 +69,7 @@ int reading1; // humidity reading
 int reading2; // temperature reading
 byte reading[32];
 //***************************CO2*************************************//
-int sensorIn = 6;//P4_0; // CO2 Sensor Input
+int sensorIn = 0;//P4_0; // CO2 Sensor Input
 
 //*******************ADXL Sensor ************************************//
 float X_out, Y_out, Z_out;  // Outputs
@@ -84,7 +77,7 @@ float X_out, Y_out, Z_out;  // Outputs
 //*****************************Wind Speed Sensor*******************//
 
 #define analogPinForRV    0//P4_2   // change to pins you the analog pins are using
-#define analogPinForTMP   0//P4_5 
+#define analogPinForTMP   0//P4_5
 
 // to calibrate your sensor, put a glass over it, but the sensor should not be
 // touching the desktop surface however.
@@ -102,33 +95,19 @@ float zeroWind_volts;
 float WindSpeed_MPH;
 
 //******************************Rain Sensor**********************************//
-int sensorValue = analogRead(2); //P4_7); //Rain Sensor Input
+int sensorValue = analogRead(0); //P4_7); //Rain Sensor Input
 
- //i2c mux
-
-
-void tcaselect(uint8_t i) {
-  if (i > 7) return;
- 
-  Wire.beginTransmission(TCAADDR);
-  Wire.write(1 << i);
-  Wire.endTransmission();  
-}
 //============================================================================================================//
 //========================================  {INITIALIZE SENSORS} =============================================//
 void setup() {
-
-
- // Serial.begin(9600);
   ipmtwrapper.setup( // SET UP SMART MESH MOTE
-  
-  60000,                           // srcPort
-  (uint8_t*)ipv6Addr_manager,      // destAddr
-   61000,                           // destPort
-   10000,                           // dataPeriod (ms)
-   generateData                     // dataGenerator
+    60000,                           // srcPort
+    (uint8_t*)ipv6Addr_manager,      // destAddr
+    61000,                           // destPort
+    10000,                           // dataPeriod (ms)
+    generateData                     // dataGenerator
   );
-//Serial.begin(9600);
+
   Wire.begin(); // Initialize ardiono as master
 
   //*************************OPT3001 Light Sensor********************//
@@ -157,10 +136,8 @@ void setup() {
 //============================================================================================================//
 //==========================================  {MAIN LOOP} ====================================================//
 void loop() {
-  
   ipmtwrapper.loop(); // SMART MESH LOOP
 
-  
   //********HUMID & TEMP SENSOR********//
   ///slaveSample template:
   //          {ADDRESS, 1ST WRITE, 2ND WRITE, WAIT TIMES , EXPECTED NO. OF  BYTES}
@@ -174,7 +151,8 @@ void loop() {
   float temp = (((float)(tempWord & 0x3FFF)) / (16384 - 2)) * 100 - 40;    // mask first unused bits and convert to (C)
   Serial.print("Humidity(%RH): "); Serial.println( humidity);               // print the reading
   Serial.print("Temp(C): "); Serial.println(temp);                          // print the reading
-  
+
+
   //********ARDUINO OPT3001 Light SENSOR********//
   //slaveSample template:
   //         {ADDRESS, 1ST WRITE, byte(0xFF) = DONT WRITE, WAIT TIMES , EXPECTED NO. OF  BYTES}
