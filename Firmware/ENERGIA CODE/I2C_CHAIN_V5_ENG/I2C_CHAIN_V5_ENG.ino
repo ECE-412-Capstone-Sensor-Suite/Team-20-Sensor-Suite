@@ -174,8 +174,7 @@ void loop() {
   float temp = (((float)(tempWord & 0x3FFF)) / (16384 - 2)) * 100 - 40;    // mask first unused bits and convert to (C)
   Serial.print("Humidity(%RH): "); Serial.println( humidity);               // print the reading
   Serial.print("Temp(C): "); Serial.println(temp);                          // print the reading
-
-
+  
   //********ARDUINO OPT3001 Light SENSOR********//
   //slaveSample template:
   //         {ADDRESS, 1ST WRITE, byte(0xFF) = DONT WRITE, WAIT TIMES , EXPECTED NO. OF  BYTES}
