@@ -1,52 +1,58 @@
 # coding=UTF-8
 
+from __future__ import absolute_import
+import matplotlib
+matplotlib.use('Agg')
+import matplotlib.pyplot as plt
 import matplotlib.pyplot as plt
 import matplotlib.ticker as ticker
+from io import open
 
-readfile = open('spoofed sampleLog.log', 'r')
-openwrite = open('output1.txt', "w")
-openwrite2 = open('output2.txt', "a+")
-openwrite3 = open('output2.txt', "w")
+readfile = open(u'spoofed sampleLog.log', u'r')
+openwrite = open(u'output1.txt', u"w")
+openwrite2 = open(u'output2.txt', u"a+")
+openwrite3 = open(u'output2.txt', u"w")
 
+## Part1 ：read all data before click anything because if without it, process cannot be executed
 lines = readfile.readlines()
 for info in lines:
     try:
-        a = info.replace("[", " ").replace("]", " ").replace(",", " ", 5);
+        a = info.replace(u"[", u" ").replace(u"]", u" ").replace(u",", u" ", 5)
         b = a.split()
-        c = ('Time=' + b[0] + '\t' + "mote address=" + b[3] + '\t' + 'Temperature=' + b[5] + 'C' + '\t' + 'humidity=' +
+        c = (u'Time=' + b[0] + u'\t' + u"mote address=" + b[3] + u'\t' + u'Temperature=' + b[5] + u'C' + u'\t' + u'humidity=' +
              b[
-                 6] + '\t' + 'light=' + b[7] + '\t' + 'wind speed=' + b[8] + 'm/s' + '\t' +
-             'accelerometer=' + b[9] + b[10] + b[11] + '\n')
+                 6] + u'\t' + u'light=' + b[7] + u'\t' + u'wind speed=' + b[8] + u'm/s' + u'\t' +
+             u'accelerometer=' + b[9] + b[10] + b[11] + u'\n')
         openwrite.write(c)
     except:
-        print("Completed")
+        print u"Completed"
 
-
+## This function is used to tell you that the input number(address) should be ended by #
 def getAddress(s):
     motes = []
     exit = False
     while not exit:
-        if '#' in s:
-            n = s.index('#')
+        if u'#' in s:
+            n = s.index(u'#')
             s = s[:n]
             exit = True
         motes.append(s)
     return motes
 
-
+## This function is used to tell you that the input number(time) should be ended by #
 def getTimes(s):
-    print(s)
+    print s
     Times = []
     exit = False
     while not exit:
-        if '#' in s:
-            n = s.index('#')
+        if u'#' in s:
+            n = s.index(u'#')
             s = s[:n]
             exit = True
         Times.append(s)
     return Times
 
-
+## This function is used to limit the range of plots, because if without it, the range of plots is random
 def picture(list,number):
     list2 = []
     MinNum = 9999
@@ -60,8 +66,8 @@ def picture(list,number):
         list2.append(num2)
     size1 = len(list)
     fig, ax = plt.subplots(1, 1)
-    y = range(0, size1)
-    print(y)
+    y = xrange(0, size1)
+    print y
     ax.plot(y, list2)
     if MaxNum - MinNum >= 100 and MaxNum - MinNum <= 500:
         ax.yaxis.set_major_locator(ticker.MultipleLocator(20))
@@ -72,18 +78,18 @@ def picture(list,number):
     if MaxNum - MinNum > 4000:
         ax.yaxis.set_major_locator(ticker.MultipleLocator(1000))
     if number==1:
-        plt.savefig(fname="Temperature.png",figsize=[10,10])
+        plt.savefig(u"Temperature.png",figsize=[10,10])
     if number==2:
-        plt.savefig(fname="humidity.png",figsize=[10,10])
+        plt.savefig(u"humidity.png",figsize=[10,10])
     if number==3:
-        plt.savefig(fname="light.png",figsize=[10,10])
+        plt.savefig(u"light.png",figsize=[10,10])
     if number==4:
-        plt.savefig(fname="windSpeed.png",figsize=[10,10])
+        plt.savefig(u"windSpeed.png",figsize=[10,10])
 
 
-
+## This function is used to get data by imputing mac address
 def readdata(motesList):
-    openwrite3.write("")
+    openwrite3.write(u"")
     d = []
     motes = getAddress(motesList)
     for mote in motes:
@@ -93,13 +99,13 @@ def readdata(motesList):
         windSpeed = []
         for info2 in lines:
             try:
-                a = info2.replace("[", " ").replace("]", " ").replace(",", " ", 5);
+                a = info2.replace(u"[", u" ").replace(u"]", u" ").replace(u",", u" ", 5);
                 b = a.split()
                 if b[3] == mote:
-                    c = ('Time=' + b[0] + '\t' + "mote address=" + b[3] + '\t' + 'Temperature=' + b[
-                        5] + 'C' + '\t' + 'humidity=' + b[
-                             6] + '\t' + 'light=' + b[7] + '\t' + 'wind speed=' + b[8] + 'm/s' + '\t' +
-                         'accelerometer=' + b[9] + b[10] + b[11] + '\n')
+                    c = (u'Time=' + b[0] + u'\t' + u"mote address=" + b[3] + u'\t' + u'Temperature=' + b[
+                        5] + u'C' + u'\t' + u'humidity=' + b[
+                             6] + u'\t' + u'light=' + b[7] + u'\t' + u'wind speed=' + b[8] + u'm/s' + u'\t' +
+                         u'accelerometer=' + b[9] + b[10] + b[11] + u'\n')
                     d.append(c)
                     openwrite2.write(c)
                     Temperature.append(b[5])
@@ -107,16 +113,16 @@ def readdata(motesList):
                     light.append(b[7])
                     windSpeed.append(b[8])
             except:
-                print("Completed")
+                print u"Completed"
         picture(Temperature, 1)
         picture(humidity, 2)
         picture(light,3)
         picture(windSpeed,4)
         return d
 
-
+## This function is used to get data by imputing time
 def readdata2(TimesList):
-    openwrite3.write("")
+    openwrite3.write(u"")
     d = []
     Times = getTimes(TimesList)
     for time in Times:
@@ -126,13 +132,13 @@ def readdata2(TimesList):
         windSpeed = []
         for info2 in lines:
             try:
-                a = info2.replace("[", " ").replace("]", " ").replace(",", " ", 5);
+                a = info2.replace(u"[", u" ").replace(u"]", u" ").replace(u",", u" ", 5);
                 b = a.split()
                 if len(b) > 1 and time == b[0][3:5]:
-                    c = ('Time=' + b[0] + '\t' + "mote address=" + b[3] + '\t' + 'Temperature=' + b[
-                        5] + 'C' + '\t' + 'humidity=' + b[
-                             6] + '\t' + 'light=' + b[7] + '\t' + 'wind speed=' + b[8] + 'm/s' + '\t' +
-                         'accelerometer=' + b[9] + b[10] + b[11] + '\n')
+                    c = (u'Time=' + b[0] + u'\t' + u"mote address=" + b[3] + u'\t' + u'Temperature=' + b[
+                        5] + u'C' + u'\t' + u'humidity=' + b[
+                             6] + u'\t' + u'light=' + b[7] + u'\t' + u'wind speed=' + b[8] + u'm/s' + u'\t' +
+                         u'accelerometer=' + b[9] + b[10] + b[11] + u'\n')
                     d.append(c)
                     openwrite2.write(c)
                     Temperature.append(b[5])
@@ -140,16 +146,16 @@ def readdata2(TimesList):
                     light.append(b[7])
                     windSpeed.append(b[8])
             except:
-                print("Completed")
+                print u"Completed"
         picture(Temperature, 1)
         picture(humidity, 2)
         picture(light, 3)
         picture(windSpeed, 4)
         return d
 
-
+## This function is used to get data by imputing mac address and time
 def readdata3(TimesList, motesList):
-    openwrite3.write("")
+    openwrite3.write(u"")
     d = []
     Times = getTimes(TimesList)
     motes = getAddress(motesList)
@@ -161,13 +167,13 @@ def readdata3(TimesList, motesList):
             windSpeed = []
             for info2 in lines:
                 try:
-                    a = info2.replace("[", " ").replace("]", " ").replace(",", " ", 5);
+                    a = info2.replace(u"[", u" ").replace(u"]", u" ").replace(u",", u" ", 5);
                     b = a.split()
                     if len(b) > 1 and time == b[0][3:5] and b[3] == mote:
-                        c = ('Time=' + b[0] + '\t' + "mote address=" + b[3] + '\t' + 'Temperature=' + b[
-                            5] + 'C' + '\t' + 'humidity=' + b[
-                                 6] + '\t' + 'light=' + b[7] + '\t' + 'wind speed=' + b[8] + 'm/s' + '\t' +
-                             'accelerometer=' + b[9] + b[10] + b[11] + '\n')
+                        c = (u'Time=' + b[0] + u'\t' + u"mote address=" + b[3] + u'\t' + u'Temperature=' + b[
+                            5] + u'C' + u'\t' + u'humidity=' + b[
+                                 6] + u'\t' + u'light=' + b[7] + u'\t' + u'wind speed=' + b[8] + u'm/s' + u'\t' +
+                             u'accelerometer=' + b[9] + b[10] + b[11] + u'\n')
                         d.append(c)
                         openwrite2.write(c)
                         Temperature.append(b[5])
@@ -175,16 +181,16 @@ def readdata3(TimesList, motesList):
                         light.append(b[7])
                         windSpeed.append(b[8])
                 except:
-                    print("Completed")
+                    print u"Completed"
             picture(Temperature, 1)
             picture(humidity, 2)
             picture(light, 3)
             picture(windSpeed, 4)
             return d
 
-
+## read all data
 def readdata5():
-    openwrite3.write("")
+    openwrite3.write(u"")
     Temperature = []
     humidity = []
     light = []
@@ -192,12 +198,12 @@ def readdata5():
     d = []
     for info2 in lines:
         try:
-            a = info2.replace("[", " ").replace("]", " ").replace(",", " ", 5);
+            a = info2.replace(u"[", u" ").replace(u"]", u" ").replace(u",", u" ", 5);
             b = a.split()
-            c = ('Time=' + b[0] + '\t' + "mote address=" + b[3] + '\t' + 'Temperature=' + b[
-                5] + 'C' + '\t' + 'humidity=' + b[
-                     6] + '\t' + 'light=' + b[7] + '\t' + 'wind speed=' + b[8] + 'm/s' + '\t' +
-                 'accelerometer=' + b[9] + b[10] + b[11] + '\n')
+            c = (u'Time=' + b[0] + u'\t' + u"mote address=" + b[3] + u'\t' + u'Temperature=' + b[
+                5] + u'C' + u'\t' + u'humidity=' + b[
+                     6] + u'\t' + u'light=' + b[7] + u'\t' + u'wind speed=' + b[8] + u'm/s' + u'\t' +
+                 u'accelerometer=' + b[9] + b[10] + b[11] + u'\n')
             d.append(c)
             openwrite2.write(c)
             Temperature.append(b[5])
@@ -205,30 +211,15 @@ def readdata5():
             light.append(b[7])
             windSpeed.append(b[8])
         except:
-            c = "Completed"
-            print("Completed")
+            c = u"Completed"
+            print u"Completed"
     picture(Temperature, 1)
     picture(humidity, 2)
     picture(light, 3)
     picture(windSpeed, 4)
     return d
 
-
-def test():
-    lines = readfile.readlines()
-    for info in lines:
-        try:
-            a = info.replace("[", " ").replace("]", " ").replace(",", " ", 5);
-            b = a.split()
-            c = ('Time=' + b[0] + '\t' + "mote address=" + b[3] + '\t' + 'Temperature=' + b[
-                5] + 'C' + '\t' + 'humidity=' + b[
-                     6] + '\t' + 'light=' + b[7] + '\t' + 'wind speed=' + b[8] + 'm/s' + '\t' +
-                 'accelerometer=' + b[9] + b[10] + b[11] + '\n')
-            openwrite.write(c)
-        except:
-            print("Completed")
-
-
+## define above results as functions
 def test1():
     return readdata5()
 
@@ -244,6 +235,6 @@ def test3(motesList):
 def test4(timesList, motesList):
     return readdata3(timesList, motesList)
 
-
+## close files
 readfile.close()
 openwrite.close()

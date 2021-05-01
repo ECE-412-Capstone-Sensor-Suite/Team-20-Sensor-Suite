@@ -8,11 +8,12 @@ import matplotlib.pyplot as plt
 import matplotlib.ticker as ticker
 from io import open
 
-readfile = open(u'spoofed sampleLog.log', u'r')
+readfile = open(u'spoofed_sampleLog.log', u'r')
 openwrite = open(u'output1.txt', u"w")
 openwrite2 = open(u'output2.txt', u"a+")
 openwrite3 = open(u'output2.txt', u"w")
 
+## Part1 ：read all data before click anything because if without it, process cannot be executed
 lines = readfile.readlines()
 for info in lines:
     try:
@@ -26,7 +27,7 @@ for info in lines:
     except:
         print u"Completed"
 
-
+## This function is used to tell you that the input number(address) should be ended by #
 def getAddress(s):
     motes = []
     exit = False
@@ -38,7 +39,7 @@ def getAddress(s):
         motes.append(s)
     return motes
 
-
+## This function is used to tell you that the input number(time) should be ended by #
 def getTimes(s):
     print s
     Times = []
@@ -51,7 +52,7 @@ def getTimes(s):
         Times.append(s)
     return Times
 
-
+## This function is used to limit the range of plots, because if without it, the range of plots is random
 def picture(list,number):
     list2 = []
     MinNum = 9999
@@ -77,16 +78,16 @@ def picture(list,number):
     if MaxNum - MinNum > 4000:
         ax.yaxis.set_major_locator(ticker.MultipleLocator(1000))
     if number==1:
-        plt.savefig(fname=u"Temperature.png",figsize=[10,10])
+        plt.savefig(u"Temperature.png",figsize=[10,10])
     if number==2:
-        plt.savefig(fname=u"humidity.png",figsize=[10,10])
+        plt.savefig(u"humidity.png",figsize=[10,10])
     if number==3:
-        plt.savefig(fname=u"light.png",figsize=[10,10])
+        plt.savefig(u"light.png",figsize=[10,10])
     if number==4:
-        plt.savefig(fname=u"windSpeed.png",figsize=[10,10])
+        plt.savefig(u"windSpeed.png",figsize=[10,10])
 
 
-
+## This function is used to get data by imputing mac address
 def readdata(motesList):
     openwrite3.write(u"")
     d = []
@@ -119,7 +120,7 @@ def readdata(motesList):
         picture(windSpeed,4)
         return d
 
-
+## This function is used to get data by imputing time
 def readdata2(TimesList):
     openwrite3.write(u"")
     d = []
@@ -152,7 +153,7 @@ def readdata2(TimesList):
         picture(windSpeed, 4)
         return d
 
-
+## This function is used to get data by imputing mac address and time
 def readdata3(TimesList, motesList):
     openwrite3.write(u"")
     d = []
@@ -187,7 +188,7 @@ def readdata3(TimesList, motesList):
             picture(windSpeed, 4)
             return d
 
-
+## read all data
 def readdata5():
     openwrite3.write(u"")
     Temperature = []
@@ -218,22 +219,7 @@ def readdata5():
     picture(windSpeed, 4)
     return d
 
-
-def test():
-    lines = readfile.readlines()
-    for info in lines:
-        try:
-            a = info.replace(u"[", u" ").replace(u"]", u" ").replace(u",", u" ", 5);
-            b = a.split()
-            c = (u'Time=' + b[0] + u'\t' + u"mote address=" + b[3] + u'\t' + u'Temperature=' + b[
-                5] + u'C' + u'\t' + u'humidity=' + b[
-                     6] + u'\t' + u'light=' + b[7] + u'\t' + u'wind speed=' + b[8] + u'm/s' + u'\t' +
-                 u'accelerometer=' + b[9] + b[10] + b[11] + u'\n')
-            openwrite.write(c)
-        except:
-            print u"Completed"
-
-
+## define above results as functions
 def test1():
     return readdata5()
 
@@ -249,6 +235,6 @@ def test3(motesList):
 def test4(timesList, motesList):
     return readdata3(timesList, motesList)
 
-
+## close files
 readfile.close()
 openwrite.close()
