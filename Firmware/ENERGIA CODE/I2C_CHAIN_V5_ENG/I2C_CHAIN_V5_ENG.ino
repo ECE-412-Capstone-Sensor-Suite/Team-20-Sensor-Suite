@@ -1,4 +1,4 @@
-
+#include <Wire_CC.h>
 
 /* The sketch is made for the Sensor Suite project(Capstone Team 20) that consists of 8 sensors total:
   -Humidity/Temperature, O2 Sensor, CO2 sensor, Vibration sensor(ADXL), Rain Sensor, Light Sensor(OPT3001),
@@ -18,12 +18,25 @@
 // Additional single line code in SETUP and LOOP portions of code
 #include <IpMtWrapper.h>
 #include <dn_ipmt.h>
-#include <Wire_CC.h>
 
 IpMtWrapper       ipmtwrapper;
 int arbitraryData; // this is the number used to test data sending via mote
 
-
+void generateData(uint16_t* returnVal) { // this is were data is assinged to be sent via mote
+  arbitraryData = (arbitraryData + 1) % 10;
+  returnVal[0] =  arbitraryData;   // return value is a 16 bit per element array to be sent via mote
+  returnVal[1] =  arbitraryData * 2;
+  returnVal[2] =  arbitraryData * 3;
+  returnVal[3] =  arbitraryData * 4;
+  returnVal[4] =  arbitraryData * 5;
+  returnVal[5] =  arbitraryData * 6;
+  returnVal[6] =  arbitraryData * 7;
+  returnVal[7] =  arbitraryData * 8;
+  returnVal[8] =  arbitraryData * 9;
+  returnVal[9] =  arbitraryData * 10;
+  Serial.print("INFO:          SENT FIRST VALUE:");     Serial.println(returnVal[0]);
+  Serial.println("INFO:          RETURNED LAST VALUE:");  Serial.println(returnVal[9]);
+}
 
 //********************************** O2 Configuration *********************//
 #define           OXYGEN_DATA_REGISTER      0x03           // Oxygen data register
@@ -41,6 +54,11 @@ uint8_t pdata;
 float _Key = 0.0;                          // oxygen key value
 float    ReadOxygenData(uint8_t CollectNum);
 //************************** Global Variables *****************************//
+//I2c Mux
+
+#define TCAADDR 0x70
+#define TCAADDR1 0x71
+
 // Slave Addresses:
 int humidityAddr = 39; // temperature humidity address (0x27)
 int unoAddr = 8; // temperature humidity address (0x08)
@@ -66,7 +84,7 @@ float X_out, Y_out, Z_out;  // Outputs
 //*****************************Wind Speed Sensor*******************//
 
 #define analogPinForRV    0//P4_2   // change to pins you the analog pins are using
-#define analogPinForTMP   0//P4_5
+#define analogPinForTMP   0//P4_5 
 
 // to calibrate your sensor, put a glass over it, but the sensor should not be
 // touching the desktop surface however.
@@ -86,19 +104,34 @@ float WindSpeed_MPH;
 //******************************Rain Sensor**********************************//
 int sensorValue = analogRead(2); //P4_7); //Rain Sensor Input
 
+ //i2c mux
+
+
+void tcaselect(uint8_t i) {
+  if (i > 7) return;
+ 
+  Wire.beginTransmission(TCAADDR);
+  Wire.write(1 << i);
+  Wire.endTransmission();  
+}
 //============================================================================================================//
 //========================================  {INITIALIZE SENSORS} =============================================//
 void setup() {
 
-  pinMode(7, OUTPUT);
 
-  Serial.begin(9600);
-
-  //Serial.begin(9600);
-  Serial.println("before");
+ // Serial.begin(9600);
+  ipmtwrapper.setup( // SET UP SMART MESH MOTE
+  
+  60000,                           // srcPort
+  (uint8_t*)ipv6Addr_manager,      // destAddr
+   61000,                           // destPort
+   10000,                           // dataPeriod (ms)
+   generateData                     // dataGenerator
+  );
+//Serial.begin(9600);
   Wire.begin(); // Initialize ardiono as master
-  Serial.println("After");
-  //*************************OPT3001 Light Sensor********************//*
+
+  //*************************OPT3001 Light Sensor********************//
   Wire.beginTransmission(0x44);     // I2C address of OPT3001 = 0x44
   Wire.write(0x01);
   Wire.write(0xCE);
@@ -120,23 +153,14 @@ void setup() {
     delay(1000);
   }
   Serial.println("I2c connect success !");
-  
-  ipmtwrapper.setup( // SET UP SMART MESH MOTE
-
-    60000,                           // srcPort
-    (uint8_t*)ipv6Addr_manager,      // destAddr
-    61000,                           // destPort
-    10000,                           // dataPeriod (ms)
-    generateData                     // dataGenerator
-  );
 }
 //============================================================================================================//
 //==========================================  {MAIN LOOP} ====================================================//
 void loop() {
   
+  ipmtwrapper.loop(); // SMART MESH LOOP
 
-
-  //digitalWrite(7, LOW);
+  
   //********HUMID & TEMP SENSOR********//
   ///slaveSample template:
   //          {ADDRESS, 1ST WRITE, 2ND WRITE, WAIT TIMES , EXPECTED NO. OF  BYTES}
@@ -148,8 +172,8 @@ void loop() {
 
   float humidity = (((float)(humidityWord & 0x3FFF) / (16384 - 2)) * 100); // mask first two status bits and convert to RH
   float temp = (((float)(tempWord & 0x3FFF)) / (16384 - 2)) * 100 - 40;    // mask first unused bits and convert to (C)
-  Serial.print("\nSENSOR:                                       Humidity(%RH): "); Serial.println( humidity);               // print the reading
-  Serial.print("SENSOR:                                       Temp(C): "); Serial.println(temp);                          // print the reading
+  Serial.print("Humidity(%RH): "); Serial.println( humidity);               // print the reading
+  Serial.print("Temp(C): "); Serial.println(temp);                          // print the reading
 
 
   //********ARDUINO OPT3001 Light SENSOR********//
@@ -159,7 +183,7 @@ void loop() {
   /// inputting byte(0xFF) into a write word means you dont want to write any words
 
   int optWord = (reading[0] << 8) | reading[1];
-  Serial.print("SENSOR:                                       LUX: ");                          //
+  Serial.print("LUX: ");                          //
   float fLux = SensorOpt3001_convert(optWord);    // Calculate LUX from sensor data
   Serial.println(fLux);                           //Print the received data
 
@@ -176,17 +200,18 @@ void loop() {
   Y_out = Y_out / 256;
   Z_out = ( Wire.read() | Wire.read() << 8); // Z-axis value
   Z_out = Z_out / 256;
-  
-    Serial.print("SENSOR:                                       Xa= ");
-    Serial.print(X_out);
-    Serial.print("   Ya= ");
-    Serial.print(Y_out);
-    Serial.print("   Za= ");
-    Serial.println(Z_out);
+
+  Serial.print("Xa= ");
+  Serial.print(X_out);
+  Serial.print("   Ya= ");
+  Serial.print(Y_out);
+  Serial.print("   Za= ");
+  Serial.println(Z_out);
+
 
   //**************************DFR O2 Sensor***************************//
   float oxygenData = ReadOxygenData(COLLECT_NUMBER);
-  Serial.print("SENSOR:                                       O2 concentration: ");
+  Serial.print("Oxygen concentration is ");
   Serial.print(oxygenData);
   Serial.println(" %vol");
 
@@ -225,9 +250,9 @@ void loop() {
     // Serial.print("   ZeroWind volts ");
     // Serial.print(zeroWind_volts);
 
-    Serial.print("SENSOR:                                       WindSpeed MPH: ");
+    Serial.print("WindSpeed MPH: ");
     Serial.println((float)WindSpeed_MPH);
-    //lastMillis = millis();
+    lastMillis = millis();
   }
 
   //**************************DFR CO2 Sensor**************************//
@@ -238,11 +263,11 @@ void loop() {
   float voltage = sensorValue * (3300 / 1024.0);
   if (voltage == 0)
   {
-    Serial.println("SENSOR:                                       Fault");
+    Serial.println("Fault");
   }
   else if (voltage < 400)
   {
-    Serial.println("SENSOR:                                       preheating");
+    Serial.println("preheating");
   }
   else
   {
@@ -253,9 +278,9 @@ void loop() {
     //Serial.print(voltage);
     //Serial.println("mv");
     //Print CO2 concentration
-     Serial.print("SENSOR:                                       CO2: ");
-     Serial.print(concentration);
-     Serial.println("ppm");
+    Serial.print("CO2: ");
+    Serial.print(concentration);
+    Serial.println("ppm");
   }
 
 
@@ -263,26 +288,11 @@ void loop() {
   //******************************Rain Sensor**********************************//
   // read the input on analog pin 3:
 
-  //Serial.print("Rain Level: ");
-  //Serial.println(sensorValue);
-  digitalWrite(7, LOW);
-  ipmtwrapper.loop(); // SMART MESH LOOP
-}
+  Serial.print("Rain Level: ");
+  Serial.println(sensorValue);
 
-void generateData(uint16_t* returnVal) { // this is were data is assinged to be sent via mote
-  arbitraryData = (arbitraryData + 1) % 10;
-  returnVal[0] =  arbitraryData;   // return value is a 16 bit per element array to be sent via mote
-  returnVal[1] =  arbitraryData * 2;
-  returnVal[2] =  arbitraryData * 3;
-  returnVal[3] =  arbitraryData * 4;
-  returnVal[4] =  arbitraryData * 5;
-  returnVal[5] =  arbitraryData * 6;
-  returnVal[6] =  arbitraryData * 7;
-  returnVal[7] =  arbitraryData * 8;
-  returnVal[8] =  arbitraryData * 9;
-  returnVal[9] =  arbitraryData * 10;
-  Serial.print("INFO:          SENT FIRST VALUE:");     Serial.println(returnVal[0]);
-  Serial.println("INFO:          RETURNED LAST VALUE:");  Serial.println(returnVal[9]);
+
+
 }
 
 
