@@ -95,11 +95,9 @@ void generateData(uint16_t* returnVal) { // this is were data is assinged to be 
   sensorData[7] = (int)(Z_out * 100);
   sensorData[8] = (int)(WindSpeed_MPH * 100);
   sensorData[9] = rainValue;
-  for(int i; i<sizeof(sensorData); i++){
-    
-     returnVal[i] =  sensorData[i];   // return value is a 16 bit per element array to be sent via mote
-     
-  }
+  
+  memcpy(returnVal, sensorData, sizeof(returnVal)); // assign sensor data array to return val
+  
   /* Sensor[0] =  Temperature
    * Sensor[1] =  Humidity
    * Sensor[2] =  Light
