@@ -125,11 +125,6 @@ void setup() {
 //============================================================================================================//
 //==========================================  {MAIN} =========================================================//
 void loop() {
-
-  ipmtwrapper.api_getMoteSTATE(&MOTESTATE);                                       // GET MOTE STATE NUMBER
-  if ((millis() - lastTIME) > 1000) {
-    Serial.println(MOTESTATE);  lastTIME = millis();                             // Print mote state number every second
-  } 
   if (SLEEP_TRIGGER && SENSOR_TRIGGER && ((millis() - millisATsend) > 100) ) {        // IF SLEEP and SENSORS have been triggered wait 100ms and then go to sleep
     Serial.println("Entering low-power Deep Sleep");
     delay(25);                                //wait for serial monitor to print
@@ -139,9 +134,12 @@ void loop() {
   }
   
   //---------------------------------------------------------------------------------
-  ipmtwrapper.loop();                               // SMART MESH STATE MACHINE LOOP
+  ipmtwrapper.loop(&MOTESTATE);                               // SMART MESH STATE MACHINE LOOP, RETURNS MOTE STATE
   //---------------------------------------------------------------------------------
-
+  if ((millis() - lastTIME) > 1000) {
+        Serial.println(MOTESTATE);  lastTIME = millis();                             // Print mote state number every second
+   }
+  
   /* MOTESTATE = MOTE_STATE_OPERATIONAL; //*/       // <-- UNCOMMENET IF YOU WANT SENSOR TO SAMPLE WITHOUT JOINING NETWORK*/
   if (!SENSOR_TRIGGER) {                            // DONT ENTER IF PREIVOUSLY SAMPLED
     int SampleBeginT = millis();
