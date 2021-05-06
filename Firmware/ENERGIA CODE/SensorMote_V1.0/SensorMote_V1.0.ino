@@ -98,7 +98,7 @@ void setup() {
   );
 
   SleepDuration = 32768 * 30;         // 30 second sleep durtion, 10 minute sleep duration for final deployment
-
+  pinMode(RED_LED, OUTPUT);
   Wire.begin(); // Initialize ardiono as master
 
   //*************************OPT3001 Light Sensor********************//
@@ -126,6 +126,7 @@ void setup() {
 //==========================================  {MAIN} =========================================================//
 void loop() {
   if (SLEEP_TRIGGER && SENSOR_TRIGGER && ((millis() - millisATsend) > 100) ) {        // IF SLEEP and SENSORS have been triggered wait 100ms and then go to sleep
+    digitalWrite(RED_LED, LOW);    // turn the LED off by making the voltage LOW
     Serial.println("Entering low-power Deep Sleep");
     delay(25);                                //wait for serial monitor to print
     PRCMLPDSWakeupSourceEnable(0x00000001);   // set timer as sleep mode interrupt
@@ -146,6 +147,7 @@ void loop() {
     int CollectingPeriod = 1 * 1000; /// 1 seconds
 
     while ((MOTESTATE == MOTE_STATE_OPERATIONAL) && ((millis() - SampleBeginT) < CollectingPeriod)) { // GO INTO LOOP AND COLLECT SENSOR SAMPLES
+      digitalWrite(RED_LED, HIGH);   // turn the LED on (HIGH is the voltage level)
       SENSOR_TRIGGER = true;
       HUMID_READ();                         // HUMIDITY AND TEMP SENSOR
       Serial.print("SENSOR:                                 Humidity(%RH): "); Serial.println(humidity);       // print the reading
