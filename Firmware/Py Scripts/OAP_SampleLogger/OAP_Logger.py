@@ -70,11 +70,11 @@ DEFAULT_SERIALPORT = 'COM15'
 # ============================ helper functions ================================
 def simple_data_Logging(mac, samples):
     # generating random humidity, light, wind speed, accelerometer data
-    spoof_samples = [samples[0], randint(0,10000),randint(0,1000), randint(0,600)]
-    acceldata = []
-    for index in range(10):
-        acceldata.append((randint(0,10), randint(0,10), randint(0,10)))
-    spoof_samples.append(acceldata)
+    #spoof_samples = [samples[0], randint(0,10000),randint(0,1000), randint(0,600)]
+    #acceldata = []
+    #for index in range(10):
+        #acceldata.append((randint(0,10), randint(0,10), randint(0,10)))
+    #spoof_samples.append(acceldata)
 
     # logging
     currentDTandTM = datetime.datetime.now()
@@ -82,7 +82,7 @@ def simple_data_Logging(mac, samples):
     logFile.writelines('\n{TIME} - mote: ({MAC}), sampled: {SAMPLES}'.format(
         TIME= currentDTandTM.strftime('%H:%M:%S'),
         MAC=FormatUtils.formatMacString(mac),
-        SAMPLES= spoof_samples,
+        SAMPLES= samples,
     ))
 
 # called when the manager generates a data notification

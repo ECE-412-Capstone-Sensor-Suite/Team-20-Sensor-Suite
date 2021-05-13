@@ -36,6 +36,11 @@ IpMtWrapper       ipmtwrapper;
 #define           CO2_IN                    6               // CO2 Sensor Input pin
 #define           RAIN_INPUT                2               // rain input pin
 #define           CC3200_LPDS_CLK           32768           // rain input pin
+#define           CO2_ACTIVATE_PIN          0               // Pin used to turn on CO2 Sensor
+#define           WIND_ACTIVATE_PIN         0               // Pin used to turn on Wind Speed Sensor
+#define           O2_ACTIVATE_PIN           0               // Pin used to turn on O2 Sensor
+#define           LOPWR_ACTIVATE_PIN        0               // Pin used to turn on Low Power Sensors Sensors
+
 
 float  OxygenData[100] = {0.00};
 //float key;
@@ -45,6 +50,8 @@ uint8_t pdata;
 float _Key = 0.0;                          // oxygen key value
 float    ReadOxygenData(uint8_t CollectNum);
 float oxygenData;
+
+int holdvalue;
 
 // chain sampling periods
 int humidityT[2] = {10, 5}; // timing characteristics: {WAIT AFTER WRITE 1, WAIT AFTER WRITE2}
@@ -77,12 +84,15 @@ void generateData(uint16_t* returnVal) { // this is were data is assinged to be 
   returnVal[7] = (int)(Z_out * 100) ;         // payload[15,16] = Acceloromter Z
   returnVal[8] = (int)(WindSpeed_MPH * 100); // payload[17,18] = Windspeed
   returnVal[9] = rainValue;                  // payload[19,20] =
-  //memcpy(returnVal, sensorData, sizeof(returnVal)); // assign sensor data array to return val
-  Serial.print("\nINFO:          SENT FIRST VALUE:");     Serial.println(returnVal[0]);
-  Serial.println("INFO:          SENT LAST VALUE:");      Serial.println(returnVal[9]);
-
+  
+  Serial.print("\nSampled:  C: "); Serial.print(temp);Serial.print(" RH: "); Serial.print(humidity); Serial.print("  LUX: "); Serial.print(fLux);
+  Serial.print(" O2: "); Serial.print(oxygenData); Serial.print(" CO2: "); Serial.print(concentration);
+  Serial.print(" X, Y, Z: "); Serial.print(X_out);Serial.print(", ");  Serial.print(Y_out);Serial.print(", ");  Serial.print(Z_out);
+  Serial.print(" WIND: "); Serial.print(WindSpeed_MPH); Serial.print(" Rain: "); Serial.println(rainValue);
   SLEEP_TRIGGER = true; // set sleep state true after sending value
   millisATsend = millis();
+  Serial.print("held ");Serial.println(holdvalue);
+  holdvalue = holdvalue + 1;
 }
 
 //============================================================================================================//
@@ -96,12 +106,19 @@ void setup() {
     200,                              // dataPeriod (ms)
     generateData                      // dataGenerator
   );
+  //-------------------------------------- SENSOR POWER CONTOL SETUP
+  pinMode(CO2_ACTIVATE_PIN,OUTPUT);   digitalWrite(CO2_ACTIVATE_PIN, LOW);
+  pinMode(WIND_ACTIVATE_PIN,OUTPUT);  digitalWrite(WIND_ACTIVATE_PIN, LOW);
+  pinMode(O2_ACTIVATE_PIN,OUTPUT);    digitalWrite(O2_ACTIVATE_PIN, HIGH);
+  pinMode(LOPWR_ACTIVATE_PIN,OUTPUT); digitalWrite(LOPWR_ACTIVATE_PIN, HIGH);
+  SENSOR_TRIGGER = true;
 
-  SleepDuration = 32768 * 3;         // 30 second sleep durtion, 10 minute sleep duration for final deployment
+  //-------------------------------------- LOW POWER SLEEP SETUP
+  SleepDuration = 32768 * 30;         // 30 second sleep durtion, 10 minute sleep duration for final deployment
   pinMode(RED_LED, OUTPUT);
   Wire.begin(); // Initialize ardiono as master
 
-  //*************************OPT3001 Light Sensor********************//
+  //------------------------------------OPT3001 Light Sensor  SETUP
   Wire.beginTransmission(0x44);     // I2C address of OPT3001 = 0x44
   Wire.write(0x01);
   Wire.write(0xCE);
@@ -112,27 +129,35 @@ void setup() {
   Wire.write(0x2D); // Access/ talk to POWER_CTL Register - 0x2D
   // Enable measurement
   Wire.write(8); // (8dec -> 0000 1000 binary) Bit D3 High for measuring enable
-
   Wire.endTransmission();
 
-  //**************************DFR O2 Sensor***************************//
+  //---------------------------------DFR O2 Sensor SETUP
   while (!begin(O2_ADDR)) {
     Serial.println("I2c device number error !");
     delay(1000);
   }
   Serial.println("I2c connect success !");
+  digitalWrite(O2_ACTIVATE_PIN, LOW);
+  digitalWrite(LOPWR_ACTIVATE_PIN, LOW);
 }
 
 //============================================================================================================//
 //==========================================  {MAIN} =========================================================//
 void loop() {
-  if (SLEEP_TRIGGER && SENSOR_TRIGGER && ((millis() - millisATsend) > 100) ) {        // IF SLEEP and SENSORS have been triggered wait 100ms and then go to sleep
+  if (SLEEP_TRIGGER && (!SENSOR_TRIGGER) && ((millis() - millisATsend) > 1) ) {        // IF SLEEP and SENSORS have been triggered wait 100ms and then go to sleep
     digitalWrite(RED_LED, LOW);    // turn the LED off by making the voltage LOW
     Serial.println("Entering low-power Deep Sleep");
-    delay(25);                                //wait for serial monitor to print
+    PRCMSRAMRetentionEnable(PRCM_SRAM_COL_1,PRCM_SRAM_LPDS_RET);
+    Serial.println(PRCM_SRAM_COL_1);
+    delay(100);                                //wait for serial monitor to print
+
+    
     PRCMLPDSWakeupSourceEnable(0x00000001);   // set timer as sleep mode interrupt
     PRCMLPDSIntervalSet(SleepDuration);       // set sleep mode interval
+    //PRCMDeepSleepEnter();
     PRCMLPDSEnter();
+    Serial.println("Exiting low-power Deep Sleep");
+    
   }
   
   //---------------------------------------------------------------------------------
@@ -143,43 +168,83 @@ void loop() {
    }
   
   /* MOTESTATE = MOTE_STATE_OPERATIONAL; //*/       // <-- UNCOMMENET IF YOU WANT SENSOR TO SAMPLE WITHOUT JOINING NETWORK*/
-  if (!SENSOR_TRIGGER) {                            // DONT ENTER IF PREIVOUSLY SAMPLED
-    int SampleBeginT = millis();
-    int CollectingPeriod = 1 * 1000; /// 1 seconds
 
-    while ((MOTESTATE == MOTE_STATE_OPERATIONAL) && ((millis() - SampleBeginT) < CollectingPeriod)) { // GO INTO LOOP AND COLLECT SENSOR SAMPLES
-      digitalWrite(RED_LED, HIGH);   // turn the LED on (HIGH is the voltage level)
+
+  if ((MOTESTATE == MOTE_STATE_OPERATIONAL) && SENSOR_TRIGGER) { // GO INTO LOOP AND COLLECT SENSOR SAMPLES
       SENSOR_TRIGGER = true;
-      HUMID_READ();                         // HUMIDITY AND TEMP SENSOR
-      Serial.print("SENSOR:                                 Humidity(%RH): "); Serial.println(humidity);       // print the reading
-      Serial.print("SENSOR:                                 Temp(C): ");       Serial.println(temp);           // print the reading
-      delay(5);         // Wait between readings
+      digitalWrite(RED_LED, HIGH);    // TURN ON WHEN SAMPLING BEGINS
 
-      OPT_READ();                           // ARDUINO OPT3001 LIGHT SENSOR
-      Serial.print("SENSOR:                                 LUX: ");
-      Serial.println(fLux);                           //Print the received data
+      //--------------------------------------------------------------------- LOW POWER SAMPLE LOOP
+      int beginTime = millis();       //  Setting up constaints for sample loop
+      int SetupTime = 2;              //  wait before sampling
+      bool LOWPWR_TRIG = true;         //  
+      digitalWrite(LOPWR_ACTIVATE_PIN, HIGH);   // TURN ON LOWPWR Sensors
+      Serial.println("Waiting for Low Power Sensors..");        
+      while(LOWPWR_TRIG){
 
-      ADXL_READ();                          // ACCELOROMETER SENSOR
-      Serial.print("SENSOR:                                 Xa= "); Serial.print(X_out);
-      Serial.print("   Ya= "); Serial.print(Y_out);  Serial.print("   Za= "); Serial.println(Z_out);
-
-      ReadOxygenData(COLLECT_NUMBER);       // O2 SENSOR
-      Serial.print("SENSOR:                                 Oxygen concentration is ");
-      Serial.print(oxygenData); Serial.println(" %vol");
-
-      if (millis() - LastPrint > 200) {     // read every 200 ms - printing slows this down further
-        WIND_READ();                        // WIND SENSOR
-        Serial.print("SENSOR:                                 WindSpeed MPH: "); Serial.println((float)WindSpeed_MPH);
-        LastPrint = millis();
+        if((millis() - beginTime) > SetupTime){
+          HUMID_READ();                         // HUMIDITY AND TEMP SENSOR
+          OPT_READ();                           // ARDUINO OPT3001 LIGHT SENSOR
+          ADXL_READ();                          // ACCELOROMETER SENSOR
+          rainValue = analogRead(2);            //Rain Sensor Input
+          LOWPWR_TRIG = false;                   // Exit sample loop
+        }
       }
+      digitalWrite(LOPWR_ACTIVATE_PIN, LOW);   // TURN OFF LOWPWR Sensors
 
-      CO2_READ();                           // CO2 SENSOR
-      Serial.print("SENSOR:                                 CO2: "); Serial.print(concentration); Serial.println("ppm");
+      //--------------------------------------------------------------------- O2 SAMPLE LOOP
+      beginTime = millis();         //  Setting up constaints for sample loop
+      SetupTime = 1000*5;               // wait 5 sec befores sampling O2
+      bool O2_TRIG = true;           //
+      digitalWrite(O2_ACTIVATE_PIN, HIGH);   // TURN ON O2 Sensors
+      Serial.println("Waiting for O2...");
+      while(O2_TRIG){
 
-      rainValue = analogRead(2);            //Rain Sensor Input
-      Serial.print("SENSOR:                                 Rain Level: "); Serial.println(rainValue);
+        if((millis() - beginTime) > SetupTime){
+          ReadOxygenData(COLLECT_NUMBER);       // O2 SENSOR
+          O2_TRIG = false;                       // Exit sample loop
+        }
+      }
+      digitalWrite(O2_ACTIVATE_PIN, LOW);   // TURN OFF O2 Sensors
+
+     //-------------------------------------------------------------------- WIND SPEEED SAMPLE LOOP
+      beginTime = millis();           //  Setting up constaints for sample loop
+      SetupTime = 1000 * 10;          //  wait 10 sec before sampling wind
+      bool WIND_TRIG = true  ;         //
+      digitalWrite(WIND_ACTIVATE_PIN, HIGH);   // TURN ON WIND Sensors
+      Serial.println("Waiting for WIND......");      
+      while(WIND_TRIG){
+
+        if((millis() - beginTime) > SetupTime){
+          WIND_READ();                            // WIND SENSOR
+          WIND_TRIG = false ;                      // Exit sample loop
+        }
+      }
+      digitalWrite(WIND_ACTIVATE_PIN, LOW);   // TURN OFF WIND Sensors
+
+     //-------------------------------------------------------------------- WIND SPEEED SAMPLE LOOP
+      beginTime = millis();           //  Setting up constaints for sample loop
+      SetupTime = 1000 * 30;          //  wait 30 sec before sampling Co2
+      bool CO2_TRIG = true;           //
+      digitalWrite(CO2_ACTIVATE_PIN, HIGH);   // TURN ON WIND Sensors
+      Serial.println("Waiting for CO2..........");
+      while(CO2_TRIG){
+
+        if((millis() - beginTime) > SetupTime){
+          CO2_READ();                             // CO2 SENSOR
+          CO2_TRIG = false  ;                      // Exit sample loop
+        }
+      }
+      digitalWrite(CO2_ACTIVATE_PIN, LOW);   // TURN OFF WIND Sensors
+
+      SENSOR_TRIGGER = false;
     }
-  }
+    else{
+      digitalWrite(CO2_ACTIVATE_PIN, LOW);      // TURN OFF CO2 Sensors
+      digitalWrite(WIND_ACTIVATE_PIN, LOW);     // TURN OFF WIND Sensors
+      digitalWrite(O2_ACTIVATE_PIN, LOW);       // TURN OFF O2 Sensors
+      digitalWrite(LOPWR_ACTIVATE_PIN, LOW);    // TURN OFF LOPWR Sensors
+    }
 }
 
 //==========================================  {END OF MAIN} ====================================================//
@@ -198,7 +263,7 @@ void HUMID_READ() {
   //********HUMID & TEMP SENSOR********//
   ///slaveSample template:
   //          {ADDRESS, 1ST WRITE, 2ND WRITE, WAIT TIMES , EXPECTED NO. OF  BYTES}
-  slaveSample(HUMIDITY_ADDR, byte(0x00), byte(0x01), humidityT, 4); //** SAMPLE RAW BYTES FROM SENSOR
+  slaveSample(HUMIDITY_ADDR, byte(0x00), byte(0x01), humidityT, 4, 0); //** SAMPLE RAW BYTES FROM SENSOR
 
   //** parse bytes from sensor into two 16-bit words, then convert words into accurate data.
   int humidityWord = (reading[0] << 8) | reading[1];    // shift byte0 up 8 bits and add byte1 to it
@@ -211,9 +276,10 @@ void HUMID_READ() {
 void OPT_READ() {
   //slaveSample template:
   //         {ADDRESS, 1ST WRITE, byte(0xFF) = DONT WRITE, WAIT TIMES , EXPECTED NO. OF  BYTES}
-  slaveSample(OPT_ADDR, byte(0x00), byte(0xFF), opt3001T, 2); //** SAMPLE RAW BYTES FROM SENSOR
+  int iOffset = 5;
+  slaveSample(OPT_ADDR, byte(0x00), byte(0xFF), opt3001T, 2, iOffset); //** SAMPLE RAW BYTES FROM SENSOR
 
-  int optWord = (reading[0] << 8) | reading[1];
+  int optWord = (reading[0 + iOffset] << 8) | reading[1 + iOffset];
   uint16_t iExponent, iMantissa;
   iMantissa = optWord & 0x0FFF;                 // Extract Mantissa
   iExponent = (optWord & 0xF000) >> 12;         // Extract Exponent
@@ -270,7 +336,7 @@ void CO2_READ() {
 //===========================================================================================================//
 //========================================  {HELPER Functions} ==============================================//
 //************************** SLAVE CALLING FUNCTION *****************************//
-void slaveSample(int slavAddr, byte word1, byte word2, int wait[] , int byteNum) {
+void slaveSample(int slavAddr, byte word1, byte word2, int wait[] , int byteNum, int index) {
 
   if (word1 != byte(0xFF)) {  //*** CHECK IF SLAVE NEEDS MEASURE REQUEST BEFORE READING
     slaveCommand(slavAddr, word1);  // step 1: instruct sensor to measure
@@ -287,7 +353,7 @@ void slaveSample(int slavAddr, byte word1, byte word2, int wait[] , int byteNum)
 
   for (int i = 0; i <= byteNum; i++ ) { // repeat iteration for the number of expected bytes
     if (Wire.available()) {
-      reading[i] = Wire.read();      // add each new byte into reading array then increment the array
+      reading[i + index] = Wire.read();      // add each new byte into reading array then increment the array
     }
   }
 
