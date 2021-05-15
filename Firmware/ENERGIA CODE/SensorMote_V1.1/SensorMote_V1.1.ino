@@ -40,7 +40,9 @@ IpMtWrapper       ipmtwrapper;
 #define           WIND_ACTIVATE_PIN         0               // Pin used to turn on Wind Speed Sensor
 #define           O2_ACTIVATE_PIN           0               // Pin used to turn on O2 Sensor
 #define           LOPWR_ACTIVATE_PIN        0               // Pin used to turn on Low Power Sensors Sensors
-
+#define           SRAM_OFFSET               0x100           // Location to save Value to keep through LPDS cycle
+#define           Lowpower_Period           3               // Duration of LPDS Cycle
+#define           Co2_period                5               // MINS
 
 float  OxygenData[100] = {0.00};
 //float key;
@@ -51,16 +53,14 @@ float _Key = 0.0;                          // oxygen key value
 float    ReadOxygenData(uint8_t CollectNum);
 float oxygenData;
 
-int holdvalue;
-
+int holdValue;
+char * SRAM_PTR = (char *)(0x20000000 + SRAM_OFFSET);
 // chain sampling periods
 int humidityT[2] = {10, 5}; // timing characteristics: {WAIT AFTER WRITE 1, WAIT AFTER WRITE2}
 int opt3001T[2] = {100, 0};
 byte reading[5];            // for I2C reading
 float X_out, Y_out, Z_out;  // ADXL Outputs
-float humidity;
-float temp;
-float fLux;
+float humidity, temp, fLux;
 const float zeroWindAdjustment =  0.2; // negative numbers yield smaller wind speeds and vice versa.
 float WindSpeed_MPH; int LastPrint;
 int rainValue = analogRead(2);        //Rain Sensor Input
@@ -71,7 +71,7 @@ float concentration;
 int sensorData[10] = {0}; // global array to hold all the sensor values
 uint8_t MOTESTATE = 1;
 bool SENSOR_TRIGGER, SLEEP_TRIGGER = false;
-int lastTIME, millisATsend, SleepDuration;
+int lastTIME, millisATsend, SleepDuration, millisATbegining;
 int confirm_num = 9999; //  number used to confrim that smart mesh is sending appropriatly
 void generateData(uint16_t* returnVal) { // this is were data is assinged to be sent via mote
   returnVal[0] = (int)(temp * 100);          // payload[1,2] = temp
@@ -91,14 +91,12 @@ void generateData(uint16_t* returnVal) { // this is were data is assinged to be 
   Serial.print(" WIND: "); Serial.print(WindSpeed_MPH); Serial.print(" Rain: "); Serial.println(rainValue);
   SLEEP_TRIGGER = true; // set sleep state true after sending value
   millisATsend = millis();
-  Serial.print("held ");Serial.println(holdvalue);
-  holdvalue = holdvalue + 1;
 }
 
 //============================================================================================================//
 //========================================  {INITIALIZE SENSORS} =============================================//
 void setup() {
-
+  millisATbegining = millis();
   ipmtwrapper.setup( // SET UP SMART MESH MOTE
     60000,                            // srcPort
     (uint8_t*)ipv6Addr_manager,       // destAddr
@@ -113,8 +111,13 @@ void setup() {
   pinMode(LOPWR_ACTIVATE_PIN,OUTPUT); digitalWrite(LOPWR_ACTIVATE_PIN, HIGH);
   SENSOR_TRIGGER = true;
 
+  memcpy(&holdValue, SRAM_PTR, sizeof(holdValue));
+  Serial.print("SRAM READING --->"); Serial.println(holdValue);
+  //holdValue += Lowpower_Period ;             // add seconds spent in LPDS
+  if(holdValue > 100000000) holdValue = 0;
+  
   //-------------------------------------- LOW POWER SLEEP SETUP
-  SleepDuration = 32768 * 30;         // 30 second sleep durtion, 10 minute sleep duration for final deployment
+  SleepDuration = 32768 * Lowpower_Period;         // 30 second sleep durtion, 10 minute sleep duration for final deployment
   pinMode(RED_LED, OUTPUT);
   Wire.begin(); // Initialize ardiono as master
 
@@ -145,10 +148,14 @@ void setup() {
 //==========================================  {MAIN} =========================================================//
 void loop() {
   if (SLEEP_TRIGGER && (!SENSOR_TRIGGER) && ((millis() - millisATsend) > 1) ) {        // IF SLEEP and SENSORS have been triggered wait 100ms and then go to sleep
+    holdValue += 1;                                                                    // add total seconds between initializaton and LDPS enter and multiply with offset
+    Serial.print("HOLD VALUE --->"); Serial.println(holdValue); 
+    memcpy(SRAM_PTR,&holdValue, sizeof(holdValue));
+    
     digitalWrite(RED_LED, LOW);    // turn the LED off by making the voltage LOW
     Serial.println("Entering low-power Deep Sleep");
     PRCMSRAMRetentionEnable(PRCM_SRAM_COL_1,PRCM_SRAM_LPDS_RET);
-    Serial.println(PRCM_SRAM_COL_1);
+    Serial.println(PRCM_SRAM_COL_1 & 0xF, HEX);
     delay(100);                                //wait for serial monitor to print
 
     
@@ -159,7 +166,6 @@ void loop() {
     Serial.println("Exiting low-power Deep Sleep");
     
   }
-  
   //---------------------------------------------------------------------------------
   ipmtwrapper.loop(&MOTESTATE);                               // SMART MESH STATE MACHINE LOOP, RETURNS MOTE STATE
   //---------------------------------------------------------------------------------
@@ -194,7 +200,7 @@ void loop() {
 
       //--------------------------------------------------------------------- O2 SAMPLE LOOP
       beginTime = millis();         //  Setting up constaints for sample loop
-      SetupTime = 1000*5;               // wait 5 sec befores sampling O2
+      SetupTime = 1000*1;               // wait 5 sec befores sampling O2
       bool O2_TRIG = true;           //
       digitalWrite(O2_ACTIVATE_PIN, HIGH);   // TURN ON O2 Sensors
       Serial.println("Waiting for O2...");
@@ -209,7 +215,7 @@ void loop() {
 
      //-------------------------------------------------------------------- WIND SPEEED SAMPLE LOOP
       beginTime = millis();           //  Setting up constaints for sample loop
-      SetupTime = 1000 * 10;          //  wait 10 sec before sampling wind
+      SetupTime = 1000 * 1;          //  wait 10 sec before sampling wind
       bool WIND_TRIG = true  ;         //
       digitalWrite(WIND_ACTIVATE_PIN, HIGH);   // TURN ON WIND Sensors
       Serial.println("Waiting for WIND......");      
@@ -223,11 +229,17 @@ void loop() {
       digitalWrite(WIND_ACTIVATE_PIN, LOW);   // TURN OFF WIND Sensors
 
      //-------------------------------------------------------------------- WIND SPEEED SAMPLE LOOP
-      beginTime = millis();           //  Setting up constaints for sample loop
-      SetupTime = 1000 * 30;          //  wait 30 sec before sampling Co2
-      bool CO2_TRIG = true;           //
-      digitalWrite(CO2_ACTIVATE_PIN, HIGH);   // TURN ON WIND Sensors
-      Serial.println("Waiting for CO2..........");
+
+      bool CO2_TRIG = (holdValue * Lowpower_Period) > 60*Co2_period;          // Check if if sampling perioud elapsed
+      if(CO2_TRIG){
+        Serial.println("Waiting for CO2.........."); 
+        digitalWrite(CO2_ACTIVATE_PIN, HIGH);             // TURN ON WIND Sensors
+        beginTime = millis();                             //  Setting up constaints for sample loop
+        }            
+      else{Serial.print("CO2 Timer..... "); Serial.println(holdValue);} 
+      
+
+      SetupTime = 1000 * 1;           //  wait 30 sec before sampling Co2
       while(CO2_TRIG){
 
         if((millis() - beginTime) > SetupTime){
