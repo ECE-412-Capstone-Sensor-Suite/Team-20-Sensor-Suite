@@ -41,8 +41,8 @@ IpMtWrapper       ipmtwrapper;
 #define           O2_ACTIVATE_PIN           0               // Pin used to turn on O2 Sensor
 #define           LOPWR_ACTIVATE_PIN        0               // Pin used to turn on Low Power Sensors Sensors
 #define           SRAM_OFFSET               0x100           // Location to save Value to keep through LPDS cycle
-#define           Lowpower_Period           3               // Duration of LPDS Cycle
-#define           Co2_period                5               // MINS
+#define           Lowpower_Period           10              // Duration of LPDS Cycle in seconds
+#define           Co2_period                1               // MINS
 
 float  OxygenData[100] = {0.00};
 //float key;
@@ -182,7 +182,7 @@ void loop() {
 
       //--------------------------------------------------------------------- LOW POWER SAMPLE LOOP
       int beginTime = millis();       //  Setting up constaints for sample loop
-      int SetupTime = 2;              //  wait before sampling
+      int SetupTime = 100;              //  wait before sampling
       bool LOWPWR_TRIG = true;         //  
       digitalWrite(LOPWR_ACTIVATE_PIN, HIGH);   // TURN ON LOWPWR Sensors
       Serial.println("Waiting for Low Power Sensors..");        
@@ -200,7 +200,7 @@ void loop() {
 
       //--------------------------------------------------------------------- O2 SAMPLE LOOP
       beginTime = millis();         //  Setting up constaints for sample loop
-      SetupTime = 1000*1;               // wait 5 sec befores sampling O2
+      SetupTime = 1000*10;               // wait 5 sec befores sampling O2
       bool O2_TRIG = true;           //
       digitalWrite(O2_ACTIVATE_PIN, HIGH);   // TURN ON O2 Sensors
       Serial.println("Waiting for O2...");
@@ -215,7 +215,7 @@ void loop() {
 
      //-------------------------------------------------------------------- WIND SPEEED SAMPLE LOOP
       beginTime = millis();           //  Setting up constaints for sample loop
-      SetupTime = 1000 * 1;          //  wait 10 sec before sampling wind
+      SetupTime = 1000 * 10;          //  wait 10 sec before sampling wind
       bool WIND_TRIG = true  ;         //
       digitalWrite(WIND_ACTIVATE_PIN, HIGH);   // TURN ON WIND Sensors
       Serial.println("Waiting for WIND......");      
@@ -239,7 +239,7 @@ void loop() {
       else{Serial.print("CO2 Timer..... "); Serial.println(holdValue);} 
       
 
-      SetupTime = 1000 * 1;           //  wait 30 sec before sampling Co2
+      SetupTime = 1000 * 30;           //  wait 30 sec before sampling Co2
       while(CO2_TRIG){
 
         if((millis() - beginTime) > SetupTime){
