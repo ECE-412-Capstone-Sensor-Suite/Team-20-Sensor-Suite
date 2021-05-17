@@ -40,7 +40,7 @@ IpMtWrapper       ipmtwrapper;
 #define           WIND_ACTIVATE_PIN         0               // Pin used to turn on Wind Speed Sensor
 #define           O2_ACTIVATE_PIN           0               // Pin used to turn on O2 Sensor
 #define           LOPWR_ACTIVATE_PIN        0               // Pin used to turn on Low Power Sensors Sensors
-#define           SRAM_OFFSET               0x100           // Location to save Value to keep through LPDS cycle
+#define           SRAM_OFFSET               0x050           // Location to save Value to keep through LPDS cycle
 #define           Lowpower_Period           10              // Duration of LPDS Cycle in seconds
 #define           Co2_period                1               // MINS
 
