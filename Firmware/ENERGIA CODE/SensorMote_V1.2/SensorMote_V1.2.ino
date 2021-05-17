@@ -230,7 +230,7 @@ void loop() {
 
      //-------------------------------------------------------------------- WIND SPEEED SAMPLE LOOP
 
-      bool CO2_TRIG = (holdValue * Lowpower_Period) > 60*Co2_period;          // Check if if sampling perioud elapsed
+      bool CO2_TRIG = (holdValue * Lowpower_Period) >= 60*Co2_period;          // Check if if sampling perioud elapsed
       if(CO2_TRIG){
         Serial.println("Waiting for CO2.........."); 
         digitalWrite(CO2_ACTIVATE_PIN, HIGH);             // TURN ON WIND Sensors
@@ -245,6 +245,7 @@ void loop() {
         if((millis() - beginTime) > SetupTime){
           CO2_READ();                             // CO2 SENSOR
           CO2_TRIG = false  ;                      // Exit sample loop
+          holdValue = 0;
         }
       }
       digitalWrite(CO2_ACTIVATE_PIN, LOW);   // TURN OFF WIND Sensors
