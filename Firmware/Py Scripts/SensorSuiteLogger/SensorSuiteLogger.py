@@ -73,7 +73,15 @@ UPDATEPERIOD = 500  # in ms
 DEFAULT_HOST = '127.0.0.1'
 DEFAULT_PORT = 9900
 
-
+Known_Macs = []
+Data_Loc = sys.path[3] + "/DataOrganization/"
+MAC_root = "00-17-0d-00-00"
+print("Data Storage Directory: " + Data_Loc)
+for file in os.listdir(Data_Loc):
+    if file.endswith(".log"):
+        fileName = os.path.join(file)
+        Known_Macs.append(MAC_root + "-" + fileName[0:2] + "-" + fileName[2:4] + "-" + fileName[4:6])
+print("Known Motes: " + str(Known_Macs))
 # ============================ body ============================================
 
 ##
@@ -141,7 +149,6 @@ class notifClient(object):
         self.data['ts_usec'] = notifParams.utcUsecs
         self.dataLock.release()
         simple_data_Logging(notifParams.macAddress, notifParams.data)
-        print('sensor data recieved')
 
 
 class dataGui(object):
@@ -236,29 +243,63 @@ class dataGui(object):
 
 
 def simple_data_Logging(mac, payload):
-    samples = [None] * (len(payload)/2)
+    macSTR = FormatUtils.formatMacString(mac)                                   # convert mac address to string
+    logname = macSTR[-8:-6] + macSTR[-5:-3] + macSTR[-2] + macSTR[-1] + ".log"  # determine logname
+    print('sensor data recieved --> ' + logname)
+
+    CheckMoteRegestry(macSTR, logname)
+
+    samples = [None] * (len(payload)/2)                         # reformating payload into 16 bit words
     for i in range(len(samples)):
         samples[i] = (payload[i*2] << 8) | (payload[ (i*2) + 1])
+
     # logging
     currentDTandTM = datetime.datetime.now()
-    logFile = open("sampleLog.log", "a")
-    logFile.writelines('\n{TIME} - mote: ({MAC}), sampled: {SAMPLES}'.format(
+    logFile = open(Data_Loc + logname, "a")
+    logFile.writelines('\n{TIME}, {SAMPLES}'.format(
         TIME=currentDTandTM.strftime('%H:%M:%S'),
-        MAC=FormatUtils.formatMacString(mac),
-        SAMPLES= samples,
+        SAMPLES=str(samples)[1:-1],
     ))
+    logFile.close()
+
+def UpdateDate(logname):
+    newDate = True
+    logFile = open(Data_Loc + logname, "r")
+    currentDate = time.datetime.now().strftime('%m/%d/%Y')
+    for lines in logfile.readlines():
+        if lines.split()[0] == "--":
+            print lines.split()[1]
+            if lines.split()[1] ==  currentDate:
+                newDate = False
+    logFile.close()
+    if newDate:
+        logFile = open(Data_Loc + logname, "a")
+        logFile.write('-- ' + datetime.datetime.now().strftime('%m/%d/%Y') + '\n')
+        logFile.close()
+
+
+
+def CheckMoteRegestry(testMac, logname):
+    newMac = True
+    for Mac in Known_Macs:
+        if testMac == Mac:
+            newMac = False
+    if newMac:
+        print("New Mote --->" + testMac)
+        logFile = open(Data_Loc + logname, "w")
+        logFile.write('~     MAC: ' + testMac + '\n')
+        logFile.write('~  Status: ' + 'OPERATIONAl' + '\n')
+        logFile.write('~   Coord: ' + '(' + str(None)+','+str(None)+')' + '\n')
+        logFile.write('~ User ID: ' + str(None) + '\n')
+        logFile.write('-- ' + datetime.datetime.now().strftime('%m/%d/%Y') + '\n')
+        logFile.close()
+        Known_Macs.append(testMac)
+
 # ============================ main ============================================
 
 def main(connect_params):
     dataGuiHandler = dataGui()
     dataGuiHandler.start(connect_params)
-
-
-# start logging file
-logFile = open("sampleLog.log", "w")
-
-logFile.write('-Date: ' + datetime.datetime.now().strftime('%m/%d/%Y' + '\n'))
-logFile.close()
 
 if __name__ == '__main__':
     # Parse the command line
