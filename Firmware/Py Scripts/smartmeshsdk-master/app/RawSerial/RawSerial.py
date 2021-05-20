@@ -48,7 +48,7 @@ class SerialReceiver(threading.Thread):
     def run(self):
         while True:
             try:
-                rxByte = self.serialHandler.read(1)
+                rxByte = self.serialHandler.readUI(1)
             except Exception as err:
                 output  = []
                 output += ['ERROR while reading from serial port']
