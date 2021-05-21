@@ -78,13 +78,13 @@ def picture(list,number):
     if MaxNum - MinNum > 4000:
         ax.yaxis.set_major_locator(ticker.MultipleLocator(1000))
     if number==1:
-        plt.savefig(u"Temperature.png",figsize=[10,10])
+        plt.savefig("Temperature.png",figsize=[10,10])
     if number==2:
-        plt.savefig(u"humidity.png",figsize=[10,10])
+        plt.savefig("humidity.png",figsize=[10,10])
     if number==3:
-        plt.savefig(u"light.png",figsize=[10,10])
+        plt.savefig("light.png",figsize=[10,10])
     if number==4:
-        plt.savefig(u"windSpeed.png",figsize=[10,10])
+        plt.savefig("windSpeed.png",figsize=[10,10])
 
 
 ## This function is used to get data by imputing mac address

@@ -172,7 +172,7 @@ class SerialScanner(object):
             try:
                 rxBuff = []
                 while True:
-                    c = serialHandler.read(1)
+                    c = serialHandler.readUI(1)
                     if c:
                         rxBuff += [ord(c)]
                         if self._contains_mrgHello(rxBuff):

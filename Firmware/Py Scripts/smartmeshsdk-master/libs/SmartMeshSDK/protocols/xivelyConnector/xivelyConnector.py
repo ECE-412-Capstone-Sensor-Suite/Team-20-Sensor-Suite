@@ -563,7 +563,7 @@ class xivelyClient(object):
             
             # parse response
             response              = connection.getresponse()
-            responseBody          = response.read().strip()
+            responseBody          = response.readUI().strip()
             if responseBody:
                 responseBody      = json.loads(responseBody)
             else:

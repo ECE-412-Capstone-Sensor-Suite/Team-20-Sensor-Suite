@@ -372,12 +372,12 @@ class Mode2Page(tk.Frame):
         temp_button.grid(row=1, column=0, pady=10, padx=30)
 
         def hum_graphing():
-            img = cv2.imread(u"humidity.png")
-            cv2.imshow(u"humidity", img)
+            img = cv2.imread("humidity.png")
+            cv2.imshow("humidity", img)
 
         hum_button = tk.Button(button_frame,
-                               text=u'Humidity Graph', font=(u"Eras Demi ITC", 12), command=hum_graphing,
-                               relief=u'raised', borderwidth=3, width=16, height=4)
+                               text='Humidity Graph', font=("Eras Demi ITC", 12), command=hum_graphing,
+                               relief='raised', borderwidth=3, width=16, height=4)
         hum_button.grid(row=1, column=1, pady=10, padx=10)
 
         def lig_graphing():

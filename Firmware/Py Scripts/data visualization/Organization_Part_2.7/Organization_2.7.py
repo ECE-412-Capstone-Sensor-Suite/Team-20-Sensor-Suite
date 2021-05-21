@@ -1,5 +1,5 @@
 import Tkinter
-import read
+import readUI
 #import cv2
 
 top = Tkinter.Tk()
@@ -14,7 +14,7 @@ MotesList = u""
 ##1.check all datas
 def helloCallBack():
     mylb.delete(0, 99999999)
-    for item in read.test1():
+    for item in readUI.test1():
         mylb.insert("end", item)
         scrolly.config(command=mylb.yview)
     mylb2.delete(0, 10)
@@ -50,17 +50,17 @@ def ThisOk():
     print num
     if num[0]==2:
         mylb.delete(0, 99999999)
-        for item in read.test2(TimeBox.get()):
+        for item in readUI.test2(TimeBox.get()):
             mylb.insert("end", item)
             scrolly.config(command=mylb.yview)
     if num[0] == 3:
         mylb.delete(0, 99999999)
-        for item in read.test3(MotesBox.get()):
+        for item in readUI.test3(MotesBox.get()):
             mylb.insert("end", item)
             scrolly.config(command=mylb.yview)
     if num[0] == 4:
         mylb.delete(0, 99999999)
-        for item in read.test4(TimeBox.get(),MotesBox.get()):
+        for item in readUI.test4(TimeBox.get(), MotesBox.get()):
             mylb.insert("end", item)
             scrolly.config(command=mylb.yview)
 
