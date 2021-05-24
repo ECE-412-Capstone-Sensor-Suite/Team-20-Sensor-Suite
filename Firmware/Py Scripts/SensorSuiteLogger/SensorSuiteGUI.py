@@ -3,36 +3,48 @@ try:
 except:
     from tkinter import *
 import ttk
+from tkFont import Font
 class MoteTable():
     def __init__(self, Parent, Headers, MoteRows):
         self.ParentFrame = Parent
-        self.Table = []
+        self.Cells = []
         self.Row = []
         self.headrow = []
-
-        self.headrow.append(Label(Parent, text='Graph', relief=GROOVE, borderwidth=2))
         for header in Headers:
-            self.headrow.append(Label(Parent, text = header,relief = GROOVE, borderwidth=2))
+            self.headrow.append(Button(Parent, bg = 'light blue', text = header,relief = RAISED , borderwidth=3))
 
         for mote in MoteRows :
             Label_row = []
             for info in mote:
-                Label_row.append(Label(Parent, text=info, relief=GROOVE, borderwidth=2))
+                if info == mote[0]:
+                    Label_row.append(Button(self.ParentFrame, text=info, borderwidth=3, font= Font(size=110)))
+                elif info == mote[1]:
+                        if info=="OPERATIONAL":
+                            Label_row.append(
+                                Label(Parent, font=Font(size=8), bg='DarkOliveGreen1', text=info, relief=GROOVE,
+                                      borderwidth=2))
+                        else:
+                            Label_row.append(
+                                Label(Parent, font=Font(size=8), bg='salmon1', text=info, relief=GROOVE,
+                                      borderwidth=2))
 
-            self.Table.append(Label_row)
+
+                else:
+                    Label_row.append(Label(Parent, font= Font(size=8), bg = 'gainsboro', text=info, relief=SUNKEN, borderwidth=2))
+
+            self.Cells.append(Label_row)
 
 
     def pack_in(self):
         Grid.rowconfigure(self.ParentFrame, 0, weight=1)
         self.LayRow(self.headrow, 0,0)
-        for n in range(len(self.Table)):
+        for n in range(len(self.Cells)):
             Grid.rowconfigure(self.ParentFrame, n+1, weight=1)
-            self.LayRow(self.Table[n], n + 1,1)
-            Button(self.ParentFrame, text='+', borderwidth=2, pady=0).grid(row = n+1, column=0)
+            self.LayRow(self.Cells[n], n + 1, 0)
 
     def LayRow(self, Label_row, row_num, startCol):
         for n in range(len(Label_row)):
-            Label_row[n].grid(row = row_num, column=startCol+n, sticky=EW)
+            Label_row[n].grid(row = row_num, column=startCol+n, sticky=NSEW)
 
 
 dir = sys.path[0] + "/DataOrganization/"
@@ -40,59 +52,20 @@ dir = sys.path[0] + "/DataOrganization/"
 root = Tk()
 root.title("Sensor Suite Data Viewer")
 #root.iconbitmap('')
-root.geometry("1200x800")
+root.geometry("1400x800")
 
 Frame_Setup = LabelFrame(root, text = 'setup',      relief = GROOVE, padx=10, pady=10, borderwidth=4)
 Frame_Motes = LabelFrame(root, text = 'Mote View',  relief = GROOVE, padx=5, pady=5, borderwidth=4)
 Frame_History = LabelFrame(root, text = 'Graph',  relief = GROOVE, padx=5, pady=5, borderwidth=4)
 
 Lab_Directory = Label (Frame_Setup,
-                       text = "Directory:               {directory}".format( directory = dir[0:3]+ " .... " + dir[-35:-1])
+                       text = "Directory:               {directory}".format( directory = dir[0:3] + " .... " + dir[-35:-1])
                        )
 Lab_ChangeDir = Label(Frame_Setup, text = "Change Directory: ")
 In_dir = Entry(Frame_Setup, width=50, borderwidth=2) #seperate button call and grip placement so you can call button object in other places
 
 lab_numOfMotes = Label(Frame_Setup, text = "Number of Motes in network: ")
 lab_DataSpan = Label(Frame_Setup, text = "DateSpan of collected Data: ")
-
-
-
-# Lab_moteTable = Label (Frame_Motes, text = "MOTE ID", relief=SUNKEN)   .grid(row=0, column=0)
-# Lab_moteTable = Label (Frame_Motes, text = "USER ID", relief=SUNKEN)   .grid(row=0, column=1)
-# Lab_moteTable = Label (Frame_Motes, text = "Temp(C)", relief=SUNKEN)   .grid(row=0, column=2)
-# Lab_moteTable = Label (Frame_Motes, text = "Humid(RH)", relief=SUNKEN) .grid(row=0, column=3)
-# Lab_moteTable = Label (Frame_Motes, text = "LUX", relief=SUNKEN)       .grid(row=0, column=4)
-
-# # create scroll bar
-# MoteScroll = Scrollbar(Frame_Motes)
-#
-#
-# # create treeview Tavle
-# Tre_MoteTable = ttk.Treeview(Frame_Motes,yscrollcommand=MoteScroll.set)
-# tabs  = ("Status", "Temp", "Humid", "Lux", "O2", "CO2", "Accel", "Wind", "Rain")
-# units = ("",        "(C)", "(RH)", "", "(%)","(ppm)", "",   "(M/s)", ".")
-# Tre_MoteTable['columns'] = tabs
-#
-# MoteScroll.config(command = Tre_MoteTable.yview)
-#
-# # Define columns
-# TabWidths = (90,50,50,50,50,50,50,50,50)
-# Tre_MoteTable.column("#0", width= 110, minwidth= 50, anchor=W)
-# for n in range(len(tabs)-1):
-#     Tre_MoteTable.column(tabs[n], width= TabWidths[n], minwidth= TabWidths[n], anchor=CENTER)
-# Tre_MoteTable.column(tabs[8], width= TabWidths[8], minwidth= TabWidths[8], anchor=E)
-#
-# # Define Heading
-# Tre_MoteTable.heading("#0", text="Mote(MAC)")
-# for n in range(len(tabs)):
-#     print n
-#     Tre_MoteTable.heading(tabs[n], text=tabs[n] + units[n])
-#
-# #insert Info
-# SpoofMacs = ('60-d0-35', '60-d1-41', '60-d0-40', '60-45-dl', '60-d0-11', '60-d0-35', '60-d1-41', '60-d0-40', '60-45-dl', '60-d0-11', '60-d0-52',
-#             '60-d0-35', '60-d1-41', '60-d0-40', '60-45-dl', '60-d0-11', '60-d0-52', '60-d0-35', '60-d1-41', '60-d0-40', '60-45-dl', '60-d0-11', '60-d0-52')
-# for n in range(len(SpoofMacs)):
-#  Tre_MoteTable.insert(parent='', index='end', iid = n, text = 'Mote-'+SpoofMacs[n], values=("OPERATIONAL", 0, 0, 0, 0, 0, 0, 0, 0))
 
 # CREATE SCROLLABLE FRAME/CANVAS
 MoteFrame = Frame(Frame_Motes, bg='Black')
@@ -117,10 +90,14 @@ Mcanvas.create_window((0,0), window=SecondFrame, anchor=NW)
 Headers  = ("mote","Status", "Temp", "Humid", "Lux", "O2", "CO2", "Accel", "Wind", "Rain")
 Mote_Rows = []
 for n in range(100):
-    row = ["Mote " + str(n), "OPERATIONAL", n+9, 30, 0, 0, 0, 0, 0,0]
+    row = [str(n)+'C' + '-D'+str(n) + '-6' + str(n), "OPERATIONAL", n+9, 30, 0, 0, 0, 0, 0,0]
     Mote_Rows.append(row)
 M_Table = MoteTable(SecondFrame, Headers,Mote_Rows)
 M_Table.pack_in()
+
+# Customize Cells
+for cell in M_Table.headrow:
+    cell['font'] = Font(size = 9)
 
 # FRAME PACKING
 Grid.rowconfigure(root, 0, weight=0)
