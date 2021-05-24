@@ -31,15 +31,15 @@ IpMtWrapper       ipmtwrapper;
 #define           OPT_ADDR                  0x44            // OPT3001 light address (0x44)
 #define           O2_ADDR                   0x73            // O2 ADDRESS
 #define           ADXL_ADDR                 0x53            // O2 ADDRESS
-#define           analogPinForRV            0               // change to pins you the analog pins are using
-#define           analogPinForTMP           0               // P4_5 
+#define           analogPinForRV            23               // change to pins you the analog pins are using
+#define           analogPinForTMP           24               // P4_5 
 #define           CO2_IN                    6               // CO2 Sensor Input pin
 #define           RAIN_INPUT                2               // rain input pin
 #define           CC3200_LPDS_CLK           32768           // rain input pin
-#define           CO2_ACTIVATE_PIN          0               // Pin used to turn on CO2 Sensor
-#define           WIND_ACTIVATE_PIN         0               // Pin used to turn on Wind Speed Sensor
-#define           O2_ACTIVATE_PIN           0               // Pin used to turn on O2 Sensor
-#define           LOPWR_ACTIVATE_PIN        0               // Pin used to turn on Low Power Sensors Sensors
+#define           CO2_ACTIVATE_PIN          31               // Pin used to turn on CO2 Sensor
+#define           WIND_ACTIVATE_PIN         32               // Pin used to turn on Wind Speed Sensor
+#define           O2_ACTIVATE_PIN           33               // Pin used to turn on O2 Sensor
+#define           LOPWR_ACTIVATE_PIN        34               // Pin used to turn on Low Power Sensors Sensors
 #define           SRAM_OFFSET               0x050           // Location to save Value to keep through LPDS cycle
 #define           Lowpower_Period           10              // Duration of LPDS Cycle in seconds
 #define           Co2_period                1               // MINS

@@ -59,107 +59,234 @@
 </layers>
 <library>
 <packages>
-<package name="LTP5901">
-<wire x1="-11.9" y1="10.2" x2="-11.9" y2="-10.2" width="0.127" layer="1"/>
-<wire x1="-11.9" y1="-10.2" x2="11.9" y2="-10.2" width="0.127" layer="1"/>
-<wire x1="11.9" y1="-10.2" x2="11.9" y2="10.2" width="0.127" layer="1"/>
-<wire x1="11.9" y1="10.2" x2="-11.9" y2="10.2" width="0.127" layer="1"/>
-<smd name="P$1" x="-11.9" y="8.5" dx="1.27" dy="0.635" layer="1"/>
-<smd name="P$2" x="-11.9" y="6.8" dx="1.27" dy="0.635" layer="1"/>
-<smd name="P$3" x="-11.9" y="5.1" dx="1.27" dy="0.635" layer="1"/>
-<smd name="P$4" x="-11.9" y="3.4" dx="1.27" dy="0.635" layer="1"/>
-<smd name="P$5" x="-11.9" y="1.7" dx="1.27" dy="0.635" layer="1"/>
-<smd name="P$6" x="-11.9" y="-0.049" dx="1.27" dy="0.635" layer="1"/>
-<smd name="P$7" x="-11.9" y="-1.651" dx="1.27" dy="0.635" layer="1"/>
-<smd name="P$8" x="-11.9" y="-3.4" dx="1.27" dy="0.635" layer="1"/>
-<smd name="P$9" x="-11.9" y="-5.1" dx="1.27" dy="0.635" layer="1"/>
-<smd name="P$10" x="-11.9" y="-6.8" dx="1.27" dy="0.635" layer="1"/>
-<smd name="P$11" x="-11.9" y="-8.5" dx="1.27" dy="0.635" layer="1"/>
-<smd name="P$12" x="-5.1" y="-10.2" dx="1.27" dy="0.635" layer="1" rot="R90"/>
-<smd name="P$13" x="-3.4" y="-10.2" dx="1.27" dy="0.635" layer="1" rot="R90"/>
-<smd name="P$14" x="-1.7" y="-10.2" dx="1.27" dy="0.635" layer="1" rot="R90"/>
-<smd name="P$15" x="0" y="-10.2" dx="1.27" dy="0.635" layer="1" rot="R90"/>
-<smd name="P$16" x="1.749" y="-10.2" dx="1.27" dy="0.635" layer="1" rot="R90"/>
-<smd name="P$17" x="3.478" y="-10.2" dx="1.27" dy="0.635" layer="1" rot="R90"/>
-<smd name="P$18" x="11.9" y="8.5" dx="1.27" dy="0.635" layer="1"/>
-<smd name="P$19" x="11.9" y="-8.5" dx="1.27" dy="0.635" layer="1"/>
-<smd name="P$20" x="11.9" y="-6.8" dx="1.27" dy="0.635" layer="1"/>
-<smd name="P$21" x="11.9" y="-5.178" dx="1.27" dy="0.635" layer="1"/>
-<smd name="P$22" x="11.9" y="-3.322" dx="1.27" dy="0.635" layer="1"/>
-<smd name="P$23" x="11.9" y="-1.7" dx="1.27" dy="0.635" layer="1"/>
-<smd name="P$24" x="11.9" y="0" dx="1.27" dy="0.635" layer="1"/>
-<text x="5.1" y="1.7" size="1.27" layer="25" rot="R180">LTP5902-IPM</text>
-<wire x1="-8.89" y1="7.62" x2="-8.89" y2="-7.62" width="0.127" layer="39"/>
-<wire x1="-8.89" y1="-7.62" x2="8.89" y2="-7.62" width="0.127" layer="39"/>
-<wire x1="8.89" y1="-7.62" x2="8.89" y2="7.62" width="0.127" layer="39"/>
-<wire x1="8.89" y1="7.62" x2="-8.89" y2="7.62" width="0.127" layer="39"/>
+<package name="LTP5902-MMCX">
+<wire x1="-12.4" y1="-19.4" x2="-12.4" y2="19.1" width="0.127" layer="21"/>
+<wire x1="-12.4" y1="19.1" x2="12.6" y2="19.1" width="0.127" layer="21"/>
+<wire x1="12.6" y1="19.1" x2="12.6" y2="-19.4" width="0.127" layer="21"/>
+<wire x1="12.6" y1="-19.4" x2="-12.4" y2="-19.4" width="0.127" layer="21"/>
+<circle x="-8.781" y="15.727" radius="2.8" width="0.127" layer="21"/>
+<smd name="P1" x="-11.9" y="10.6" dx="1.8" dy="0.7" layer="1"/>
+<smd name="P2" x="-11.9" y="9.6" dx="1.8" dy="0.7" layer="1"/>
+<smd name="P3" x="-11.9" y="8.6" dx="1.8" dy="0.7" layer="1"/>
+<smd name="P4" x="-11.9" y="7.6" dx="1.8" dy="0.7" layer="1"/>
+<smd name="P5" x="-11.9" y="6.6" dx="1.8" dy="0.7" layer="1"/>
+<smd name="P6" x="-11.9" y="5.6" dx="1.8" dy="0.7" layer="1"/>
+<smd name="P7" x="-11.9" y="4.6" dx="1.8" dy="0.7" layer="1"/>
+<smd name="P8" x="-11.9" y="3.6" dx="1.8" dy="0.7" layer="1"/>
+<smd name="P9" x="-11.9" y="2.6" dx="1.8" dy="0.7" layer="1"/>
+<smd name="P10" x="-11.9" y="1.6" dx="1.8" dy="0.7" layer="1"/>
+<smd name="P11" x="-11.9" y="0.6" dx="1.8" dy="0.7" layer="1"/>
+<smd name="P12" x="-11.9" y="-0.4" dx="1.8" dy="0.7" layer="1"/>
+<smd name="P13" x="-11.9" y="-1.4" dx="1.8" dy="0.7" layer="1"/>
+<smd name="P14" x="-11.9" y="-2.4" dx="1.8" dy="0.7" layer="1"/>
+<smd name="P15" x="-11.9" y="-3.4" dx="1.8" dy="0.7" layer="1"/>
+<smd name="P16" x="-11.9" y="-4.4" dx="1.8" dy="0.7" layer="1"/>
+<smd name="P17" x="-11.9" y="-5.4" dx="1.8" dy="0.7" layer="1"/>
+<smd name="P18" x="-11.9" y="-6.4" dx="1.8" dy="0.7" layer="1"/>
+<smd name="P19" x="-11.9" y="-7.4" dx="1.8" dy="0.7" layer="1"/>
+<smd name="P20" x="-11.9" y="-8.4" dx="1.8" dy="0.7" layer="1"/>
+<smd name="P21" x="-11.9" y="-9.4" dx="1.8" dy="0.7" layer="1"/>
+<smd name="P22" x="-11.9" y="-10.4" dx="1.8" dy="0.7" layer="1"/>
+<smd name="P23" x="-11.9" y="-11.4" dx="1.8" dy="0.7" layer="1"/>
+<smd name="P24" x="-11.9" y="-12.4" dx="1.8" dy="0.7" layer="1"/>
+<smd name="P25" x="-11.9" y="-13.4" dx="1.8" dy="0.7" layer="1"/>
+<smd name="P26" x="-11.9" y="-14.4" dx="1.8" dy="0.7" layer="1"/>
+<smd name="P27" x="-11.9" y="-15.4" dx="1.8" dy="0.7" layer="1"/>
+<smd name="P28" x="-11.9" y="-16.4" dx="1.8" dy="0.7" layer="1"/>
+<smd name="P29" x="-11.9" y="-17.4" dx="1.8" dy="0.7" layer="1"/>
+<smd name="P30" x="-11.9" y="-18.4" dx="1.8" dy="0.7" layer="1"/>
+<smd name="P31" x="-6.607" y="-19.043" dx="0.7" dy="1.8" layer="1"/>
+<smd name="P32" x="-5.607" y="-19.043" dx="0.7" dy="1.8" layer="1"/>
+<smd name="P33" x="-4.607" y="-19.043" dx="0.7" dy="1.8" layer="1"/>
+<smd name="P34" x="4.893" y="-19.043" dx="0.7" dy="1.8" layer="1"/>
+<smd name="P35" x="5.893" y="-19.043" dx="0.7" dy="1.8" layer="1"/>
+<smd name="P36" x="6.893" y="-19.043" dx="0.7" dy="1.8" layer="1"/>
+<smd name="P37" x="12.1" y="-18.4" dx="1.8" dy="0.7" layer="1" rot="R180"/>
+<smd name="P38" x="12.1" y="-17.4" dx="1.8" dy="0.7" layer="1" rot="R180"/>
+<smd name="P39" x="12.1" y="-16.4" dx="1.8" dy="0.7" layer="1" rot="R180"/>
+<smd name="P40" x="12.1" y="-15.4" dx="1.8" dy="0.7" layer="1" rot="R180"/>
+<smd name="P41" x="12.1" y="-14.4" dx="1.8" dy="0.7" layer="1" rot="R180"/>
+<smd name="P42" x="12.1" y="-13.4" dx="1.8" dy="0.7" layer="1" rot="R180"/>
+<smd name="P43" x="12.1" y="-12.4" dx="1.8" dy="0.7" layer="1" rot="R180"/>
+<smd name="P44" x="12.1" y="-11.4" dx="1.8" dy="0.7" layer="1" rot="R180"/>
+<smd name="P45" x="12.1" y="-10.4" dx="1.8" dy="0.7" layer="1" rot="R180"/>
+<smd name="P46" x="12.1" y="-9.4" dx="1.8" dy="0.7" layer="1" rot="R180"/>
+<smd name="P47" x="12.1" y="-8.4" dx="1.8" dy="0.7" layer="1" rot="R180"/>
+<smd name="P48" x="12.1" y="-7.4" dx="1.8" dy="0.7" layer="1" rot="R180"/>
+<smd name="P49" x="12.1" y="-6.4" dx="1.8" dy="0.7" layer="1" rot="R180"/>
+<smd name="P50" x="12.1" y="-5.4" dx="1.8" dy="0.7" layer="1" rot="R180"/>
+<smd name="P51" x="12.1" y="-4.4" dx="1.8" dy="0.7" layer="1" rot="R180"/>
+<smd name="P52" x="12.1" y="-3.4" dx="1.8" dy="0.7" layer="1" rot="R180"/>
+<smd name="P53" x="12.1" y="-2.4" dx="1.8" dy="0.7" layer="1" rot="R180"/>
+<smd name="P54" x="12.1" y="-1.4" dx="1.8" dy="0.7" layer="1" rot="R180"/>
+<smd name="P55" x="12.1" y="-0.4" dx="1.8" dy="0.7" layer="1" rot="R180"/>
+<smd name="P56" x="12.1" y="0.6" dx="1.8" dy="0.7" layer="1" rot="R180"/>
+<smd name="P57" x="12.1" y="1.6" dx="1.8" dy="0.7" layer="1" rot="R180"/>
+<smd name="P58" x="12.1" y="2.6" dx="1.8" dy="0.7" layer="1" rot="R180"/>
+<smd name="P59" x="12.1" y="3.6" dx="1.8" dy="0.7" layer="1" rot="R180"/>
+<smd name="P60" x="12.1" y="4.6" dx="1.8" dy="0.7" layer="1" rot="R180"/>
+<smd name="P61" x="12.1" y="5.6" dx="1.8" dy="0.7" layer="1" rot="R180"/>
+<smd name="P62" x="12.1" y="6.6" dx="1.8" dy="0.7" layer="1" rot="R180"/>
+<smd name="P63" x="12.1" y="7.6" dx="1.8" dy="0.7" layer="1" rot="R180"/>
+<smd name="P64" x="12.1" y="8.6" dx="1.8" dy="0.7" layer="1" rot="R180"/>
+<smd name="P65" x="12.1" y="9.6" dx="1.8" dy="0.7" layer="1" rot="R180"/>
+<smd name="P66" x="12.1" y="10.6" dx="1.8" dy="0.7" layer="1" rot="R180"/>
+<smd name="M1" x="-5.4" y="18.6" dx="0.7" dy="1.8" layer="1"/>
+<smd name="M2" x="-4.4" y="18.6" dx="0.7" dy="1.8" layer="1"/>
+<smd name="M3" x="4.1" y="18.6" dx="0.7" dy="1.8" layer="1"/>
+<smd name="M4" x="5.1" y="18.6" dx="0.7" dy="1.8" layer="1"/>
+<text x="-3.4" y="20.3" size="1.27" layer="25">&gt;NAME</text>
+<text x="-3.7" y="-21.4" size="1.27" layer="27">&gt;VALUE</text>
 </package>
 </packages>
 <symbols>
-<symbol name="LTP5902">
-<wire x1="-30.48" y1="33.02" x2="-30.48" y2="-33.02" width="0.254" layer="94"/>
-<wire x1="-30.48" y1="-33.02" x2="33.02" y2="-33.02" width="0.254" layer="94"/>
-<wire x1="33.02" y1="-33.02" x2="33.02" y2="33.02" width="0.254" layer="94"/>
-<wire x1="33.02" y1="33.02" x2="-30.48" y2="33.02" width="0.254" layer="94"/>
-<pin name="GND" x="-33.02" y="27.94" visible="pin" length="short"/>
-<pin name="GPIO17" x="-33.02" y="22.86" visible="pin" length="short"/>
-<pin name="GPIO18" x="-33.02" y="17.78" visible="pin" length="short"/>
-<pin name="GPIO19" x="-33.02" y="12.7" visible="pin" length="short"/>
-<pin name="AI_2" x="-33.02" y="7.62" visible="pin" length="short"/>
-<pin name="AI_1" x="-33.02" y="2.54" visible="pin" length="short"/>
-<pin name="AI_3" x="-33.02" y="-2.54" visible="pin" length="short"/>
-<pin name="AI_0" x="-33.02" y="-7.62" visible="pin" length="short"/>
-<pin name="GND1" x="-33.02" y="-12.7" visible="pin" length="short"/>
-<pin name="GND2" x="-33.02" y="-17.78" visible="pin" length="short"/>
-<pin name="GND3" x="-33.02" y="-22.86" visible="pin" length="short"/>
-<pin name="UARTC0_TX" x="-15.24" y="-35.56" visible="pin" length="short" rot="R90"/>
-<pin name="UARTC0_RX" x="-10.16" y="-35.56" visible="pin" length="short" rot="R90"/>
-<pin name="IPCS_MISO" x="-5.08" y="-35.56" visible="pin" length="short" rot="R90"/>
-<pin name="GND8" x="0" y="-35.56" visible="pin" length="short" rot="R90"/>
-<pin name="IPCS_MOSI" x="5.08" y="-35.56" visible="pin" length="short" rot="R90"/>
-<pin name="IPCS_SCK" x="10.16" y="-35.56" visible="pin" length="short" rot="R90"/>
-<pin name="GND4" x="35.56" y="-22.86" visible="pin" length="short" rot="R180"/>
-<pin name="IPCS_SSN" x="35.56" y="-17.78" visible="pin" length="short" rot="R180"/>
-<pin name="GND5" x="35.56" y="-12.7" visible="pin" length="short" rot="R180"/>
-<pin name="FLASH_P_ENN" x="35.56" y="-7.62" visible="pin" length="short" rot="R180"/>
-<pin name="VSUPPLY" x="35.56" y="-2.54" visible="pin" length="short" rot="R180"/>
-<pin name="GND6" x="35.56" y="2.54" visible="pin" length="short" rot="R180"/>
-<pin name="GND7" x="35.56" y="27.94" visible="pin" length="short" rot="R180"/>
-<text x="-12.7" y="33.02" size="1.778" layer="95">LTP5902-IPM</text>
+<symbol name="LTP5902-MMCX">
+<wire x1="-27.94" y1="-38.1" x2="-27.94" y2="40.64" width="0.254" layer="94"/>
+<wire x1="-27.94" y1="40.64" x2="30.48" y2="40.64" width="0.254" layer="94"/>
+<wire x1="30.48" y1="40.64" x2="30.48" y2="-38.1" width="0.254" layer="94"/>
+<wire x1="30.48" y1="-38.1" x2="-27.94" y2="-38.1" width="0.254" layer="94"/>
+<pin name="GND1" x="-30.48" y="38.1" visible="pin" length="short"/>
+<pin name="P$2" x="-30.48" y="35.56" visible="pin" length="short"/>
+<pin name="NC1" x="-30.48" y="33.02" visible="pin" length="short"/>
+<pin name="GPIO17" x="-30.48" y="30.48" visible="pin" length="short"/>
+<pin name="GPIO18" x="-30.48" y="27.94" visible="pin" length="short"/>
+<pin name="GPIO19" x="-30.48" y="25.4" visible="pin" length="short"/>
+<pin name="AI_2" x="-30.48" y="22.86" visible="pin" length="short"/>
+<pin name="AI_1" x="-30.48" y="20.32" visible="pin" length="short"/>
+<pin name="AI_3" x="-30.48" y="17.78" visible="pin" length="short"/>
+<pin name="AI_0" x="-30.48" y="15.24" visible="pin" length="short"/>
+<pin name="GND2" x="-30.48" y="12.7" visible="pin" length="short"/>
+<pin name="P$12" x="-30.48" y="10.16" visible="pin" length="short"/>
+<pin name="NC2" x="-30.48" y="7.62" visible="pin" length="short"/>
+<pin name="NC3" x="-30.48" y="5.08" visible="pin" length="short"/>
+<pin name="RESETN" x="-30.48" y="2.54" visible="pin" length="short"/>
+<pin name="TDI" x="-30.48" y="0" visible="pin" length="short"/>
+<pin name="TDO" x="-30.48" y="-2.54" visible="pin" length="short"/>
+<pin name="TMS" x="-30.48" y="-5.08" visible="pin" length="short"/>
+<pin name="TCK" x="-30.48" y="-7.62" visible="pin" length="short"/>
+<pin name="GND3" x="-30.48" y="-10.16" visible="pin" length="short"/>
+<pin name="GPIO23" x="-30.48" y="-12.7" visible="pin" length="short"/>
+<pin name="P$22" x="-30.48" y="-15.24" visible="pin" length="short"/>
+<pin name="P$23" x="-30.48" y="-17.78" visible="pin" length="short"/>
+<pin name="P$24" x="-30.48" y="-20.32" visible="pin" length="short"/>
+<pin name="TIMER8_EXT" x="-30.48" y="-22.86" visible="pin" length="short"/>
+<pin name="LPTIMER_EXT" x="-30.48" y="-25.4" visible="pin" length="short"/>
+<pin name="SLEEPN" x="-30.48" y="-27.94" visible="pin" length="short"/>
+<pin name="SPIM_SS_2N" x="-30.48" y="-30.48" visible="pin" length="short"/>
+<pin name="NC4" x="-30.48" y="-33.02" visible="pin" length="short"/>
+<pin name="GND4" x="-30.48" y="-35.56" visible="pin" length="short"/>
+<pin name="UARTC0_TX" x="-10.24" y="-40.64" visible="pin" length="short" rot="R90"/>
+<pin name="UARTC0_RX" x="-6.7" y="-40.64" visible="pin" length="short" rot="R90"/>
+<pin name="IPCS_MISO" x="-3.16" y="-40.64" visible="pin" length="short" rot="R90"/>
+<pin name="GND5" x="5.3" y="-40.64" visible="pin" length="short" rot="R90"/>
+<pin name="IPCS_MOSI" x="8.84" y="-40.64" visible="pin" length="short" rot="R90"/>
+<pin name="IPCS_SCK" x="12.38" y="-40.64" visible="pin" length="short" rot="R90"/>
+<pin name="GND6" x="33.02" y="-35.56" visible="pin" length="short" rot="R180"/>
+<pin name="SPIM_MISO" x="33.02" y="-33.02" visible="pin" length="short" rot="R180"/>
+<pin name="IPCS_SSN" x="33.02" y="-30.48" visible="pin" length="short" rot="R180"/>
+<pin name="SPIM_MOSI" x="33.02" y="-27.94" visible="pin" length="short" rot="R180"/>
+<pin name="SPIM_SCK" x="33.02" y="-25.4" visible="pin" length="short" rot="R180"/>
+<pin name="GND7" x="33.02" y="-22.86" visible="pin" length="short" rot="R180"/>
+<pin name="SPIM_SS_1N" x="33.02" y="-20.32" visible="pin" length="short" rot="R180"/>
+<pin name="SPIM_SS_0N" x="33.02" y="-17.78" visible="pin" length="short" rot="R180"/>
+<pin name="TIMER16_EXT" x="33.02" y="-15.24" visible="pin" length="short" rot="R180"/>
+<pin name="PWM0/TIMER16_OUT" x="33.02" y="-12.7" visible="pin" length="short" rot="R180"/>
+<pin name="SPIS_MISO/UARTC1_TX" x="33.02" y="-10.16" visible="pin" length="short" rot="R180"/>
+<pin name="SPIS_MOSI_UARTC1_RX" x="33.02" y="-7.62" visible="pin" length="short" rot="R180"/>
+<pin name="SPIS_SCK/SCL" x="33.02" y="-5.08" visible="pin" length="short" rot="R180"/>
+<pin name="SPIS_SSN/SDA" x="33.02" y="-2.54" visible="pin" length="short" rot="R180"/>
+<pin name="FLASH_P_ENN" x="33.02" y="0" visible="pin" length="short" rot="R180"/>
+<pin name="NC5" x="33.02" y="2.54" visible="pin" length="short" rot="R180"/>
+<pin name="NC6" x="33.02" y="5.08" visible="pin" length="short" rot="R180"/>
+<pin name="P$54" x="33.02" y="7.62" visible="pin" length="short" rot="R180"/>
+<pin name="VSUPPLY" x="33.02" y="10.16" visible="pin" length="short" rot="R180"/>
+<pin name="P$56" x="33.02" y="12.7" visible="pin" length="short" rot="R180"/>
+<pin name="UART_RX_RTSN" x="33.02" y="15.24" visible="pin" length="short" rot="R180"/>
+<pin name="UART_RX_CTSN" x="33.02" y="17.78" visible="pin" length="short" rot="R180"/>
+<pin name="UART_RX" x="33.02" y="20.32" visible="pin" length="short" rot="R180"/>
+<pin name="UART_TX_RTSN" x="33.02" y="22.86" visible="pin" length="short" rot="R180"/>
+<pin name="UART_TX_CTSN" x="33.02" y="25.4" visible="pin" length="short" rot="R180"/>
+<pin name="UART_TX" x="33.02" y="27.94" visible="pin" length="short" rot="R180"/>
+<pin name="TIMEN" x="33.02" y="30.48" visible="pin" length="short" rot="R180"/>
+<pin name="RADIO_INHIBIT" x="33.02" y="33.02" visible="pin" length="short" rot="R180"/>
+<pin name="NC7" x="33.02" y="35.56" visible="pin" length="short" rot="R180"/>
+<pin name="GND8" x="33.02" y="38.1" visible="pin" length="short" rot="R180"/>
 </symbol>
 </symbols>
 <devicesets>
 <deviceset name="LTP5902" prefix="U">
 <gates>
-<gate name="G$1" symbol="LTP5902" x="0" y="0"/>
+<gate name="G$1" symbol="LTP5902-MMCX" x="0" y="-2.54"/>
 </gates>
 <devices>
-<device name="" package="LTP5901">
+<device name="" package="LTP5902-MMCX">
 <connects>
-<connect gate="G$1" pin="AI_0" pad="P$8"/>
-<connect gate="G$1" pin="AI_1" pad="P$6"/>
-<connect gate="G$1" pin="AI_2" pad="P$5"/>
-<connect gate="G$1" pin="AI_3" pad="P$7"/>
-<connect gate="G$1" pin="FLASH_P_ENN" pad="P$21"/>
-<connect gate="G$1" pin="GND" pad="P$1"/>
-<connect gate="G$1" pin="GND1" pad="P$9"/>
-<connect gate="G$1" pin="GND2" pad="P$10"/>
-<connect gate="G$1" pin="GND3" pad="P$11"/>
-<connect gate="G$1" pin="GND4" pad="P$18"/>
-<connect gate="G$1" pin="GND5" pad="P$20"/>
-<connect gate="G$1" pin="GND6" pad="P$23"/>
-<connect gate="G$1" pin="GND7" pad="P$24"/>
-<connect gate="G$1" pin="GND8" pad="P$15"/>
-<connect gate="G$1" pin="GPIO17" pad="P$2"/>
-<connect gate="G$1" pin="GPIO18" pad="P$3"/>
-<connect gate="G$1" pin="GPIO19" pad="P$4"/>
-<connect gate="G$1" pin="IPCS_MISO" pad="P$14"/>
-<connect gate="G$1" pin="IPCS_MOSI" pad="P$16"/>
-<connect gate="G$1" pin="IPCS_SCK" pad="P$17"/>
-<connect gate="G$1" pin="IPCS_SSN" pad="P$19"/>
-<connect gate="G$1" pin="UARTC0_RX" pad="P$13"/>
-<connect gate="G$1" pin="UARTC0_TX" pad="P$12"/>
-<connect gate="G$1" pin="VSUPPLY" pad="P$22"/>
+<connect gate="G$1" pin="AI_0" pad="P10"/>
+<connect gate="G$1" pin="AI_1" pad="P8"/>
+<connect gate="G$1" pin="AI_2" pad="P7"/>
+<connect gate="G$1" pin="AI_3" pad="P9"/>
+<connect gate="G$1" pin="FLASH_P_ENN" pad="P51"/>
+<connect gate="G$1" pin="GND1" pad="P1"/>
+<connect gate="G$1" pin="GND2" pad="P11"/>
+<connect gate="G$1" pin="GND3" pad="P20"/>
+<connect gate="G$1" pin="GND4" pad="P30"/>
+<connect gate="G$1" pin="GND5" pad="P34"/>
+<connect gate="G$1" pin="GND6" pad="P37"/>
+<connect gate="G$1" pin="GND7" pad="P42"/>
+<connect gate="G$1" pin="GND8" pad="P66"/>
+<connect gate="G$1" pin="GPIO17" pad="P4"/>
+<connect gate="G$1" pin="GPIO18" pad="P5"/>
+<connect gate="G$1" pin="GPIO19" pad="P6"/>
+<connect gate="G$1" pin="GPIO23" pad="P21"/>
+<connect gate="G$1" pin="IPCS_MISO" pad="P33"/>
+<connect gate="G$1" pin="IPCS_MOSI" pad="P35"/>
+<connect gate="G$1" pin="IPCS_SCK" pad="P36"/>
+<connect gate="G$1" pin="IPCS_SSN" pad="P39"/>
+<connect gate="G$1" pin="LPTIMER_EXT" pad="P26"/>
+<connect gate="G$1" pin="NC1" pad="P3"/>
+<connect gate="G$1" pin="NC2" pad="P13"/>
+<connect gate="G$1" pin="NC3" pad="P14"/>
+<connect gate="G$1" pin="NC4" pad="P29"/>
+<connect gate="G$1" pin="NC5" pad="P52"/>
+<connect gate="G$1" pin="NC6" pad="P53"/>
+<connect gate="G$1" pin="NC7" pad="P65"/>
+<connect gate="G$1" pin="P$12" pad="P12"/>
+<connect gate="G$1" pin="P$2" pad="P2"/>
+<connect gate="G$1" pin="P$22" pad="P22"/>
+<connect gate="G$1" pin="P$23" pad="P23"/>
+<connect gate="G$1" pin="P$24" pad="P24"/>
+<connect gate="G$1" pin="P$54" pad="P54"/>
+<connect gate="G$1" pin="P$56" pad="P56"/>
+<connect gate="G$1" pin="PWM0/TIMER16_OUT" pad="P46"/>
+<connect gate="G$1" pin="RADIO_INHIBIT" pad="P64"/>
+<connect gate="G$1" pin="RESETN" pad="P15"/>
+<connect gate="G$1" pin="SLEEPN" pad="P27"/>
+<connect gate="G$1" pin="SPIM_MISO" pad="P38"/>
+<connect gate="G$1" pin="SPIM_MOSI" pad="P40"/>
+<connect gate="G$1" pin="SPIM_SCK" pad="P41"/>
+<connect gate="G$1" pin="SPIM_SS_0N" pad="P44"/>
+<connect gate="G$1" pin="SPIM_SS_1N" pad="P43"/>
+<connect gate="G$1" pin="SPIM_SS_2N" pad="P28"/>
+<connect gate="G$1" pin="SPIS_MISO/UARTC1_TX" pad="P47"/>
+<connect gate="G$1" pin="SPIS_MOSI_UARTC1_RX" pad="P48"/>
+<connect gate="G$1" pin="SPIS_SCK/SCL" pad="P49"/>
+<connect gate="G$1" pin="SPIS_SSN/SDA" pad="P50"/>
+<connect gate="G$1" pin="TCK" pad="P19"/>
+<connect gate="G$1" pin="TDI" pad="P16"/>
+<connect gate="G$1" pin="TDO" pad="P17"/>
+<connect gate="G$1" pin="TIMEN" pad="P63"/>
+<connect gate="G$1" pin="TIMER16_EXT" pad="P45"/>
+<connect gate="G$1" pin="TIMER8_EXT" pad="P25"/>
+<connect gate="G$1" pin="TMS" pad="P18"/>
+<connect gate="G$1" pin="UARTC0_RX" pad="P32"/>
+<connect gate="G$1" pin="UARTC0_TX" pad="P31"/>
+<connect gate="G$1" pin="UART_RX" pad="P59"/>
+<connect gate="G$1" pin="UART_RX_CTSN" pad="P58"/>
+<connect gate="G$1" pin="UART_RX_RTSN" pad="P57"/>
+<connect gate="G$1" pin="UART_TX" pad="P62"/>
+<connect gate="G$1" pin="UART_TX_CTSN" pad="P61"/>
+<connect gate="G$1" pin="UART_TX_RTSN" pad="P60"/>
+<connect gate="G$1" pin="VSUPPLY" pad="P55"/>
 </connects>
 <technologies>
 <technology name=""/>
