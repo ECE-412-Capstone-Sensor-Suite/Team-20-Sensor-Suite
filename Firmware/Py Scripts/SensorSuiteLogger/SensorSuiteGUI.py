@@ -4,71 +4,89 @@ except:
     from tkinter import *
 import ttk
 from tkFont import Font
-class MoteTable():
-    def __init__(self, Parent, Headers, MoteRows):
-        self.ParentFrame = Parent
-        self.Cells = []
-        self.Row = []
-        self.headrow = []
-        for header in Headers:
-            self.headrow.append(Button(Parent, bg = 'light blue', text = header,relief = RAISED , borderwidth=3))
+from SensorSuiteAPI import *
+from GUI_GRAPHING import *
+def changeGraph(sensor):
+    hist_headers = ("Date", "Time", "Temp", "Humid", "Lux", "O2", "CO2", "Accel", "Wind", "Rain")
+    title = sensor + ' samples for mote ' + MainMesh.Motes[ActiveMote].MAC[len(mote.MAC) - 8:len(mote.MAC)]
+    if sensor == hist_headers[2]:
+        graphPanel.__init__(MainMesh, FF_GRAPH, title, ActiveMote, MainMesh.Motes[ActiveMote].temp)
+    elif sensor == hist_headers[3]:
+        graphPanel.__init__(MainMesh, FF_GRAPH, title, ActiveMote, MainMesh.Motes[ActiveMote].humid)
+    elif sensor == hist_headers[4]:
+        graphPanel.__init__(MainMesh, FF_GRAPH, title, ActiveMote, MainMesh.Motes[ActiveMote].lux)
+    elif sensor == hist_headers[5]:
+        graphPanel.__init__(MainMesh, FF_GRAPH, title, ActiveMote, MainMesh.Motes[ActiveMote].o2)
+    elif sensor == hist_headers[6]:
+        graphPanel.__init__(MainMesh, FF_GRAPH, title, ActiveMote, MainMesh.Motes[ActiveMote].co2)
+    elif sensor == hist_headers[7]:
+        graphPanel.__init__(MainMesh, FF_GRAPH, title, ActiveMote, MainMesh.Motes[ActiveMote].accel)
+    elif sensor == hist_headers[8]:
+        graphPanel.__init__(MainMesh, FF_GRAPH, title, ActiveMote, MainMesh.Motes[ActiveMote].wind)
+    elif sensor == hist_headers[9]:
+        graphPanel.__init__(MainMesh, FF_GRAPH, title, ActiveMote, MainMesh.Motes[ActiveMote].rain)
 
-        for mote in MoteRows :
-            Label_row = []
-            for info in mote:
-                if info == mote[0]:
-                    Label_row.append(Button(self.ParentFrame, text=info, borderwidth=3, font= Font(size=110)))
-                elif info == mote[1]:
-                        if info=="OPERATIONAL":
-                            Label_row.append(
-                                Label(Parent, font=Font(size=8), bg='DarkOliveGreen1', text=info, relief=GROOVE,
-                                      borderwidth=2))
-                        else:
-                            Label_row.append(
-                                Label(Parent, font=Font(size=8), bg='salmon1', text=info, relief=GROOVE,
-                                      borderwidth=2))
+    print sensor
 
+def GUI_History_Table(Motenum):
+    global ActiveMote
+    ActiveMote = Motenum
+    print 'mote num ---> ' + str(Motenum)
+    for widget in FFF_hist.winfo_children():
+        widget.destroy()
+    hist_col = []
+    hist_headers = ("Date", "Time", "Temp", "Humid", "Lux", "O2", "CO2", "Accel", "Wind", "Rain")
+    for n in range(len(hist_headers)):
+        ##Grid.rowconfigure(FF_Headers, n, weight=1)
+        if n == 0 or n == 1:
+            Label(FF_Headers, bg='light blue', text=hist_headers[n], relief=RAISED, height=2, font=Font(size=11)).grid(
+                row=n + 1, sticky=NSEW)
+        else:
+            Button(FF_Headers, bg='light blue',
+                   text=hist_headers[n], borderwidth=3, pady=5,
+                   command = lambda x=hist_headers[n]: changeGraph(x)).grid(row=n + 1, sticky=NSEW)
 
-                else:
-                    Label_row.append(Label(Parent, font= Font(size=8), bg = 'gainsboro', text=info, relief=SUNKEN, borderwidth=2))
-
-            self.Cells.append(Label_row)
-
-
-    def pack_in(self):
-        Grid.rowconfigure(self.ParentFrame, 0, weight=1)
-        self.LayRow(self.headrow, 0,0)
-        for n in range(len(self.Cells)):
-            Grid.rowconfigure(self.ParentFrame, n+1, weight=1)
-            self.LayRow(self.Cells[n], n + 1, 0)
-
-    def LayRow(self, Label_row, row_num, startCol):
-        for n in range(len(Label_row)):
-            Label_row[n].grid(row = row_num, column=startCol+n, sticky=NSEW)
-
+    for sample in MainMesh.Motes[Motenum].samples:
+        col = [utctodate(sample.timestamp),
+               sample.temp,
+               sample.humid,
+               sample.lux,
+               sample.o2,
+               sample.co2, sample.accel, sample.wind, sample.rain]
+        hist_col.append(col)
+    H_Table = MoteTable(FFF_hist, [0], [0], hist_col, MainMesh.Motes[Motenum].timesInDate)
+    H_Table.pack_in(False)
 
 dir = sys.path[0] + "/DataOrganization/"
+# load in mesh network
+MainMesh = MeshNetwork(dir)
+MainMesh.loadMesh()
+MainMotes = MainMesh.Motes
+ActiveMote = 0
 # initialize GUI
 root = Tk()
 root.title("Sensor Suite Data Viewer")
 #root.iconbitmap('')
-root.geometry("1400x800")
+root.geometry("1400x900")
 
+#========================================== Intialize Frames ==========================================================
 Frame_Setup = LabelFrame(root, text = 'setup',      relief = GROOVE, padx=10, pady=10, borderwidth=4)
 Frame_Motes = LabelFrame(root, text = 'Mote View',  relief = GROOVE, padx=5, pady=5, borderwidth=4)
 Frame_History = LabelFrame(root, text = 'Graph',  relief = GROOVE, padx=5, pady=5, borderwidth=4)
 
+#========================================== Frame_Setup ===============================================================
 Lab_Directory = Label (Frame_Setup,
                        text = "Directory:               {directory}".format( directory = dir[0:3] + " .... " + dir[-35:-1])
                        )
 Lab_ChangeDir = Label(Frame_Setup, text = "Change Directory: ")
 In_dir = Entry(Frame_Setup, width=50, borderwidth=2) #seperate button call and grip placement so you can call button object in other places
 
-lab_numOfMotes = Label(Frame_Setup, text = "Number of Motes in network: ")
-lab_DataSpan = Label(Frame_Setup, text = "DateSpan of collected Data: ")
+lab_numOfMotes = Label(Frame_Setup, text = "Number of Motes in network:   " + str(MainMesh.NumOfMotes))
+lab_DataSpan = Label(Frame_Setup, text = "DateSpan of collected Data:   " + MainMesh.Motes[0].dates[0] + ' - ' + MainMesh.Motes[0].dates[-1])
 
+#========================================== Frame_Motes ===============================================================
 # CREATE SCROLLABLE FRAME/CANVAS
-MoteFrame = Frame(Frame_Motes, bg='Black')
+MoteFrame = Frame(Frame_Motes)
 MoteFrame.pack(fill=BOTH, expand = 1)
 # Create Canvas
 Mcanvas = Canvas(MoteFrame)
@@ -82,28 +100,84 @@ Mcanvas.configure(yscrollcommand=Mscrollbar.set)
 Mcanvas.bind('<Configure>', lambda e: Mcanvas.configure(scrollregion=Mcanvas.bbox("all")))
 SecondFrame = Frame(Mcanvas)
 Mcanvas.create_window((0,0), window=SecondFrame, anchor=NW)
-# for n in range(100):
-#     Button(SecondFrame, text=str(n)).grid(row= n, column=0)
-#     Label(SecondFrame, text='wow', relief=SUNKEN).grid(row= n, column=1)
-# MOTE TABLE
 
-Headers  = ("mote","Status", "Temp", "Humid", "Lux", "O2", "CO2", "Accel", "Wind", "Rain")
+Headers  = ("Mote","Status", "Temp", "Humid", "Lux", "O2", "CO2", "Accel", "Wind", "Rain")
 Mote_Rows = []
-for n in range(100):
-    row = [str(n)+'C' + '-D'+str(n) + '-6' + str(n), "OPERATIONAL", n+9, 30, 0, 0, 0, 0, 0,0]
+
+for mote in MainMesh.Motes:
+    row = [mote.MAC[len(mote.MAC) - 8:len(mote.MAC)], mote.status,
+           mote.temp[-1],
+           mote.humid[-1],
+           mote.lux[-1],
+           mote.o2[-1],
+           mote.co2[-1], mote.accel[-1], mote.wind[-1], mote.rain[-1]]
     Mote_Rows.append(row)
-M_Table = MoteTable(SecondFrame, Headers,Mote_Rows)
-M_Table.pack_in()
+print 'mote len = ' + str(len(Mote_Rows))
+M_Table = MoteTable(SecondFrame, Headers, Mote_Rows,[0],[0])
+M_Table.pack_in(True)
 
 # Customize Cells
 for cell in M_Table.headrow:
     cell['font'] = Font(size = 9)
 
+
+#========================================== Frame_History =============================================================
+# CREATE SCROLLABLE FRAME/CANVAS
+Grid.rowconfigure(Frame_History, 0, weight=0)
+Grid.rowconfigure(Frame_History, 1, weight=1)
+Grid.columnconfigure(Frame_History, 0, weight=0)
+Grid.columnconfigure(Frame_History, 1, weight=1)
+FF_hist = Frame(Frame_History, bg='Black')
+FF_Headers = Frame(Frame_History)
+FF_GRAPH = Frame(Frame_History)
+# FF_hist.pack(side=RIGHT, fill=BOTH, expand = 1, anchor=W)
+# FF_Headers.pack(side=LEFT,ipady= 95, anchor=NW)
+
+FF_hist.grid(row = 0, column = 1,ipady=50, sticky= NSEW)
+FF_Headers.grid(row = 0, column = 0, sticky= NSEW)
+
+FF_GRAPH.grid(row = 1, column = 0, columnspan=2, sticky= NSEW)
+# Create Canvas
+Hcanvas = Canvas(FF_hist)
+Hcanvas.pack(side=TOP, fill=BOTH, expand=1)
+# scrollbar
+Hscrollbar = ttk.Scrollbar(FF_hist, orient=HORIZONTAL, command=Hcanvas.xview)
+Hscrollbar.pack(side=BOTTOM, fill=X)
+# config canvas
+Hcanvas.configure(xscrollcommand=Hscrollbar.set)
+# bind config
+Hcanvas.bind('<Configure>', lambda e: Hcanvas.configure(scrollregion=Hcanvas.bbox("all")))
+FFF_hist = Frame(Hcanvas)
+Hcanvas.create_window((0, 0), window=FFF_hist, anchor='nw', height=362)
+
+GUI_History_Table(ActiveMote)
+graphPanel = InteractiveGraph(MainMesh,
+                              FF_GRAPH,
+                              'Temp' + ' samples for mote ' + MainMesh.Motes[ActiveMote].MAC[len(mote.MAC) - 8:len(mote.MAC)],
+                              ActiveMote,
+                              MainMesh.Motes[ActiveMote].temp)
+
+# assign buttons
+for i in range(len(M_Table.table)):
+    print M_Table.table[i][0]['text'] +' === '+ str(i)
+    M_Table.table[i][0]['command'] = (lambda x=i: GUI_History_Table(x))
+
+# for n in range(100):
+#     Button(SecondFrame, text=str(n)).grid(row= n, column=0)
+#     Label(SecondFrame, text='wow', relief=SUNKEN).grid(row= n, column=1)
+# MOTE TABLE
+
+
+
+root.after(33, graphPanel.updateGUI)
+
+#========================================== Frame_History =============================================================
 # FRAME PACKING
 Grid.rowconfigure(root, 0, weight=0)
-Grid.rowconfigure(root, 1, weight=10)
-Grid.columnconfigure(root, 0, weight=1)
+Grid.rowconfigure(root, 1, weight=5)
+Grid.columnconfigure(root, 0, weight=3)
 Grid.columnconfigure(root, 1, weight=10)
+
 
 
 Frame_Setup.grid(pady=6, padx=6, row = 0, column = 0, sticky=NSEW)
@@ -123,12 +197,13 @@ Grid.columnconfigure(Frame_Motes, 1, weight=10)
 pady = 190
 # Tre_MoteTable.grid(row=0,column=0, ipady=pady, sticky=NS)
 # MoteScroll.grid(row=0,column=1, sticky=NS)
-
 def updateGUI():
     #print 'update'
     #Tre_MoteTable.grid(ipady = TreeHeight)
-    root.after(16, updateGUI)
-#root.after(100,updateGUI)
+    graphPanel.updateGUI()
+    root.after(33, updateGUI)
+root.after(33,updateGUI)
 
 root.mainloop()
+
 

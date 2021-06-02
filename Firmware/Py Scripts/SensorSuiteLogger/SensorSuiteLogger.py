@@ -289,7 +289,7 @@ def CheckMoteRegestry(testMac, logname):
         print("New Mote --->" + testMac)
         logFile = open(Data_Loc + logname, "w")
         logFile.write('~     MAC: ' + testMac + '\n')
-        logFile.write('~  Status: ' + 'OPERATIONAl' + '\n')
+        logFile.write('~  Status: ' + 'OPERATIONAL' + '\n')
         logFile.write('~   Coord: ' + '(' + str(None)+','+str(None)+')' + '\n')
         logFile.write('~ User ID: ' + str(None) + '\n')
         logFile.write('-- ' + datetime.datetime.now().strftime('%m/%d/%Y') + '\n')

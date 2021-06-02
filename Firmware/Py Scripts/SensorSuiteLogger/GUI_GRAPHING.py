@@ -8,9 +8,11 @@ import matplotlib.dates as mdates
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 
 class InteractiveGraph():
-    def __init__(self, Mesh, MFrame, mote, Data):
+    def __init__(self, Mesh, MFrame, title, mote, Data):
+        for widget in MFrame.winfo_children():
+            widget.destroy()
         # ADD TIME SLIDER
-        self.FFrame = Frame(MFrame, bg='red')
+        self.FFrame = Frame(MFrame)
         self.MainMesh = Mesh
         self.Data = Data
         FFrame2 = Frame(MFrame)
@@ -50,7 +52,7 @@ class InteractiveGraph():
         print self.dateStamps
         t = self.timestamps[0 :self.span]
 
-        self.FFigure = plt.figure(figsize=(7,5), dpi = 120)
+        self.FFigure = plt.figure(figsize=(9,5), dpi = 80)
         plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%d/%H:%M'))
         self.FFigure.add_subplot(111).plot(t,y)
         chart = FigureCanvasTkAgg(self.FFigure, self.FFrame)
@@ -60,6 +62,8 @@ class InteractiveGraph():
 
         self.oldpoint = 0
         self.updateDate()
+        self.title = title
+        self.labels = ['Date','Samples']
 
     def ChangeSpan(self,amount):
         SPH = self.SPH
@@ -78,8 +82,8 @@ class InteractiveGraph():
             elif self.span == (SPH * 16):   self.span = SPH * 12
             elif self.span == (SPH * 24):   self.span = SPH * 16
         self.offsetSpan = int(self.span*0.4)
-        sections = len(self.MainMesh.Motes[self.Mnum].samples)/self.offsetSpan - self.span/self.offsetSpan
-        self.time_slide['to'] = sections
+        self.sections = len(self.MainMesh.Motes[self.Mnum].samples)/self.offsetSpan - self.span/self.offsetSpan
+        self.time_slide['to'] = self.sections
         self.L_Span['text'] = str(self.span/6) + 'hrs'
         self.updateGraph(self.time_slide.get())
 
@@ -90,12 +94,10 @@ class InteractiveGraph():
         else: self.oldOption = self.clicked.get()
 
         newpoint = self.time_slide.get()
-        if self.oldpoint == newpoint:
-            root.after(33, self.updateGUI)
-        else:
+        if self.oldpoint != newpoint:
             self.updateGraph(newpoint)
             self.oldpoint = newpoint
-            root.after(16, self.updateGUI)
+        else: self.oldpoint = newpoint
 
     def updateDate(self):
         dateInd = []
@@ -111,14 +113,16 @@ class InteractiveGraph():
         print 'newRange == ' + str(newStart) + '--' + str(newFinal)
         y = self.Data [newStart:newFinal]
         t = self.timestamps[newStart:newFinal]
-        self.FFigure.add_subplot(111).clear()
+        self.FFigure.clear()
         plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%d/%H:%M'))
         self.FFigure.add_subplot(111).plot(t, y)
+        plt.title(self.title)
+        plt.xlabel(self.labels[0])
+        plt.ylabel(self.labels[1])
         chart = FigureCanvasTkAgg(self.FFigure, self.FFrame)
         chart.get_tk_widget().grid(row=0, column=0)
         plt.gcf().autofmt_xdate()
         plt.grid()
-        root.after(16, self.updateGUI)
 
 if __name__ == '__main__':
     dir = sys.path[0] + "/DataOrganization/"
