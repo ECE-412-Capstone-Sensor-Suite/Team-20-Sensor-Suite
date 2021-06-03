@@ -249,34 +249,37 @@ def simple_data_Logging(mac, payload):
     print('sensor data recieved --> ' + logname)
 
     CheckMoteRegestry(macSTR, logname)
-
     samples = [None] * (len(payload)/2)                         # reformating payload into 16 bit words
     for i in range(len(samples)):
         samples[i] = (payload[i*2] << 8) | (payload[ (i*2) + 1])
 
     # logging
+    logFile = open(Data_Loc + logname, "a+")
+    UpdateDate(logname,logFile)
     currentDTandTM = datetime.datetime.now()
-    logFile = open(Data_Loc + logname, "a")
-    logFile.writelines('\n{TIME}, {SAMPLES}'.format(
+    logFile.write('\n{TIME}, {SAMPLES}'.format(
         TIME=currentDTandTM.strftime('%H:%M:%S'),
         SAMPLES=str(samples)[1:-1],
     ))
     logFile.close()
 
-def UpdateDate(logname):
-    newDate = True
-    logFile = open(Data_Loc + logname, "r")
-    currentDate = time.datetime.now().strftime('%m/%d/%Y')
-    for lines in logfile.readlines():
-        if lines.split()[0] == "--":
-            print lines.split()[1]
-            if lines.split()[1] ==  currentDate:
-                newDate = False
-    logFile.close()
-    if newDate:
-        logFile = open(Data_Loc + logname, "a")
-        logFile.write('-- ' + datetime.datetime.now().strftime('%m/%d/%Y') + '\n')
-        logFile.close()
+def UpdateDate(logname,logFile):
+    newdate = True
+    currentDate = datetime.datetime.now().strftime('%m/%d/%Y')
+    for lines in logFile.readlines():
+        if len(lines.split())>1:
+            if lines.split()[0] == "--":
+                print 'checking date ' + lines.split()[1] + ' against ' + currentDate
+                if lines.split()[1] == currentDate:
+                    print 'same dates'
+                    newdate = False
+    if newdate == True:
+        print 'new date --> ' + currentDate
+        logFile.write('\n' + '-- ' + currentDate + '\n')
+        return
+    else:
+        return
+    return
 
 
 

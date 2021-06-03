@@ -1052,3 +1052,20 @@ receivedFrame:
 2021-03-02 18:05:58,476 [LatencyCalculator:WARNING] disconnect function called
 2021-03-02 18:05:58,476 [SerialConnector:INFO] hdlc notification: connection state=False
 2021-03-02 18:05:58,477 [Hdlc:INFO] thread ended
+2021-06-02 14:58:44,299 [App:DEBUG] Starting TempMonitorGui
+2021-06-02 14:58:55,983 [App:DEBUG] _apiFrameCb_apiLoaded
+2021-06-02 14:59:00,881 [SerialConnector:INFO] creating object
+2021-06-02 14:59:00,881 [Hdlc:INFO] Creating object
+2021-06-02 14:59:00,881 [Hdlc:WARNING] could not open com18@115200baud, reason: could not open port com18: [Error 5] Access is denied.
+2021-06-02 14:59:07,257 [SerialConnector:INFO] creating object
+2021-06-02 14:59:07,257 [Hdlc:INFO] Creating object
+2021-06-02 14:59:07,259 [Hdlc:WARNING] could not open com18@115200baud, reason: could not open port com18: [Error 5] Access is denied.
+2021-06-02 14:59:07,727 [SerialConnector:INFO] creating object
+2021-06-02 14:59:07,729 [Hdlc:INFO] Creating object
+2021-06-02 14:59:07,729 [Hdlc:WARNING] could not open com18@115200baud, reason: could not open port com18: [Error 5] Access is denied.
+2021-06-02 14:59:07,914 [SerialConnector:INFO] creating object
+2021-06-02 14:59:07,914 [Hdlc:INFO] Creating object
+2021-06-02 14:59:07,914 [Hdlc:WARNING] could not open com18@115200baud, reason: could not open port com18: [Error 5] Access is denied.
+2021-06-02 14:59:08,038 [SerialConnector:INFO] creating object
+2021-06-02 14:59:08,038 [Hdlc:INFO] Creating object
+2021-06-02 14:59:08,039 [Hdlc:WARNING] could not open com18@115200baud, reason: could not open port com18: [Error 5] Access is denied.

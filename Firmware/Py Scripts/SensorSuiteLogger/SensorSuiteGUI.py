@@ -6,24 +6,54 @@ import ttk
 from tkFont import Font
 from SensorSuiteAPI import *
 from GUI_GRAPHING import *
+def UpdateTable(Table, macs):
+    for mac in macs:
+        print 'Checking Mac: ' + mac
+        for row in Table:
+            if mac == row[0]['text']:
+                for mote in MainMesh.Motes:
+                    if mac == mote.MAC[len(mote.MAC) - 8:len(mote.MAC)]:
+                        print '             updating row mac ' + row[0]['text'] + ' with info from mote: ' + mote.MAC
+                        row[1]['text'] = mote.status
+                        row[2]['text'] = mote.temp[-1]
+                        row[3]['text'] = mote.humid[-1]
+                        row[4]['text'] = mote.lux[-1]
+                        row[5]['text'] = mote.o2[-1]
+                        row[6]['text'] = mote.co2[-1]
+                        row[7]['text'] = mote.accel[-1]
+                        row[8]['text'] = mote.wind[-1]
+                        row[9]['text'] = mote.rain[-1]
+
+
+
 def changeGraph(sensor):
     hist_headers = ("Date", "Time", "Temp", "Humid", "Lux", "O2", "CO2", "Accel", "Wind", "Rain")
-    title = sensor + ' samples for mote ' + MainMesh.Motes[ActiveMote].MAC[len(mote.MAC) - 8:len(mote.MAC)]
+    mac = MainMesh.Motes[ActiveMote].MAC[len(mote.MAC) - 8:len(mote.MAC)]
+    title = ' samples for mote ' + mac
+
     if sensor == hist_headers[2]:
+        title = 'Temperature(C)' + title
         graphPanel.__init__(MainMesh, FF_GRAPH, title, ActiveMote, MainMesh.Motes[ActiveMote].temp)
     elif sensor == hist_headers[3]:
+        title = 'Humidity(RH%)' + title
         graphPanel.__init__(MainMesh, FF_GRAPH, title, ActiveMote, MainMesh.Motes[ActiveMote].humid)
     elif sensor == hist_headers[4]:
+        title = 'Light intensity (Lux)' + title
         graphPanel.__init__(MainMesh, FF_GRAPH, title, ActiveMote, MainMesh.Motes[ActiveMote].lux)
     elif sensor == hist_headers[5]:
+        title = 'Oxygen (%)' + title
         graphPanel.__init__(MainMesh, FF_GRAPH, title, ActiveMote, MainMesh.Motes[ActiveMote].o2)
     elif sensor == hist_headers[6]:
+        title = 'Carbon-Dioxide (CO2 ppt)' + title
         graphPanel.__init__(MainMesh, FF_GRAPH, title, ActiveMote, MainMesh.Motes[ActiveMote].co2)
     elif sensor == hist_headers[7]:
+        title = 'Vibration (Hz)' + title
         graphPanel.__init__(MainMesh, FF_GRAPH, title, ActiveMote, MainMesh.Motes[ActiveMote].accel)
     elif sensor == hist_headers[8]:
+        title = 'Wind (M/s)' + title
         graphPanel.__init__(MainMesh, FF_GRAPH, title, ActiveMote, MainMesh.Motes[ActiveMote].wind)
     elif sensor == hist_headers[9]:
+        title = 'Rain (depth level)' + title
         graphPanel.__init__(MainMesh, FF_GRAPH, title, ActiveMote, MainMesh.Motes[ActiveMote].rain)
 
     print sensor
@@ -32,6 +62,8 @@ def GUI_History_Table(Motenum):
     global ActiveMote
     ActiveMote = Motenum
     print 'mote num ---> ' + str(Motenum)
+    for widget in FFF_hist.winfo_children():
+        widget.destroy()
     for widget in FFF_hist.winfo_children():
         widget.destroy()
     hist_col = []
@@ -62,6 +94,11 @@ dir = sys.path[0] + "/DataOrganization/"
 MainMesh = MeshNetwork(dir)
 MainMesh.loadMesh()
 MainMotes = MainMesh.Motes
+
+if MainMesh.NumOfMotes == 0:
+    raw_input("NO LOG FILES FOUND...")
+    sys.exit()
+    
 ActiveMote = 0
 # initialize GUI
 root = Tk()
@@ -198,11 +235,16 @@ pady = 190
 # Tre_MoteTable.grid(row=0,column=0, ipady=pady, sticky=NS)
 # MoteScroll.grid(row=0,column=1, sticky=NS)
 def updateGUI():
-    #print 'update'
-    #Tre_MoteTable.grid(ipady = TreeHeight)
     graphPanel.updateGUI()
     root.after(33, updateGUI)
+def updateData():
+    MACS = MainMesh.UpdateMesh()
+    if MACS != []:
+        print 'motes updated: ' + str(MACS)
+        UpdateTable(M_Table.table, MACS)
+    root.after(1000, updateData)
 root.after(33,updateGUI)
+root.after(1000,updateData)
 
 root.mainloop()
 

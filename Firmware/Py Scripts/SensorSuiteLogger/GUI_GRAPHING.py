@@ -20,9 +20,31 @@ class InteractiveGraph():
         FFrame2.pack(side=BOTTOM, expand=1, fill=X, )
         self.Mnum = mote
         self.SPH = 6
+        # FILL TIMESTAMP GAPS
+        realTime = self.MainMesh.Motes[self.Mnum].timestamp
+        filledTime = []
+        filledData = []
+        sampleIntervalS = (3600)/self.SPH
+        for i in range(len(realTime)):
+            if i == 0:
+                filledTime.append(realTime[i])
+            if abs(realTime[i] - filledTime[-1]) > sampleIntervalS:
+                while abs(filledTime[-1] - realTime[i]) > sampleIntervalS:
+                    filledTime.append(filledTime[-1] + sampleIntervalS)
+                    filledData.append(0)
+            else:
+                filledTime.append(realTime[i])
+                filledData.append(self.Data[i])
+        filledTime.pop(0)
+        print 'new data = ' + str(len(filledData)) + ' new time = ' + str(len(filledTime))
+        self.Data =  filledData
+        self.timestamps = [datetime.utcfromtimestamp(d) for d in filledTime]
+        self.dateStamps = [utctodate(d)[0:utctodate(d).find(':')] for d in filledTime]
+
+
         self.span = self.SPH * 3
         self.offsetSpan = int(self.span * 0.4)
-        self.sections = len(self.MainMesh.Motes[self.Mnum].samples)/self.offsetSpan - self.span/self.offsetSpan
+        self.sections = len(self.timestamps)/self.offsetSpan - self.span/self.offsetSpan
         print self.sections
         self.time_slide = Scale(FFrame2, from_=0, to=self.sections, orient = HORIZONTAL)
         self.time_slide.pack(fill=X, expand=1)
@@ -44,12 +66,13 @@ class InteractiveGraph():
 
 
 
-        L_numSamples = Label(FFrame2, text = "  Number of Samples: " + str(len(self.MainMesh.Motes[self.Mnum].samples))).pack(side=LEFT)
+        L_numSamples = Label(FFrame2, text = "  Number of Samples: " + str(len(self.timestamps))).pack(side=LEFT)
 
-        y = self.Data [0 :self.span]
-        self.timestamps = [datetime.utcfromtimestamp(d) for d in self.MainMesh.Motes[self.Mnum].timestamp]
-        self.dateStamps = [utctodate(d)[0:utctodate(d).find(':')] for d in self.MainMesh.Motes[self.Mnum].timestamp]
+
+
         print self.dateStamps
+
+        y = self.Data[0:self.span]
         t = self.timestamps[0 :self.span]
 
         self.FFigure = plt.figure(figsize=(9,5), dpi = 80)
@@ -63,7 +86,8 @@ class InteractiveGraph():
         self.oldpoint = 0
         self.updateDate()
         self.title = title
-        self.labels = ['Date','Samples']
+        self.labels = ['Dates','Samples']
+        self.updateGraph(0)
 
     def ChangeSpan(self,amount):
         SPH = self.SPH
@@ -73,7 +97,11 @@ class InteractiveGraph():
             elif self.span == (SPH * 9):    self.span = SPH * 12
             elif self.span == (SPH * 12):   self.span = SPH * 16
             elif self.span == (SPH * 16):   self.span = SPH * 24
-            elif self.span == (SPH * 24):   self.span = SPH * 24
+            elif self.span == (SPH * 24):   self.span = SPH * 36
+            elif self.span == (SPH * 36):   self.span = SPH * 48
+            elif self.span == (SPH * 48):   self.span = SPH * 72
+            elif self.span == (SPH * 72):   self.span = SPH * 168
+            elif self.span == (SPH * 168):   self.span = SPH * 168
         else:
             if self.span == (SPH * 3):      self.pan = SPH * 3
             elif self.span == (SPH * 5):    self.span = SPH * 3
@@ -81,8 +109,12 @@ class InteractiveGraph():
             elif self.span == (SPH * 12):   self.span = SPH * 9
             elif self.span == (SPH * 16):   self.span = SPH * 12
             elif self.span == (SPH * 24):   self.span = SPH * 16
+            elif self.span == (SPH * 36):   self.span = SPH * 24
+            elif self.span == (SPH * 48):   self.span = SPH * 36
+            elif self.span == (SPH * 72):   self.span = SPH * 48
+            elif self.span == (SPH * 168):   self.span = SPH * 72
         self.offsetSpan = int(self.span*0.4)
-        self.sections = len(self.MainMesh.Motes[self.Mnum].samples)/self.offsetSpan - self.span/self.offsetSpan
+        self.sections = len(self.timestamps)/self.offsetSpan - self.span/self.offsetSpan
         self.time_slide['to'] = self.sections
         self.L_Span['text'] = str(self.span/6) + 'hrs'
         self.updateGraph(self.time_slide.get())

@@ -8,8 +8,7 @@ import os
 from datetime import datetime
 from tkFont import Font
 from SensorSuiteAPI import *
-import pytz
-
+import time
 class sample: # Sample Object structure
     def __init__(self, timestamp, temp, humid, lux, o2, co2, accel, wind, rain):
 
@@ -45,13 +44,15 @@ class Mote(): # mote Object structure : inherits from samples
         self.accel = []
         self.wind = []
         self.rain = []
+        #self.Logfile.close()
 
     # load a single mote from logfile into ram, using motes MAC address:
     def LoadMote(self):
+        self.Logfile = open(self.Directory + self.Logname, "r")
         Loglines = self.Logfile.readlines()
-        self.status = Loglines[0].split()[2]
-        self.coord = Loglines[1].split()[2]
-        self.UID = Loglines[2].split()[3]
+        self.status = Loglines[1].split()[2]
+        self.coord = Loglines[2].split()[2]
+        self.UID = Loglines[3].split()[3]
         self.CurrentDate = None
         self.dates = []             # arranging all dates string into an array
         self.timesInDate = []       # row = new date, col = timestamps that correspond to the date
@@ -77,7 +78,10 @@ class Mote(): # mote Object structure : inherits from samples
                                        # float(word[7][0:-1]) / 100 * 0,
                                        # float(word[8][0:-1]) / 100 * 0))
                     self.wind.append(float(word[9][0:-1]) / 100)
-                    self.rain.append(float(word[10][0:-1]) / 100)
+
+                    if word[10][len(word[10])-1] == ',': self.rain.append(float(word[10][0:-1]) / 100)
+                    else:self.rain.append(float(word[10]) / 100)
+
                     self.samples.append(sample(
                         self.timestamp[-1],
                         self.temp[-1],
@@ -159,6 +163,7 @@ class MeshNetwork(): # Mesh Network object structure : inherits from mote
         self.Motes = []
         self.MACaddresses = []
         self.MoteFiles = []
+        self.moteLastUpdate = []
         addresses = []
         MAC_root = "00-17-0d-00-00"
         print("Data Storage Directory: " + self.Dir)
@@ -171,6 +176,9 @@ class MeshNetwork(): # Mesh Network object structure : inherits from mote
         print("Known Motes: " + str(self.MACaddresses))
 
         self.NumOfMotes = len(self.MACaddresses)
+
+        for file in self.MoteFiles:
+            self.moteLastUpdate.append(os.stat(self.Dir + file).st_mtime)
     # find unique adresses, define mote object with them, and load each one using loadMote():
     def loadMesh(self):
 
@@ -186,6 +194,21 @@ class MeshNetwork(): # Mesh Network object structure : inherits from mote
         for i in range(len(self.Motes)):
             if self.Motes[i].MAC == MACaddress:
                 return self.Motes[i]
+    def UpdateMesh(self):
+        files = self.MoteFiles
+        updatedMotes = []
+        for n in range(len(files)):
+            checkLastdate = os.stat(self.Dir + files[n]).st_mtime
+            if not (self.moteLastUpdate[n] ==checkLastdate):
+                print files[n] + ' last update: ' + utctodate(self.moteLastUpdate[n]) + ' current last update: ' + utctodate(checkLastdate)
+                print files[n] + 'has been updated, reloading mote ' + self.Motes[n].MAC
+                self.moteLastUpdate[n] = checkLastdate
+                self.Motes[n].LoadMote()
+                updatedMotes.append(self.Motes[n].MAC[len(self.Motes[n].MAC) - 8:len(self.Motes[n].MAC)])
+        if updatedMotes == []:
+            return []
+        else:
+            return updatedMotes
 
 def dtseconds(dt):          #Conver DATETIME to UTC seconds
     epoch = datetime.utcfromtimestamp(0)
@@ -220,8 +243,25 @@ if __name__ == '__main__':
     print utctodate(dateFrom) + '---->' + utctodate(mote0.timestamp[fromto[0]])
     print utctodate(dateTo) + '---->' + utctodate(mote0.timestamp[fromto[1]])
 
-    print mote0.timesInDate[0]
-    print mote0.timesInDate[-1]
+    #print mote0.timesInDate[0]
+    #print mote0.timesInDate[-1]
+    print Mesh1.UpdateMesh()
+    Logfile = open(Data_Loc + '3223d3.log', "r")
+    for i in range(1000):
+        print i
+        Logfile.seek(0)
+        print Logfile.readlines()[-1]
+        Logfile.seek(0)
+
+        # while 1:
+        #     where = Logfile.tell()
+        #     line = Logfile.readline()
+        #     if not line:
+        #         time.sleep(1)
+        #         Logfile.seek(where)
+        #     else:
+        #         print line  # already has newline
+
     #.replace(tzinfo=pytz.utc).timestamp()
     #Mesh1.Motes[0].timeRange((5,25,21,11,52,00),(5,0,0,0,0,0))
 
