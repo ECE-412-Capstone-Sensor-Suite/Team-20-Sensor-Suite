@@ -6,6 +6,8 @@ import ttk
 from tkFont import Font
 from SensorSuiteAPI import *
 from GUI_GRAPHING import *
+
+# UPDATE LIVE MOTE TABLE
 def UpdateTable(Table, macs):
     for mac in macs:
         print 'Checking Mac: ' + mac
@@ -14,6 +16,8 @@ def UpdateTable(Table, macs):
                 for mote in MainMesh.Motes:
                     if mac == mote.MAC[len(mote.MAC) - 8:len(mote.MAC)]:
                         print '             updating row mac ' + row[0]['text'] + ' with info from mote: ' + mote.MAC
+                        if mote.status == 'OPERATIONAL': row[1]['bg'] = 'DarkOliveGreen1'
+                        else: row[1]['bg'] = 'salmon1'
                         row[1]['text'] = mote.status
                         row[2]['text'] = mote.temp[-1]
                         row[3]['text'] = mote.humid[-1]
@@ -25,10 +29,11 @@ def UpdateTable(Table, macs):
                         row[9]['text'] = mote.rain[-1]
 
 
-
+# Change mote GRAPH
 def changeGraph(sensor):
     hist_headers = ("Date", "Time", "Temp", "Humid", "Lux", "O2", "CO2", "Accel", "Wind", "Rain")
-    mac = MainMesh.Motes[ActiveMote].MAC[len(mote.MAC) - 8:len(mote.MAC)]
+    mote =  MainMesh.Motes[ActiveMote]
+    mac = mote.MAC[len(mote.MAC) - 8:len(mote.MAC)]
     title = ' samples for mote ' + mac
 
     if sensor == hist_headers[2]:
@@ -58,6 +63,7 @@ def changeGraph(sensor):
 
     print sensor
 
+# CREATE HISTORY TABLE
 def GUI_History_Table(Motenum):
     global ActiveMote
     ActiveMote = Motenum
@@ -73,14 +79,14 @@ def GUI_History_Table(Motenum):
             headerButtons[n-2]['command'] = lambda x=hist_headers[n]: changeGraph(x)
 
     for sample in MainMesh.Motes[Motenum].samples:
-        col = [utctodate(sample.timestamp),
+        col = [UTCtoDate(sample.timestamp),
                sample.temp,
                sample.humid,
                sample.lux,
                sample.o2,
                sample.co2, sample.accel, sample.wind, sample.rain]
         hist_col.append(col)
-    H_Table = MoteTable(FFF_hist, [0], [0], hist_col, MainMesh.Motes[Motenum].timesInDate)
+    H_Table = MoteTable(FFF_hist, None, None, hist_col, MainMesh.Motes[Motenum].timesInDate)
     H_Table.pack_in(False)
 
 dir = sys.path[0] + "/DataOrganization/"
@@ -152,7 +158,7 @@ else:
                mote.co2[-1], mote.accel[-1], mote.wind[-1], mote.rain[-1]]
         Mote_Rows.append(row)
 print 'mote len = ' + str(len(Mote_Rows))
-M_Table = MoteTable(SecondFrame, Headers, Mote_Rows,[0],[0])
+M_Table = MoteTable(SecondFrame, Headers, Mote_Rows, None, None)
 M_Table.pack_in(True)
 
 # Customize Cells
@@ -205,7 +211,7 @@ for n in range(len(hist_headers)):
 GUI_History_Table(ActiveMote)
 graphPanel = InteractiveGraph(MainMesh,
                               FF_GRAPH,
-                              'Temp' + ' samples for mote ' + MainMesh.Motes[ActiveMote].MAC[len(mote.MAC) - 8:len(mote.MAC)],
+                              'Temp' + ' samples for mote ' + MainMesh.Motes[ActiveMote].MAC[len(MainMesh.Motes[ActiveMote].MAC) - 8:len(MainMesh.Motes[ActiveMote].MAC)],
                               ActiveMote,
                               MainMesh.Motes[ActiveMote].temp)
 
@@ -255,19 +261,30 @@ def updateGUI():
 def updateData():
     MACS = MainMesh.UpdateMesh()
     if MACS != []:
-        print 'motes updated: ' + str(MACS)
         UpdateTable(M_Table.table, MACS)
     root.after(2000, updateData)
 def updateStatus():
-    MainMesh.UpdateStatus()
+    MACS = MainMesh.UpdateStatus()
+    if MACS != []:
+        UpdateTable(M_Table.table, MACS)
     root.after(1000*60, updateStatus)
 
 
 root.after(500,updateGUI)
 root.after(2000,updateData)
 root.after(1000*60,updateData)
-
 updateStatus()
+
+def on_closing():
+    tkinter.quit()
+    root.after_cancel(updateGUI)
+    root.after_cancel(updateData)
+    root.after_cancel(updateData)
+    for widget in root.winfo_children():
+        widget.destroy()
+    root.destroy()
+root.protocol("WM_DELETE_WINDOW", on_closing)
+
 root.mainloop()
 
 

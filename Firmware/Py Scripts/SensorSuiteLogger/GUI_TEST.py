@@ -46,7 +46,7 @@ class InteractiveGraph():
 
         y = self.Data [0 :self.span]
         self.timestamps = [datetime.utcfromtimestamp(d) for d in self.MainMesh.Motes[self.Mnum].timestamp]
-        self.dateStamps = [utctodate(d)[0:utctodate(d).find(':')] for d in self.MainMesh.Motes[self.Mnum].timestamp]
+        self.dateStamps = [UTCtoDate(d)[0:UTCtoDate(d).find(':')] for d in self.MainMesh.Motes[self.Mnum].timestamp]
         print self.dateStamps
         t = self.timestamps[0 :self.span]
 

@@ -9,6 +9,8 @@ from datetime import datetime
 from tkFont import Font
 from SensorSuiteAPI import *
 import time
+# ================================ Classes for reading and golding data logs ==========================================
+
 class sample: # Sample Object structure
     def __init__(self, timestamp, temp, humid, lux, o2, co2, accel, wind, rain):
 
@@ -22,7 +24,7 @@ class sample: # Sample Object structure
         self.wind = wind
         self.rain = rain
 
-class Mote(): # mote Object structure : inherits from samples
+class Mote(): # Mote Object Structure : Contains Multiple Sample Objects
     def __init__(self, Directory, Logname):
         self.Logname = Logname
         self.Directory = Directory
@@ -65,7 +67,7 @@ class Mote(): # mote Object structure : inherits from samples
                     self.timesInDate.append([])
                 if word[0] != "~" and word[0] != "--":                  # Convert Logfile text into organized sample objects
                     timedate = self.CurrentDate +':'+ word[0][0:-1]     # combine time stamp with current date
-                    self.timestamp.append(dtseconds(datetime.strptime(timedate, "%m/%d/%Y:%H:%M:%S")))
+                    self.timestamp.append(DtSeconds(datetime.strptime(timedate, "%m/%d/%Y:%H:%M:%S")))
                     self.timesInDate[-1].append(self.timestamp[-1])
                     self.temp.append(float(word[1][0:-1])/100)
                     self.humid.append(float(word[2][0:-1]) / 100)
@@ -111,7 +113,7 @@ class Mote(): # mote Object structure : inherits from samples
                 toclosest = compare
                 toI = i
         return[fromI,toI]
-
+    # Return Samples that match SensorIn
     def Sensor(self, sensorIn):
         sensors = ('temp', 'humid', 'lux', 'o2', 'co2', 'accel', 'wind', 'rain')
         self.array = []
@@ -150,7 +152,7 @@ class Mote(): # mote Object structure : inherits from samples
         else:
             print 'Wrong sensor string selection'
 
-class MeshNetwork(): # Mesh Network object structure : inherits from mote
+class MeshNetwork():    # Mesh Network object structure : Contains multiple Mote objects
     def __init__(self, Directory):
         self.Dir = Directory
         self.Motes = []
@@ -172,7 +174,7 @@ class MeshNetwork(): # Mesh Network object structure : inherits from mote
 
         for file in self.MoteFiles:
             self.moteLastUpdate.append(os.stat(self.Dir + file).st_mtime)
-    # find unique adresses, define mote object with them, and load each one using loadMote():
+    # Find unique addresses, define mote object with them, and load each one using loadMote():
     def loadMesh(self):
 
         print '\nNumber of motes: ' + str(len(self.MACaddresses))
@@ -182,19 +184,19 @@ class MeshNetwork(): # Mesh Network object structure : inherits from mote
             self.Motes.append(Mote(self.Dir, self.MoteFiles[i])) # define mote object using MAC
             self.Motes[i].LoadMote()      # load mote into ram
 
-    # return mote object that matches time stamp:
+    # Return mote object that matches MAC Adress:
     def moteMAC(self, MACaddress):
         for i in range(len(self.Motes)):
             if self.Motes[i].MAC == MACaddress:
                 return self.Motes[i]
+    # Chack if any Mote logs have been updated: if they have Reload the corresponding Mote objects from updated Log file
     def UpdateMesh(self):
         files = self.MoteFiles
         updatedMotes = []
+        print '>>>>>>chacking if UPDATED'
         for n in range(len(files)):
             checkLastdate = os.stat(self.Dir + files[n]).st_mtime
             if not (self.moteLastUpdate[n] == checkLastdate):
-                print files[n] + ' last update: ' + utctodate(self.moteLastUpdate[n]) + ' current last update: ' + utctodate(checkLastdate)
-                print files[n] + 'has been updated, reloading mote ' + self.Motes[n].MAC
                 self.moteLastUpdate[n] = checkLastdate
                 if self.Motes[n].status == 'DISCONNECTED':
                     print '         '  + 'turing mote into operational'
@@ -210,17 +212,17 @@ class MeshNetwork(): # Mesh Network object structure : inherits from mote
             return []
         else:
             return updatedMotes
+    # Check if 10 Mins passed since the motes file has been updated: If true write corresponding mote as DISCONNECTED
     def UpdateStatus(self):
         files = self.MoteFiles
         updatedMotes = []
         dt = datetime.now()
+        print '>>>>>>chacking if disconnected'
         for n in range(len(files)):
             if self.Motes[n].status == 'OPERATIONAL':
                 checkLastdate = os.stat(self.Dir + files[n]).st_mtime
-                print 'checking ' + utctodate(checkLastdate) + ' against '+ utctodate(dtseconds(dt)) + ' for duration ' + utctodate((10*60))
-                notUpdated = abs(dtseconds(dt) - checkLastdate) > (10*60)
+                notUpdated = abs(DtSeconds(dt) - checkLastdate) > (10 * 60)
                 if notUpdated:
-                    self.moteLastUpdate[n] = checkLastdate
                     with open(self.Dir + self.Motes[n].Logname, 'r+') as f:
                         text = f.read()
                         text = re.sub('OPERATIONAL', 'DISCONNECTED', text)
@@ -228,24 +230,29 @@ class MeshNetwork(): # Mesh Network object structure : inherits from mote
                         f.write(text)
                         f.truncate()
                     self.Motes[n].LoadMote()
+                    self.moteLastUpdate[n] = os.stat(self.Dir + files[n]).st_mtime
                     updatedMotes.append(self.Motes[n].MAC[len(self.Motes[n].MAC) - 8:len(self.Motes[n].MAC)])
         if updatedMotes == []:
             return []
         else:
             return updatedMotes
 
-def dtseconds(dt):          #Conver DATETIME to UTC seconds
+# convert Datetime Object into UNIX seconds
+def DtSeconds(dt):          #Conver DATETIME to UTC seconds
     epoch = datetime.utcfromtimestamp(0)
     utc_s = (dt - epoch).total_seconds()
     return utc_s
-def datetoutc(date, hours, mins):   # convert date hours and minutes to UTC seconds
+# convert Date Hours and Minutes to UNIX seconds
+def DateToUTC(date, hours, mins):   # convert date hours and minutes to UTC seconds
     epoch = datetime.utcfromtimestamp(0)
     dt = datetime.strptime(date + ':' + str(hours) + ':' + str(mins) + ':00', "%m/%d/%Y:%H:%M:%S")
     utc_s = (dt - epoch).total_seconds()
     return utc_s
-def utctodate(utc_s):   # Convert UTC seconds to date and time
+# convert UNIX seconds to DateTime string
+def UTCtoDate(utc_s):   # Convert UTC seconds to date and time
     dt = datetime.utcfromtimestamp(utc_s).strftime("%m/%d/%Y:%H:%M:%S")
     return dt
+
 
 if __name__ == '__main__':
     Data_Loc = sys.path[0] + "/DataOrganization/"
@@ -255,17 +262,17 @@ if __name__ == '__main__':
     print Mesh1.Motes[0].dates
     dt = datetime.now()
     epoch = datetime.utcfromtimestamp(0)
-    utc_s = dtseconds(dt)
+    utc_s = DtSeconds(dt)
     print utc_s
     print datetime.utcfromtimestamp(utc_s - 36*3600)
     mote0 = Mesh1.Motes[0]
 
-    [dateFrom , dateTo] = [datetoutc(mote0.dates[0], 19, 39) + 5 * 60, datetoutc(mote0.dates[1], 19, 41)]
+    [dateFrom , dateTo] = [DateToUTC(mote0.dates[0], 19, 39) + 5 * 60, DateToUTC(mote0.dates[1], 19, 41)]
 
     fromto = mote0.timeRange(dateFrom,dateTo)
     print fromto
-    print utctodate(dateFrom) + '---->' + utctodate(mote0.timestamp[fromto[0]])
-    print utctodate(dateTo) + '---->' + utctodate(mote0.timestamp[fromto[1]])
+    print UTCtoDate(dateFrom) + '---->' + UTCtoDate(mote0.timestamp[fromto[0]])
+    print UTCtoDate(dateTo) + '---->' + UTCtoDate(mote0.timestamp[fromto[1]])
 
     #print mote0.timesInDate[0]
     #print mote0.timesInDate[-1]
@@ -292,11 +299,11 @@ if __name__ == '__main__':
 
 '''
 
-#========================================= MESH NETWORK =============================================
+#========================================= MESH NETWORK ================================================================
                                         /       |       \
                                       /         |         \
                                     /           |           \
-#============================== MOTE1 ======= MOTE2 ====== MOTE3 =======MOTE_N.. ====
+#============================== MOTE_1 ======= MOTE_2 ====== MOTE_3 =======MOTE_N+1.. ========
                                   |             |            |
                                   |             |            |
                                   |             |            |
@@ -307,23 +314,27 @@ if __name__ == '__main__':
                             etc.. = []      etc.. = []      etc.. = []
 '''
 
+# ======================================= GUI HELPER CLASS/FUNC ========================================================
+# Object to hold Tkinter table Label and button layout
 class MoteTable():
-    def __init__(self, Parent, Headers, tableRows, tableCols,datelist):
+    def __init__(self, Parent, Headers, tableRows, tableCols, datelist):
         self.ParentFrame = Parent
         self.dates = datelist
         self.Column = []
         self.table = []
         self.headrow = []
         self.headcol = []
-        if len(Headers) > 1:
+
+        if not(Headers == None):
             for header in Headers:
                 self.headrow.append(Button(Parent, bg = 'light blue', text = header,relief = RAISED , borderwidth=3))
-        if datelist[0] != 0:
+        if not (datelist == None):
             for date in self.dates:
-                datestr =utctodate(date[0])
+                datestr =UTCtoDate(date[0])
                 self.headcol.append(Button(Parent, text=datestr[0:datestr.find(':')], relief=RAISED, borderwidth=2, height = 0, pady=0, font = Font(size=8)))
 
-        if len(tableRows)>1:
+        # Layout lables and buttons in Rows: Disable by inputting tableRowa = None
+        if not (tableRows == None):
             for i in range(len(tableRows)):
                 row = tableRows[i]
                 Label_row = []
@@ -344,7 +355,8 @@ class MoteTable():
                 self.table.append(Label_row)
             for i in range(len(self.table)):
                 print self.table[i][0]['text']
-        elif len(tableCols)>1:
+        # Layout lables and buttons in Rows: Disable by inputting tableCols = None
+        elif not (tableCols == None):
             for col in tableCols :
                 Label_col = []
                 for cell in col:
@@ -356,7 +368,7 @@ class MoteTable():
 
 
 
-
+    # Pack all tkinter labels and buttons into the frame to create a table
     def pack_in(self, horizontal):
         if horizontal:
             Grid.rowconfigure(self.ParentFrame, 0, weight=1)
@@ -376,12 +388,12 @@ class MoteTable():
 
                 self.Laycol(self.table[n], n, 1)
 
-
-
+    # Pack single Row
     def LayRow(self, Label_row, row_num, startCol):
         for n in range(len(Label_row)):
             Label_row[n].grid(row = row_num, column=startCol+n, sticky=NSEW)
 
+    # Pack single Column
     def Laycol(self, Label_col, col_num, startrow):
         for n in range(len(Label_col)):
             Grid.rowconfigure(self.ParentFrame, startrow+n, weight=1)
