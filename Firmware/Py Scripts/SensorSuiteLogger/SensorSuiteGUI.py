@@ -257,10 +257,17 @@ def updateData():
     if MACS != []:
         print 'motes updated: ' + str(MACS)
         UpdateTable(M_Table.table, MACS)
-    root.after(3, updateData)
-root.after(500,updateGUI)
-root.after(3,updateData)
+    root.after(2000, updateData)
+def updateStatus():
+    MainMesh.UpdateStatus()
+    root.after(1000*60, updateStatus)
 
+
+root.after(500,updateGUI)
+root.after(2000,updateData)
+root.after(1000*60,updateData)
+
+updateStatus()
 root.mainloop()
 
 

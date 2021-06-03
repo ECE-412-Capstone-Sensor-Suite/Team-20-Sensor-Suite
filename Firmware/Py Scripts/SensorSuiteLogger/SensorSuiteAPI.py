@@ -196,8 +196,39 @@ class MeshNetwork(): # Mesh Network object structure : inherits from mote
                 print files[n] + ' last update: ' + utctodate(self.moteLastUpdate[n]) + ' current last update: ' + utctodate(checkLastdate)
                 print files[n] + 'has been updated, reloading mote ' + self.Motes[n].MAC
                 self.moteLastUpdate[n] = checkLastdate
+                if self.Motes[n].status == 'DISCONNECTED':
+                    print '         '  + 'turing mote into operational'
+                    with open(self.Dir + self.Motes[n].Logname, 'r+') as f:
+                        text = f.read()
+                        text = re.sub('DISCONNECTED', 'OPERATIONAL', text)
+                        f.seek(0)
+                        f.write(text)
+                        f.truncate()
                 self.Motes[n].LoadMote()
                 updatedMotes.append(self.Motes[n].MAC[len(self.Motes[n].MAC) - 8:len(self.Motes[n].MAC)])
+        if updatedMotes == []:
+            return []
+        else:
+            return updatedMotes
+    def UpdateStatus(self):
+        files = self.MoteFiles
+        updatedMotes = []
+        dt = datetime.now()
+        for n in range(len(files)):
+            if self.Motes[n].status == 'OPERATIONAL':
+                checkLastdate = os.stat(self.Dir + files[n]).st_mtime
+                print 'checking ' + utctodate(checkLastdate) + ' against '+ utctodate(dtseconds(dt)) + ' for duration ' + utctodate((10*60))
+                notUpdated = abs(dtseconds(dt) - checkLastdate) > (10*60)
+                if notUpdated:
+                    self.moteLastUpdate[n] = checkLastdate
+                    with open(self.Dir + self.Motes[n].Logname, 'r+') as f:
+                        text = f.read()
+                        text = re.sub('OPERATIONAL', 'DISCONNECTED', text)
+                        f.seek(0)
+                        f.write(text)
+                        f.truncate()
+                    self.Motes[n].LoadMote()
+                    updatedMotes.append(self.Motes[n].MAC[len(self.Motes[n].MAC) - 8:len(self.Motes[n].MAC)])
         if updatedMotes == []:
             return []
         else:
@@ -302,14 +333,14 @@ class MoteTable():
                     elif cell == row[1]:
                             if cell=='OPERATIONAL':
                                 Label_row.append(
-                                    Label(Parent, font=Font(size=7), bg='DarkOliveGreen1', text=cell, relief=GROOVE, pady=1,
+                                    Label(Parent, font=Font(size=8), bg='DarkOliveGreen1', text=cell, relief=GROOVE, pady=1,
                                           borderwidth=2))
                             else:
                                 Label_row.append(
-                                    Label(Parent, font=Font(size=7), bg='salmon1', text=cell, relief=GROOVE, pady=1,
+                                    Label(Parent, font=Font(size=8), bg='salmon1', text=cell, relief=GROOVE, pady=1,
                                           borderwidth=2))
                     else:
-                        Label_row.append(Label(Parent, font= Font(size=5), bg = 'gainsboro', text=cell, relief=SUNKEN, borderwidth=2, pady=1))
+                        Label_row.append(Label(Parent, font= Font(size=8), bg = 'gainsboro', text=cell, relief=SUNKEN, borderwidth=2, pady=1))
                 self.table.append(Label_row)
             for i in range(len(self.table)):
                 print self.table[i][0]['text']
