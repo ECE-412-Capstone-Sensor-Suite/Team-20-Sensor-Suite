@@ -297,7 +297,7 @@ class MoteTable():
         if datelist[0] != 0:
             for date in self.dates:
                 datestr =utctodate(date[0])
-                self.headcol.append(Button(Parent, text=datestr[0:datestr.find(':')], relief=RAISED, borderwidth=2))
+                self.headcol.append(Button(Parent, text=datestr[0:datestr.find(':')], relief=RAISED, borderwidth=2, height = 0, pady=0, font = Font(size=8)))
 
         if len(tableRows)>1:
             for i in range(len(tableRows)):
@@ -309,14 +309,14 @@ class MoteTable():
                     elif cell == row[1]:
                             if cell=='OPERATIONAL':
                                 Label_row.append(
-                                    Label(Parent, font=Font(size=8), bg='DarkOliveGreen1', text=cell, relief=GROOVE,
+                                    Label(Parent, font=Font(size=7), bg='DarkOliveGreen1', text=cell, relief=GROOVE,
                                           borderwidth=2))
                             else:
                                 Label_row.append(
-                                    Label(Parent, font=Font(size=8), bg='salmon1', text=cell, relief=GROOVE,
+                                    Label(Parent, font=Font(size=7), bg='salmon1', text=cell, relief=GROOVE,
                                           borderwidth=2))
                     else:
-                        Label_row.append(Label(Parent, font= Font(size=8), bg = 'gainsboro', text=cell, relief=SUNKEN, borderwidth=2))
+                        Label_row.append(Label(Parent, font= Font(size=5), bg = 'gainsboro', text=cell, relief=SUNKEN, borderwidth=2))
                 self.table.append(Label_row)
             for i in range(len(self.table)):
                 print self.table[i][0]['text']
@@ -325,9 +325,9 @@ class MoteTable():
                 Label_col = []
                 for cell in col:
                     if cell == col[0]:
-                        Label_col.append(Label(Parent, font= Font(size=8), text=cell[cell.find(':')+1:len(cell)], relief=GROOVE, borderwidth=2, padx=2))
+                        Label_col.append(Label(Parent, font= Font(size=8), text=cell[cell.find(':')+1:len(cell)-3], relief=GROOVE, borderwidth=2, padx=2))
                     else:
-                        Label_col.append(Label(Parent, font= Font(size=8), bg = 'gainsboro', text=cell, relief=SUNKEN, borderwidth=2))
+                        Label_col.append(Label(Parent, font= Font(size=8), bg = 'gainsboro', text=cell, relief=SUNKEN, borderwidth=1, padx=1))
                     self.table.append(Label_col)
 
 

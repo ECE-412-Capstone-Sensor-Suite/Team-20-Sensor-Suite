@@ -75,7 +75,7 @@ class InteractiveGraph():
         y = self.Data[0:self.span]
         t = self.timestamps[0 :self.span]
 
-        self.FFigure = plt.figure(figsize=(9,5), dpi = 80)
+        self.FFigure = plt.figure(figsize=(9,4), dpi = 60)
         plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%d/%H:%M'))
         self.FFigure.add_subplot(111).plot(t,y)
         chart = FigureCanvasTkAgg(self.FFigure, self.FFrame)
@@ -135,7 +135,7 @@ class InteractiveGraph():
         dateInd = []
         for i in range(len(self.dateStamps)):
             if self.dateStamps[i] == self.clicked.get(): dateInd.append(i)
-        newoption = (dateInd[-1])/self.offsetSpan - 1
+        newoption = min((dateInd[-1])/self.offsetSpan - 1, 0)
         self.time_slide.set(newoption)
         print newoption
 

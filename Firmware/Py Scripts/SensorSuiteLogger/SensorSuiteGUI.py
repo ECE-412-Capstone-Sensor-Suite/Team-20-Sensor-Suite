@@ -71,11 +71,11 @@ def GUI_History_Table(Motenum):
     for n in range(len(hist_headers)):
         ##Grid.rowconfigure(FF_Headers, n, weight=1)
         if n == 0 or n == 1:
-            Label(FF_Headers, bg='light blue', text=hist_headers[n], relief=RAISED, height=2, font=Font(size=11)).grid(
+            Label(FF_Headers, bg='light blue', text=hist_headers[n], relief=RAISED, borderwidth=2, pady=5, font=Font(size=9)).grid(
                 row=n + 1, sticky=NSEW)
         else:
             Button(FF_Headers, bg='light blue',
-                   text=hist_headers[n], borderwidth=3, pady=5,
+                   text=hist_headers[n], borderwidth=2, pady=1,
                    command = lambda x=hist_headers[n]: changeGraph(x)).grid(row=n + 1, sticky=NSEW)
 
     for sample in MainMesh.Motes[Motenum].samples:
@@ -104,7 +104,7 @@ ActiveMote = 0
 root = Tk()
 root.title("Sensor Suite Data Viewer")
 #root.iconbitmap('')
-root.geometry("1400x900")
+root.geometry("1050x650")
 
 #========================================== Intialize Frames ==========================================================
 Frame_Setup = LabelFrame(root, text = 'setup',      relief = GROOVE, padx=10, pady=10, borderwidth=4)
@@ -124,7 +124,7 @@ lab_DataSpan = Label(Frame_Setup, text = "DateSpan of collected Data:   " + Main
 #========================================== Frame_Motes ===============================================================
 # CREATE SCROLLABLE FRAME/CANVAS
 MoteFrame = Frame(Frame_Motes)
-MoteFrame.pack(fill=BOTH, expand = 1)
+MoteFrame.pack(fill=BOTH, expand = 1, ipadx = 20)
 # Create Canvas
 Mcanvas = Canvas(MoteFrame)
 Mcanvas.pack(side=LEFT, fill=BOTH, expand=1)
@@ -136,7 +136,7 @@ Mcanvas.configure(yscrollcommand=Mscrollbar.set)
 # bind config
 Mcanvas.bind('<Configure>', lambda e: Mcanvas.configure(scrollregion=Mcanvas.bbox("all")))
 SecondFrame = Frame(Mcanvas)
-Mcanvas.create_window((0,0), window=SecondFrame, anchor=NW)
+Mcanvas.create_window((0,0), window=SecondFrame, anchor=NW, width = 700)
 
 Headers  = ("Mote","Status", "Temp", "Humid", "Lux", "O2", "CO2", "Accel", "Wind", "Rain")
 Mote_Rows = []
@@ -155,7 +155,7 @@ M_Table.pack_in(True)
 
 # Customize Cells
 for cell in M_Table.headrow:
-    cell['font'] = Font(size = 9)
+    cell['font'] = Font(size = 8)
 
 
 #========================================== Frame_History =============================================================
@@ -170,7 +170,7 @@ FF_GRAPH = Frame(Frame_History)
 # FF_hist.pack(side=RIGHT, fill=BOTH, expand = 1, anchor=W)
 # FF_Headers.pack(side=LEFT,ipady= 95, anchor=NW)
 
-FF_hist.grid(row = 0, column = 1,ipady=50, sticky= NSEW)
+FF_hist.grid(row = 0, column = 1,ipady=0, sticky= NSEW)
 FF_Headers.grid(row = 0, column = 0, sticky= NSEW)
 
 FF_GRAPH.grid(row = 1, column = 0, columnspan=2, sticky= NSEW)
@@ -185,7 +185,7 @@ Hcanvas.configure(xscrollcommand=Hscrollbar.set)
 # bind config
 Hcanvas.bind('<Configure>', lambda e: Hcanvas.configure(scrollregion=Hcanvas.bbox("all")))
 FFF_hist = Frame(Hcanvas)
-Hcanvas.create_window((0, 0), window=FFF_hist, anchor='nw', height=362)
+Hcanvas.create_window((0, 0), window=FFF_hist, anchor='nw', height=270)
 
 GUI_History_Table(ActiveMote)
 graphPanel = InteractiveGraph(MainMesh,
@@ -212,7 +212,7 @@ root.after(33, graphPanel.updateGUI)
 # FRAME PACKING
 Grid.rowconfigure(root, 0, weight=0)
 Grid.rowconfigure(root, 1, weight=5)
-Grid.columnconfigure(root, 0, weight=3)
+Grid.columnconfigure(root, 0, weight=2)
 Grid.columnconfigure(root, 1, weight=10)
 
 
