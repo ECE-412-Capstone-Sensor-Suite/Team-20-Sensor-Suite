@@ -98,7 +98,7 @@ MainMotes = MainMesh.Motes
 if MainMesh.NumOfMotes == 0:
     raw_input("NO LOG FILES FOUND...")
     sys.exit()
-    
+
 ActiveMote = 0
 # initialize GUI
 root = Tk()

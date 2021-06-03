@@ -246,13 +246,14 @@ class dataGui(object):
 def simple_data_Logging(mac, payload):
     macSTR = FormatUtils.formatMacString(mac)                                   # convert mac address to string
     logname = macSTR[-8:-6] + macSTR[-5:-3] + macSTR[-2] + macSTR[-1] + ".log"  # determine logname
-    print('sensor data recieved --> ' + logname)
 
     CheckMoteRegestry(macSTR, logname)
     samples = [None] * (len(payload)/2)                         # reformating payload into 16 bit words
     for i in range(len(samples)):
         samples[i] = (payload[i*2] << 8) | (payload[ (i*2) + 1])
 
+    print 'sensor data recieved --> ' + logname +  '            Data: ' + \
+                                 str([samples[0],samples[1],samples[2],samples[3],samples[4],samples[5]]) + ' ...'
     # logging
     logFile = open(Data_Loc + logname, "a+")
     UpdateDate(logname,logFile)
@@ -269,9 +270,7 @@ def UpdateDate(logname,logFile):
     for lines in logFile.readlines():
         if len(lines.split())>1:
             if lines.split()[0] == "--":
-                print 'checking date ' + lines.split()[1] + ' against ' + currentDate
                 if lines.split()[1] == currentDate:
-                    print 'same dates'
                     newdate = False
     if newdate == True:
         print 'new date --> ' + currentDate

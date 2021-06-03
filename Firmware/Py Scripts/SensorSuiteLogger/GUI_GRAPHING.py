@@ -143,7 +143,7 @@ class InteractiveGraph():
         newStart = timeSlide*self.offsetSpan
         newFinal = newStart + self.span +1
         print 'newRange == ' + str(newStart) + '--' + str(newFinal)
-        y = self.Data [newStart:newFinal]
+        y = self.Data[newStart:newFinal]
         t = self.timestamps[newStart:newFinal]
         self.FFigure.clear()
         plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%d/%H:%M'))
