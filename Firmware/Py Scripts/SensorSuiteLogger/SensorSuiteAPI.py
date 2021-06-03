@@ -22,8 +22,6 @@ class sample: # Sample Object structure
         self.wind = wind
         self.rain = rain
 
-
-
 class Mote(): # mote Object structure : inherits from samples
     def __init__(self, Directory, Logname):
         self.Logname = Logname
@@ -151,11 +149,6 @@ class Mote(): # mote Object structure : inherits from samples
             return self.array
         else:
             print 'Wrong sensor string selection'
-
-
-
-
-
 
 class MeshNetwork(): # Mesh Network object structure : inherits from mote
     def __init__(self, Directory):

@@ -69,14 +69,8 @@ def GUI_History_Table(Motenum):
     hist_col = []
     hist_headers = ("Date", "Time", "Temp", "Humid", "Lux", "O2", "CO2", "Accel", "Wind", "Rain")
     for n in range(len(hist_headers)):
-        ##Grid.rowconfigure(FF_Headers, n, weight=1)
-        if n == 0 or n == 1:
-            Label(FF_Headers, bg='light blue', text=hist_headers[n], relief=RAISED, borderwidth=2, pady=5, font=Font(size=9)).grid(
-                row=n + 1, sticky=NSEW)
-        else:
-            Button(FF_Headers, bg='light blue',
-                   text=hist_headers[n], borderwidth=2, pady=1,
-                   command = lambda x=hist_headers[n]: changeGraph(x)).grid(row=n + 1, sticky=NSEW)
+        if not(n == 0 or n == 1):
+            headerButtons[n-2]['command'] = lambda x=hist_headers[n]: changeGraph(x)
 
     for sample in MainMesh.Motes[Motenum].samples:
         col = [utctodate(sample.timestamp),
@@ -195,6 +189,19 @@ Hcanvas.bind('<Configure>', lambda e: Hcanvas.configure(scrollregion=Hcanvas.bbo
 FFF_hist = Frame(Hcanvas)
 Hcanvas.create_window((0, 0), window=FFF_hist, anchor='nw', height=270)
 
+hist_headers = ("Date", "Time", "Temp", "Humid", "Lux", "O2", "CO2", "Accel", "Wind", "Rain")
+headerButtons = []
+for n in range(len(hist_headers)):
+    ##Grid.rowconfigure(FF_Headers, n, weight=1)
+    if n == 0 or n == 1:
+        Label(FF_Headers, bg='light blue', text=hist_headers[n], relief=RAISED, borderwidth=2, pady=5,
+              font=Font(size=9)).grid(
+            row=n + 1, sticky=NSEW)
+    else:
+        headerButtons.append(Button(FF_Headers, bg='light blue',
+                                    text=hist_headers[n], borderwidth=2, pady=1))
+        headerButtons[-1].grid(row=n + 1, sticky=NSEW)
+
 GUI_History_Table(ActiveMote)
 graphPanel = InteractiveGraph(MainMesh,
                               FF_GRAPH,
@@ -244,15 +251,15 @@ pady = 190
 # MoteScroll.grid(row=0,column=1, sticky=NS)
 def updateGUI():
     graphPanel.updateGUI()
-    root.after(33, updateGUI)
+    root.after(500, updateGUI)
 def updateData():
     MACS = MainMesh.UpdateMesh()
     if MACS != []:
         print 'motes updated: ' + str(MACS)
         UpdateTable(M_Table.table, MACS)
-    root.after(1000, updateData)
-root.after(33,updateGUI)
-root.after(1000,updateData)
+    root.after(3, updateData)
+root.after(500,updateGUI)
+root.after(3,updateData)
 
 root.mainloop()
 
