@@ -140,15 +140,23 @@ Mcanvas.create_window((0,0), window=SecondFrame, anchor=NW, width = 700)
 
 Headers  = ("Mote","Status", "Temp", "Humid", "Lux", "O2", "CO2", "Accel", "Wind", "Rain")
 Mote_Rows = []
-
-for mote in MainMesh.Motes:
-    row = [mote.MAC[len(mote.MAC) - 8:len(mote.MAC)], mote.status,
-           mote.temp[-1],
-           mote.humid[-1],
-           mote.lux[-1],
-           mote.o2[-1],
-           mote.co2[-1], mote.accel[-1], mote.wind[-1], mote.rain[-1]]
+if MainMesh.NumOfMotes == 1:
+    row = [MainMesh.Motes[0].MAC[len(MainMesh.Motes[0].MAC) - 8:len(MainMesh.Motes[0].MAC)], MainMesh.Motes[0].status,
+           MainMesh.Motes[0].temp[-1],
+           MainMesh.Motes[0].humid[-1],
+           MainMesh.Motes[0].lux[-1],
+           MainMesh.Motes[0].o2[-1],
+           MainMesh.Motes[0].co2[-1], MainMesh.Motes[0].accel[-1], MainMesh.Motes[0].wind[-1], MainMesh.Motes[0].rain[-1]]
     Mote_Rows.append(row)
+else:
+    for mote in MainMesh.Motes:
+        row = [mote.MAC[len(mote.MAC) - 8:len(mote.MAC)], mote.status,
+               mote.temp[-1],
+               mote.humid[-1],
+               mote.lux[-1],
+               mote.o2[-1],
+               mote.co2[-1], mote.accel[-1], mote.wind[-1], mote.rain[-1]]
+        Mote_Rows.append(row)
 print 'mote len = ' + str(len(Mote_Rows))
 M_Table = MoteTable(SecondFrame, Headers, Mote_Rows,[0],[0])
 M_Table.pack_in(True)

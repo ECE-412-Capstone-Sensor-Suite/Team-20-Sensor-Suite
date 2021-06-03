@@ -199,7 +199,7 @@ class MeshNetwork(): # Mesh Network object structure : inherits from mote
         updatedMotes = []
         for n in range(len(files)):
             checkLastdate = os.stat(self.Dir + files[n]).st_mtime
-            if not (self.moteLastUpdate[n] ==checkLastdate):
+            if not (self.moteLastUpdate[n] == checkLastdate):
                 print files[n] + ' last update: ' + utctodate(self.moteLastUpdate[n]) + ' current last update: ' + utctodate(checkLastdate)
                 print files[n] + 'has been updated, reloading mote ' + self.Motes[n].MAC
                 self.moteLastUpdate[n] = checkLastdate
@@ -272,7 +272,7 @@ if __name__ == '__main__':
                                         /       |       \
                                       /         |         \
                                     /           |           \
-#===============================MOTE1=========MOTE2========MOTE3========MOTE_N.. ====
+#============================== MOTE1 ======= MOTE2 ====== MOTE3 =======MOTE_N.. ====
                                   |             |            |
                                   |             |            |
                                   |             |            |
@@ -309,14 +309,14 @@ class MoteTable():
                     elif cell == row[1]:
                             if cell=='OPERATIONAL':
                                 Label_row.append(
-                                    Label(Parent, font=Font(size=7), bg='DarkOliveGreen1', text=cell, relief=GROOVE,
+                                    Label(Parent, font=Font(size=7), bg='DarkOliveGreen1', text=cell, relief=GROOVE, pady=1,
                                           borderwidth=2))
                             else:
                                 Label_row.append(
-                                    Label(Parent, font=Font(size=7), bg='salmon1', text=cell, relief=GROOVE,
+                                    Label(Parent, font=Font(size=7), bg='salmon1', text=cell, relief=GROOVE, pady=1,
                                           borderwidth=2))
                     else:
-                        Label_row.append(Label(Parent, font= Font(size=5), bg = 'gainsboro', text=cell, relief=SUNKEN, borderwidth=2))
+                        Label_row.append(Label(Parent, font= Font(size=5), bg = 'gainsboro', text=cell, relief=SUNKEN, borderwidth=2, pady=1))
                 self.table.append(Label_row)
             for i in range(len(self.table)):
                 print self.table[i][0]['text']
