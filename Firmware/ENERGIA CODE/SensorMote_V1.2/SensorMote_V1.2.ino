@@ -41,7 +41,7 @@ IpMtWrapper       ipmtwrapper;
 #define           O2_ACTIVATE_PIN           33               // Pin used to turn on O2 Sensor
 #define           LOPWR_ACTIVATE_PIN        34               // Pin used to turn on Low Power Sensors Sensors
 #define           SRAM_OFFSET               0x050           // Location to save Value to keep through LPDS cycle
-#define           Lowpower_Period           10              // Duration of LPDS Cycle in seconds
+#define           Lowpower_Period           60              // Duration of LPDS Cycle in seconds
 #define           Co2_period                1               // MINS
 
 float  OxygenData[100] = {0.00};
@@ -78,7 +78,7 @@ void generateData(uint16_t* returnVal) { // this is were data is assinged to be 
   returnVal[1] = (int)(humidity * 100);      // payload[3,4] = humidity
   returnVal[2] = (int)(fLux * 100) ;          // payload[5,6] = light sensitivity
   returnVal[3] = (int)(oxygenData * 100) ;    // payload[7,8] = oxygen
-  returnVal[4] = (int)(concentration * 100) ; // payload[9,10] = CO2 Concentration
+  returnVal[4] = (int)(concentration) ; // payload[9,10] = CO2 Concentration
   returnVal[5] = (int)(X_out * 100) ;         // payload[11,12] = Acceloromter C
   returnVal[6] = (int)(Y_out * 100) ;         // payload[13,14] = Acceloromter Y
   returnVal[7] = (int)(Z_out * 100) ;         // payload[15,16] = Acceloromter Z
@@ -86,7 +86,7 @@ void generateData(uint16_t* returnVal) { // this is were data is assinged to be 
   returnVal[9] = rainValue;                  // payload[19,20] =
   
   Serial.print("\nSampled:  C: "); Serial.print(temp);Serial.print(" RH: "); Serial.print(humidity); Serial.print("  LUX: "); Serial.print(fLux);
-  Serial.print(" O2: "); Serial.print(oxygenData); Serial.print(" CO2: "); Serial.print(concentration);
+  Serial.print(" O2: "); Serial.print(oxygenData); Serial.print(" CO2: "); Serial.print((int)concentration);
   Serial.print(" X, Y, Z: "); Serial.print(X_out);Serial.print(", ");  Serial.print(Y_out);Serial.print(", ");  Serial.print(Z_out);
   Serial.print(" WIND: "); Serial.print(WindSpeed_MPH); Serial.print(" Rain: "); Serial.println(rainValue);
   SLEEP_TRIGGER = true; // set sleep state true after sending value
@@ -114,7 +114,7 @@ void setup() {
   memcpy(&holdValue, SRAM_PTR, sizeof(holdValue));
   Serial.print("SRAM READING --->"); Serial.println(holdValue);
   //holdValue += Lowpower_Period ;             // add seconds spent in LPDS
-  if(holdValue > 100000000) holdValue = 0;
+  if(abs(holdValue) > 10000) holdValue = 0;
   
   //-------------------------------------- LOW POWER SLEEP SETUP
   SleepDuration = 32768 * Lowpower_Period;         // 30 second sleep durtion, 10 minute sleep duration for final deployment
@@ -200,7 +200,7 @@ void loop() {
 
       //--------------------------------------------------------------------- O2 SAMPLE LOOP
       beginTime = millis();         //  Setting up constaints for sample loop
-      SetupTime = 1000*10;               // wait 5 sec befores sampling O2
+      SetupTime = 1000*5;               // wait 5 sec befores sampling O2
       bool O2_TRIG = true;           //
       digitalWrite(O2_ACTIVATE_PIN, HIGH);   // TURN ON O2 Sensors
       Serial.println("Waiting for O2...");
@@ -215,7 +215,7 @@ void loop() {
 
      //-------------------------------------------------------------------- WIND SPEEED SAMPLE LOOP
       beginTime = millis();           //  Setting up constaints for sample loop
-      SetupTime = 1000 * 10;          //  wait 10 sec before sampling wind
+      SetupTime = 1 * 10;          //  wait 10 sec before sampling wind
       bool WIND_TRIG = true  ;         //
       digitalWrite(WIND_ACTIVATE_PIN, HIGH);   // TURN ON WIND Sensors
       Serial.println("Waiting for WIND......");      
@@ -239,7 +239,7 @@ void loop() {
       else{Serial.print("CO2 Timer..... "); Serial.println(holdValue);} 
       
 
-      SetupTime = 1000 * 30;           //  wait 30 sec before sampling Co2
+      SetupTime = 1000 * 15;           //  wait 30 sec before sampling Co2
       while(CO2_TRIG){
 
         if((millis() - beginTime) > SetupTime){
@@ -332,7 +332,7 @@ void CO2_READ() {
   //Read voltage
   int CO2_analogRead = analogRead(CO2_IN);
   // The analog signal is converted to a voltage
-  float voltage = CO2_analogRead * (3300 / 1024.0);
+  float voltage = CO2_analogRead * (1460 / 1024.0);
   if (voltage == 0) {
     Serial.println("Fault");
   }
