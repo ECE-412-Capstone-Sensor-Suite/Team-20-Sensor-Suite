@@ -34,16 +34,6 @@ class Mote(): # Mote Object Structure : Contains Multiple Sample Objects
         self.status = 'Disconnected'
         self.UID = None
         self.coord = None
-        self.samples = []
-        self.timestamp = []
-        self.temp = []
-        self.humid = []
-        self.lux = []
-        self.o2 = []
-        self.co2 = []
-        self.accel = []
-        self.wind = []
-        self.rain = []
         #self.Logfile.close()
 
     # load a single mote from logfile into ram, using motes MAC address:
@@ -56,7 +46,16 @@ class Mote(): # Mote Object Structure : Contains Multiple Sample Objects
         self.CurrentDate = None
         self.dates = []             # arranging all dates string into an array
         self.timesInDate = []       # row = new date, col = timestamps that correspond to the date
-
+        self.samples = []
+        self.timestamp = []
+        self.temp = []
+        self.humid = []
+        self.lux = []
+        self.o2 = []
+        self.co2 = []
+        self.accel = []
+        self.wind = []
+        self.rain = []
         for line in Loglines:
             word = line.split()
             #print word
@@ -73,7 +72,7 @@ class Mote(): # Mote Object Structure : Contains Multiple Sample Objects
                     self.humid.append(float(word[2][0:-1]) / 100)
                     self.lux.append(float(word[3][0:-1]) / 100)
                     self.o2.append(float(word[4][0:-1]) / 100)
-                    self.co2.append(float(word[5][0:-1]) / 100)
+                    self.co2.append(float(word[5][0:-1]))
                     self.accel.append((float(word[6][0:-1]) / 100))#,
                                        # float(word[7][0:-1]) / 100 * 0,
                                        # float(word[8][0:-1]) / 100 * 0))
@@ -158,7 +157,7 @@ class MeshNetwork():    # Mesh Network object structure : Contains multiple Mote
         self.Motes = []
         self.MACaddresses = []
         self.MoteFiles = []
-        self.moteLastUpdate = []
+        self.moteLastUpdate = []            # Save the last date modified for each log file in the directory
         addresses = []
         MAC_root = "00-17-0d-00-00"
         print("Data Storage Directory: " + self.Dir)
@@ -175,7 +174,7 @@ class MeshNetwork():    # Mesh Network object structure : Contains multiple Mote
         for file in self.MoteFiles:
             self.moteLastUpdate.append(os.stat(self.Dir + file).st_mtime)
     # Find unique addresses, define mote object with them, and load each one using loadMote():
-    def loadMesh(self):
+    def LoadMesh(self):
 
         print '\nNumber of motes: ' + str(len(self.MACaddresses))
         for i in range(len(self.MoteFiles)):
@@ -185,7 +184,7 @@ class MeshNetwork():    # Mesh Network object structure : Contains multiple Mote
             self.Motes[i].LoadMote()      # load mote into ram
 
     # Return mote object that matches MAC Adress:
-    def moteMAC(self, MACaddress):
+    def MoteMAC(self, MACaddress):
         for i in range(len(self.Motes)):
             if self.Motes[i].MAC == MACaddress:
                 return self.Motes[i]
@@ -237,6 +236,98 @@ class MeshNetwork():    # Mesh Network object structure : Contains multiple Mote
         else:
             return updatedMotes
 
+    # Check if any of the latest samples in any of the motes triggers an Alert
+    def CheckAlert(self):
+        sensors = ('temp', 'humid', 'lux', 'o2', 'co2', 'accel', 'wind', 'rain')
+        alerts = []
+        alertMotes = []
+        is_alerted = False
+        for mote in self.Motes:
+            lastSample = mote.samples[-1]
+            # check low trigger or high trigger
+            if (self.tempLimit[0] > lastSample.temp) or (self.tempLimit[1] < lastSample.temp):
+                is_alerted = True
+                if self.tempLimit[0] < lastSample.temp:
+                    alerts.append('LOW_TEMP')
+                    print '> temp is bellow ' + self.tempLimit[0] + ' for mote ' + mote.MAC
+                else:
+                    alerts.append('HIGH_TEMP')
+                    print '> temp is above ' + self.tempLimit[1] + ' for mote ' + mote.MAC
+            elif (self.humidLimit[0] > lastSample.humid) or (self.humidLimit[1] < lastSample.humid):
+                is_alerted = True
+                if self.humidLimit[0] < lastSample.humid:
+                    alerts.append('LOW_HUMID')
+                    print '> humid is bellow ' + self.humidLimit[0] + ' for mote ' + mote.MAC
+                else:
+                    alerts.append('HIGH_HUMID')
+                    print '> humid is above ' + self.humidLimit[1] + ' for mote ' + mote.MAC
+            elif (self.luxLimit[0] > lastSample.lux) or (self.luxLimit[1] < lastSample.lux):
+                is_alerted = True
+                if self.luxLimit[0] < lastSample.lux:
+                    alerts.append('LOW_LUX')
+                    print '> lux is bellow ' + self.luxLimit[0] + ' for mote ' + mote.MAC
+                else:
+                    alerts.append('HIGH_LUX')
+                    print '> lux is above ' + self.luxLimit[1] + ' for mote ' + mote.MAC
+            elif (self.o2Limit[0] > lastSample.o2) or (self.o2Limit[1] < lastSample.o2):
+                is_alerted = True
+                if self.o2Limit[0] < lastSample.o2:
+                    alerts.append('LOW_O2')
+                    print '> o2 is bellow ' + self.o2Limit[0] + ' for mote ' + mote.MAC
+                else:
+                    alerts.append('HIGH_O2')
+                    print '> o2 is above ' + self.o2Limit[1] + ' for mote ' + mote.MAC
+            elif (self.co2Limit[0] > lastSample.co2) or (self.co2Limit[1] < lastSample.co2):
+                is_alerted = True
+                if self.co2Limit[0] < lastSample.co2:
+                    alerts.append('LOW_CO2')
+                    print '> CO2 is bellow ' + self.co2Limit[0] + ' for mote ' + mote.MAC
+                else:
+                    alerts.append('HIGH_CO2')
+                    print '> CO2 is above ' + self.co2Limit[1] + ' for mote ' + mote.MAC
+            elif (self.windLimit[0] > lastSample.wind) or (self.windLimit[1] < lastSample.wind):
+                is_alerted = True
+                if self.windLimit[0] > lastSample.wind:
+                    alerts.append('LOW_WIND')
+                    print '> wind is bellow ' + self.windLimit[0] + ' for mote ' + mote.MAC
+                else:
+                    alerts.append('HIGH_WIND')
+                    print '> wind is above ' + self.windLimit[1] + ' for mote ' + mote.MAC
+            elif (self.rainLimit[0] < lastSample.rain) or (self.rainLimit[1] < lastSample.rain):
+                is_alerted = True
+                if self.rainLimit[0] < lastSample.rain:
+                    alerts.append('LOW_WATER')
+                    print '> rain is bellow ' + self.rainLimit[0] + ' for mote ' + mote.MAC
+                else:
+                    alerts.append('HIGH_WATER')
+                    print '> rain is above ' + self.rainLimit[1] + ' for mote ' + mote.MAC
+            if is_alerted:
+                alertMotes.append(mote.MAC)
+        return alerts + " --> " + alertMotes
+
+    # set alert triggers: limits should be a two element tuple (low trigger, high trigger)
+    def SetAlertTriggers(self, sensorIn, limits):
+        sensors = ('temp', 'humid', 'lux', 'o2', 'co2', 'accel', 'wind', 'rain')
+        self.array = []
+        if sensorIn == sensors[0]:
+            self.tempLimit = limits
+        elif sensorIn == sensors[1]:
+            self.humidLimit = limits
+        elif sensorIn == sensors[2]:
+            self.luxLimit = limits
+        elif sensorIn == sensors[3]:
+            self.o2Limit = limits
+        elif sensorIn == sensors[4]:
+            self.co2Limit = limits
+        elif sensorIn == sensors[5]:
+            self.accelLimit = limits
+        elif sensorIn == sensors[6]:
+            self.windLimit = limits
+        elif sensorIn == sensors[7]:
+            self.rainLimit = limits
+        else:
+            print 'Wrong sensor string selection'
+
 # convert Datetime Object into UNIX seconds
 def DtSeconds(dt):          #Conver DATETIME to UTC seconds
     epoch = datetime.utcfromtimestamp(0)
@@ -258,7 +349,7 @@ if __name__ == '__main__':
     Data_Loc = sys.path[0] + "/DataOrganization/"
     print Data_Loc
     Mesh1 = MeshNetwork(Data_Loc)
-    Mesh1.loadMesh()
+    Mesh1.LoadMesh()
     print Mesh1.Motes[0].dates
     dt = datetime.now()
     epoch = datetime.utcfromtimestamp(0)

@@ -168,7 +168,7 @@ if __name__ == '__main__':
 
     # load in mesh network
     MainMesh = MeshNetwork(dir)
-    MainMesh.loadMesh()
+    MainMesh.LoadMesh()
     # initialize GUI
     root = Tk()
     graphPanel = InteractiveGraph(MainMesh,root,0, MainMesh.Motes[0].wind)

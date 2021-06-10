@@ -92,7 +92,7 @@ def GUI_History_Table(Motenum):
 dir = sys.path[0] + "/DataOrganization/"
 # load in mesh network
 MainMesh = MeshNetwork(dir)
-MainMesh.loadMesh()
+MainMesh.LoadMesh()
 MainMotes = MainMesh.Motes
 
 if MainMesh.NumOfMotes == 0:
